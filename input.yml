@@ -1,0 +1,11 @@
+events:
+  aave-v1:
+    - Deposit(address indexed reverse, address indexed address , uint256 amount, uint16 indexed referral, uint256 timestamp)
+    - RedeemUnderlying(address indexed reserve,address indexed user, uint256 amount, uint256 timestamp)
+    - Borrow(address indexed _reserve,address indexed _user,    uint256 _amount,uint256 _borrowRateMode,uint256 _borrowRate,uint256 _originationFee,uint256 _borrowBalanceIncrease,        uint16 indexed _referral,uint256 _timestamp);
+    - Repay(address indexed _reserve,  address indexed _user,address indexed _repayer,uint256 _amountMinusFees,uint256 _fees,uint256 _borrowBalanceIncrease,uint256 _timestamp);
+contracts:
+  aave-v1:
+    - 0x398eC7346DcD622eDc5ae82352F02bE94C62d119 # Lending pool
+  # compound-v2:
+  #   - 0x3d9819210A31b4961b30EF54bE2aeD79B9c9Cd3B # Comptroller
