@@ -1,3 +1,5 @@
+mod event_parser;
+
 use csv::Writer;
 use ethers::{
     prelude::*,
@@ -7,6 +9,7 @@ use ethers::{
 use rocksdb::DB;
 use std::{any::Any, borrow::Borrow, collections::BTreeMap, fs::File, str::FromStr, sync::Arc};
 use std::{borrow::BorrowMut, fmt::Debug, ops::Index};
+
 
 #[tokio::main]
 async fn main() {
@@ -35,16 +38,16 @@ struct Kanban {
 struct Task {
     name: String,
     contracts: Vec<Address>,
-    events: Vec<Event>,
+    events: Vec<event_parser::Event>,
 }
 
 fn parse_config() -> Kanban {
     let file = File::open("input.yml").unwrap();
     let input: serde_yaml::Mapping = serde_yaml::from_reader(file).unwrap();
-    log::warn!("{:?}", input["events"]);
+    log::warn!("{:?}", input);
 
     let input_contracts = input["contracts"].as_mapping().unwrap();
-    let input_events = input["events"].as_mapping().unwrap();
+    let input_events = input["sources"].as_mapping().unwrap();
     let task_names = input_contracts.keys();
     let mut tasks = Vec::new();
     for task_name in task_names {
@@ -62,11 +65,13 @@ fn parse_config() -> Kanban {
             events: input_events
                 .get(task_name)
                 .unwrap()
+                .as_mapping()
+                .unwrap()["events"]
                 .as_sequence()
                 .unwrap()
                 .to_owned()
                 .iter()
-                .map(|c| Event::new(String::from(c.as_str().unwrap())))
+                .map(|c| event_parser::Event::new(String::from(c.as_str().unwrap())))
                 .collect(),
         };
         tasks.push(task);
@@ -79,7 +84,7 @@ async fn dump_event_logs_from_contract(
     provider: &Provider<Ws>,
     task: String,
     addrs: Vec<Address>,
-    events: Vec<Event>,
+    events: Vec<event_parser::Event>,
 ) {
     let event_signatures: Vec<String> = events.iter().map(|e| e.to_signature()).collect();
     let event_hashes: Vec<H256> = events.iter().map(|e| e.hash()).collect();
@@ -96,55 +101,86 @@ async fn dump_event_logs_from_contract(
     ];
     for (i, e) in events.iter().enumerate() {
         let mut fields = Vec::from(fixed_fields);
-        for p in e.sorted.iter() {
+        for p in e.topics.iter() {
             fields.push(&p.name)
         }
-
+        for p in e.data.iter() {
+            fields.push(&p.name)
+        }
         event_writers[i].write_record(fields).unwrap();
     }
 
+    log::warn!("{:?}", event_signatures);
     let filter = Filter::new()
-        .from_block(9241323)
-        //.from_block(0_000_000)
+        // .from_block(16_000_000)
+        .from_block(0_000_000)
         .to_block(16_200_000)
-        .events(event_signatures)
+        // .events(event_signatures)
         .address(addrs);
     let mut stream = provider.get_logs_paginated(&filter, 100);
     while let Some(log) = stream.next().await {
         let log = log.unwrap();
         log::debug!("{:?}", log);
 
-        let mut topics_with_data = Vec::new();
-        topics_with_data.extend(log.topics.clone());
-        for chuck in log.data.chunks(32) {
-            let h256_chunk = H256::from_slice(chuck);
-            topics_with_data.push(h256_chunk);
-        }
-
         let mut record: Vec<String> = Vec::new();
         record.push(log.block_number.unwrap().to_string());
         record.push(format!("{:#x}", log.transaction_hash.unwrap()));
         // record.push(log.transaction_log_index.unwrap().to_string());
 
-        let fn_hash = topics_with_data[0].to_string();
+        let fn_hash = log.topics[0];
         let event_index = event_hashes
             .iter()
-            .position(|&h| h.to_string() == fn_hash)
+            .position(|&h| fn_hash == h)
             .unwrap();
         let event = &events[event_index];
-        let mut index = 1;
-        for param in &event.sorted {
+        log::debug!("found event {:?}", event);
+
+        for (index, param) in event.topics.iter().enumerate() {
+            let raw = log.topics[index+1]; // step over fn name
             let value = match param.evm_type.as_str() {
-                "address" => format!("{:#x}", Address::from(topics_with_data[index])),
-                "uint256" => U256::from(topics_with_data[index].as_bytes()).to_string(),
-                "uint16" => U256::from(topics_with_data[index].as_bytes()).to_string(),
+                "address" => format!("{:#x}", Address::from(raw)),
+                "uint256" => U256::from(raw.as_bytes()).to_string(),
+                "uint16" => U256::from(raw.as_bytes()).to_string(),
+                "bool" => (!raw.is_zero()).to_string(),
+                // "string" => 
+                _ => format!("{:#x}", Address::from(raw)), // as address
+            };
+
+            record.push(value);
+        }
+
+        // read from data
+        let raw_data = log.data;  
+        let mut pos: usize = 0;
+        for (index, param) in event.data.iter().enumerate() {
+            let value = match param.evm_type.as_str() {
+                "address" => {
+                    let raw = &raw_data[pos..pos+32];
+                    pos += 32;
+                    format!("{:#x}", Address::from(H256::from_slice(raw)))
+                },
+                "uint256" => {
+                    let raw = &raw_data[pos..pos+32];
+                    pos += 32;
+                    U256::from(raw).to_string()
+                },
+                "uint16" => {
+                    let raw = &raw_data[pos..pos+32];
+                    pos += 32;
+                    U256::from(raw).to_string()
+                },
+                "bool" => {
+                    let raw = &raw_data[pos..pos+32];
+                    pos += 32;
+                    (U256::from(raw).is_zero()).to_string()
+                },
+                // "string" => 
                 _ => todo!(),
             };
 
             record.push(value);
-
-            index += 1;
         }
+        assert!(pos==raw_data.len(), "{} != {}", pos, raw_data.len());
 
         event_writers[event_index].write_record(record).unwrap();
 
@@ -152,107 +188,4 @@ async fn dump_event_logs_from_contract(
     }
 
     return;
-}
-
-#[derive(Debug, Clone)]
-struct Event {
-    name: String,
-    params: Vec<EventParam>,
-    sorted: Vec<EventParam>,
-}
-
-impl Event {
-    pub fn new(event: String) -> Self {
-        // event = "Deposit(address indexed reverse, address indexed address , uint256 amount, uint16 indexed referral, uint256 timestamp);"
-        let name_with_body: Vec<&str> = event.split("(").collect();
-        let name = String::from(name_with_body[0]);
-        let body = name_with_body[1].replace(")", "").replace(";", "");
-        let mut params = Vec::new();
-        let mut sorted = Vec::new();
-        let mut index: i32 = 0;
-        let params_str_list: Vec<&str> = body.split(",").collect();
-        let params_count: i32 = params_str_list.len().try_into().unwrap();
-        for params_str in params_str_list {
-            let triple: Vec<&str> = params_str.trim().split(" ").collect();
-            assert!(triple.len() >= 2, "triple len incorrect");
-            let indexed = triple[1] == "indexed";
-            let param = EventParam {
-                rank: if indexed {
-                    -params_count + index
-                } else {
-                    index
-                },
-                name: triple[triple.len() - 1].to_string(),
-                indexed: indexed,
-                evm_type: triple[0].to_string(),
-            };
-
-            let cloned_param = param.clone();
-
-            params.push(param);
-            sorted.push(cloned_param);
-            index += 1;
-        }
-        sorted.sort_by(|a: &EventParam, b: &EventParam| a.rank.cmp(&b.rank));
-
-        let event = Event {
-            name: name,
-            params: params,
-            sorted,
-        };
-        return event;
-    }
-
-    fn to_signature(&self) -> String {
-        let body: Vec<_> = self.params.iter().map(|x| x.to_signature()).collect();
-
-        return self.name.to_owned() + "(" + &body.join(",") + ")";
-    }
-
-    fn hash(&self) -> H256 {
-        return H256::from(keccak256(self.to_signature().as_bytes()));
-    }
-}
-
-#[derive(Debug, Clone)]
-struct EventParam {
-    rank: i32,
-    name: String,
-    indexed: bool,
-    evm_type: String,
-}
-
-impl EventParam {
-    fn to_string(&self) -> String {
-        if self.indexed {
-            return vec![
-                self.evm_type.to_owned(),
-                "indexed".to_string(),
-                self.name.to_owned(),
-            ]
-            .join(" ");
-        }
-
-        return vec![self.evm_type.to_owned(), self.name.to_owned()].join(" ");
-    }
-
-    fn to_signature(&self) -> String {
-        return self.evm_type.to_owned();
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use crate::Event;
-
-    // Note this useful idiom: importing names from outer (for mod tests) scope.
-    use super::*;
-
-    #[test]
-    fn test_() {
-        let e = Event::new("Deposit(address indexed reverse, address indexed address , uint256 amount, uint16 indexed referral, uint256 timestamp);".to_owned());
-        println!("{:?}", e);
-        println!("{}", e.to_signature());
-        // assert_eq!((1, 2), 3);
-    }
 }
