@@ -16,7 +16,7 @@ impl Event {
         // event = "Deposit(address indexed reverse, address indexed address , uint256 amount, uint16 indexed referral, uint256 timestamp);"
         let event = event.trim().replace("event", "");
         let name_with_body: Vec<&str> = event.split("(").collect();
-        let name = String::from(name_with_body[0]);
+        let name = name_with_body[0].trim().to_string();
         let body = name_with_body[1].replace(")", "").replace(";", "");
         let mut params = Vec::new();
         let mut topics = Vec::new();
@@ -27,8 +27,8 @@ impl Event {
         for params_str in params_str_list {
             let triple: Vec<&str> = params_str.trim().split(" ").collect();
             assert!(triple.len() >= 2, "triple len incorrect");
-            let name = triple[triple.len() - 1].to_string(); 
-            let evm_type = triple[0].to_string();
+            let name = triple[triple.len() - 1].trim().to_string(); 
+            let evm_type = triple[0].trim().to_string();
             let indexed = triple[1] == "indexed" && !["string".to_string()].contains(&evm_type);
             let param = EventParam {
                 name,
@@ -56,7 +56,7 @@ impl Event {
     pub fn to_signature(&self) -> String {
         let body: Vec<_> = self.params.iter().map(|x| x.to_signature()).collect();
 
-        return self.name.to_owned() + "(" + &body.join(",") + ")";
+        return self.name.to_string() + "(" + &body.join(",") + ")";
     }
 
     pub fn hash(&self) -> H256 {

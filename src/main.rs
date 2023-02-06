@@ -133,7 +133,7 @@ async fn dump_event_logs_from_contract(
         event_writers[i].write_record(fields).unwrap();
     }
 
-    log::warn!("{:?}", event_signatures);
+    log::warn!("{}: {:?}", task, event_signatures);
     let filter = Filter::new()
         // .from_block(16_000_000)
         .from_block(0_000_000)
@@ -143,7 +143,7 @@ async fn dump_event_logs_from_contract(
     let mut stream = provider.get_logs_paginated(&filter, 100);
     while let Some(log) = stream.next().await {
         let log = log.unwrap();
-        log::debug!("{:?}", log);
+        // log::debug!("{:?}", log);
 
         let mut record: Vec<String> = Vec::new();
         record.push(log.block_number.unwrap().to_string());
@@ -151,9 +151,15 @@ async fn dump_event_logs_from_contract(
         // record.push(log.transaction_log_index.unwrap().to_string());
 
         let fn_hash = log.topics[0];
-        let event_index = event_hashes.iter().position(|&h| fn_hash == h).unwrap();
+        let event_index = match event_hashes.iter().position(|&h| fn_hash == h) {
+            Some(event_index) => event_index,
+            None => {
+                log::error!("{}: {:#x} not in {:?}", task, fn_hash, event_hashes);
+                continue;
+            }
+        };
         let event = &events[event_index];
-        log::debug!("found event {:?}", event);
+        log::debug!("{}: found event {:?}", task, event);
 
         for (index, param) in event.topics.iter().enumerate() {
             let raw = log.topics[index + 1]; // step over fn name
