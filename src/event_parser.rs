@@ -29,7 +29,7 @@ impl Event {
             assert!(triple.len() >= 2, "triple len incorrect");
             let name = triple[triple.len() - 1].trim().to_string(); 
             let evm_type = triple[0].trim().to_string();
-            let indexed = triple[1] == "indexed" && !["string".to_string()].contains(&evm_type);
+            let indexed = triple[1] == "indexed"; // && !["string".to_string()].contains(&evm_type);
             let param = EventParam {
                 name,
                 indexed,

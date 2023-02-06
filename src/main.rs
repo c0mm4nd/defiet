@@ -26,8 +26,18 @@ async fn main() {
     let mut handles: Vec<_> = vec![];
     for task in tasks {
         let provider = provider.clone();
-        handles.push(tokio::spawn(async move {
-            log::warn!("Start task {}", task.name);
+        if kanban.parallel {
+            handles.push(tokio::spawn(async move {
+                log::warn!("Start task {}", task.name);
+                dump_event_logs_from_contract(
+                    provider,
+                    task.name,
+                    task.contracts,
+                    task.events.to_vec(),
+                )
+                .await;
+            }));
+        } else {
             dump_event_logs_from_contract(
                 provider,
                 task.name,
@@ -35,8 +45,9 @@ async fn main() {
                 task.events.to_vec(),
             )
             .await;
-        }));
+        }
     }
+
     for handle in handles {
         handle.await.unwrap()
     }
@@ -44,6 +55,7 @@ async fn main() {
 
 #[derive(Debug, Clone)]
 struct Kanban {
+    parallel: bool,
     tasks: Vec<Task>,
 }
 
@@ -100,7 +112,7 @@ fn parse_config() -> Kanban {
         tasks.push(task);
     }
 
-    return Kanban { tasks };
+    return Kanban { parallel:input["parallel"].as_bool().unwrap(), tasks };
 }
 
 async fn dump_event_logs_from_contract(
@@ -161,6 +173,7 @@ async fn dump_event_logs_from_contract(
         let event = &events[event_index];
         log::debug!("{}: found event {:?}", task, event);
 
+        assert!(event.topics.len() == log.topics.len()-1, "config {} != log no fn {}", event.topics.len(), log.topics.len()-1);
         for (index, param) in event.topics.iter().enumerate() {
             let raw = log.topics[index + 1]; // step over fn name
             let value = match param.evm_type.as_str() {
@@ -168,7 +181,11 @@ async fn dump_event_logs_from_contract(
                 "uint256" => U256::from(raw.as_bytes()).to_string(),
                 "uint16" => U256::from(raw.as_bytes()).to_string(),
                 "bool" => (!raw.is_zero()).to_string(),
-                // "string" =>
+                "string" => {
+                    log::error!("{:#x}", raw);
+                    // panic!("string in index?")
+                    format!("{:#x}", raw) // = keccak(the_string)
+                }
                 _ => format!("{:#x}", Address::from(raw)), // as address
             };
 
@@ -200,8 +217,15 @@ async fn dump_event_logs_from_contract(
                     pos += 32;
                     (U256::from(raw).is_zero()).to_string()
                 }
-                // "string" =>
-                _ => todo!(),
+                "string" => {
+                    // read_length
+                    let raw = &raw_data[pos..pos + 32];
+                    pos += 32;
+                    let len_u256 = U256::from(raw).as_usize();
+                    let raw = &raw_data[pos..pos + 32*len_u256];
+                    String::from_utf8(raw.to_vec()).unwrap()
+                },
+                _ => panic!("unknown type {} in data", param.evm_type),
             };
 
             record.push(value);
