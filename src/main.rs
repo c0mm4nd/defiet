@@ -9,7 +9,7 @@ use ethers::{
 use rocksdb::DB;
 use std::{any::Any, borrow::Borrow, collections::BTreeMap, fs::File, str::FromStr, sync::Arc};
 use std::{borrow::BorrowMut, fmt::Debug, ops::Index};
-
+use tokio::runtime::Runtime;
 
 #[tokio::main]
 async fn main() {
@@ -22,10 +22,23 @@ async fn main() {
     log::warn!("{v}");
 
     let kanban = parse_config();
-    for task in kanban.tasks {
-        log::warn!("Start task {}", task.name);
-        dump_event_logs_from_contract(provider.borrow(), task.name, task.contracts, task.events)
+    let tasks = kanban.tasks;
+    let mut handles: Vec<_> = vec![];
+    for task in tasks {
+        let provider = provider.clone();
+        handles.push(tokio::spawn(async move {
+            log::warn!("Start task {}", task.name);
+            dump_event_logs_from_contract(
+                provider,
+                task.name,
+                task.contracts,
+                task.events.to_vec(),
+            )
             .await;
+        }));
+    }
+    for handle in handles {
+        handle.await.unwrap()
     }
 }
 
@@ -36,7 +49,7 @@ struct Kanban {
 
 #[derive(Debug, Clone)]
 struct Task {
-    name: String,
+    pub name: String,
     contracts: Vec<Address>,
     events: Vec<event_parser::Event>,
 }
@@ -49,8 +62,28 @@ fn parse_config() -> Kanban {
     let input_contracts = input["contracts"].as_mapping().unwrap();
     let input_events = input["sources"].as_mapping().unwrap();
     let task_names = input_contracts.keys();
-    let mut tasks = Vec::new();
+    let mut tasks: Vec<Task> = Vec::new();
     for task_name in task_names {
+        let sources = input_events.get(task_name).unwrap().as_mapping().unwrap();
+        let events: Vec<event_parser::Event> = match sources.get("fork") {
+            Some(fork) => {
+                let fork_name = fork.as_str().unwrap();
+                tasks
+                    .iter()
+                    .find(|&task| task.name == fork_name)
+                    .unwrap()
+                    .events
+                    .to_vec()
+            }
+            None => sources["events"]
+                .as_sequence()
+                .unwrap()
+                .to_owned()
+                .iter()
+                .map(|c| event_parser::Event::new(String::from(c.as_str().unwrap())))
+                .collect(),
+        };
+
         let task = Task {
             name: task_name.as_str().unwrap().to_owned(),
             contracts: input_contracts
@@ -62,26 +95,16 @@ fn parse_config() -> Kanban {
                 .iter()
                 .map(|c| Address::from_str(c.as_str().unwrap()).unwrap())
                 .collect(),
-            events: input_events
-                .get(task_name)
-                .unwrap()
-                .as_mapping()
-                .unwrap()["events"]
-                .as_sequence()
-                .unwrap()
-                .to_owned()
-                .iter()
-                .map(|c| event_parser::Event::new(String::from(c.as_str().unwrap())))
-                .collect(),
+            events,
         };
         tasks.push(task);
     }
 
-    return Kanban { tasks: tasks };
+    return Kanban { tasks };
 }
 
 async fn dump_event_logs_from_contract(
-    provider: &Provider<Ws>,
+    provider: Provider<Ws>,
     task: String,
     addrs: Vec<Address>,
     events: Vec<event_parser::Event>,
@@ -128,21 +151,18 @@ async fn dump_event_logs_from_contract(
         // record.push(log.transaction_log_index.unwrap().to_string());
 
         let fn_hash = log.topics[0];
-        let event_index = event_hashes
-            .iter()
-            .position(|&h| fn_hash == h)
-            .unwrap();
+        let event_index = event_hashes.iter().position(|&h| fn_hash == h).unwrap();
         let event = &events[event_index];
         log::debug!("found event {:?}", event);
 
         for (index, param) in event.topics.iter().enumerate() {
-            let raw = log.topics[index+1]; // step over fn name
+            let raw = log.topics[index + 1]; // step over fn name
             let value = match param.evm_type.as_str() {
                 "address" => format!("{:#x}", Address::from(raw)),
                 "uint256" => U256::from(raw.as_bytes()).to_string(),
                 "uint16" => U256::from(raw.as_bytes()).to_string(),
                 "bool" => (!raw.is_zero()).to_string(),
-                // "string" => 
+                // "string" =>
                 _ => format!("{:#x}", Address::from(raw)), // as address
             };
 
@@ -150,37 +170,37 @@ async fn dump_event_logs_from_contract(
         }
 
         // read from data
-        let raw_data = log.data;  
+        let raw_data = log.data;
         let mut pos: usize = 0;
         for (index, param) in event.data.iter().enumerate() {
             let value = match param.evm_type.as_str() {
                 "address" => {
-                    let raw = &raw_data[pos..pos+32];
+                    let raw = &raw_data[pos..pos + 32];
                     pos += 32;
                     format!("{:#x}", Address::from(H256::from_slice(raw)))
-                },
+                }
                 "uint256" => {
-                    let raw = &raw_data[pos..pos+32];
+                    let raw = &raw_data[pos..pos + 32];
                     pos += 32;
                     U256::from(raw).to_string()
-                },
+                }
                 "uint16" => {
-                    let raw = &raw_data[pos..pos+32];
+                    let raw = &raw_data[pos..pos + 32];
                     pos += 32;
                     U256::from(raw).to_string()
-                },
+                }
                 "bool" => {
-                    let raw = &raw_data[pos..pos+32];
+                    let raw = &raw_data[pos..pos + 32];
                     pos += 32;
                     (U256::from(raw).is_zero()).to_string()
-                },
-                // "string" => 
+                }
+                // "string" =>
                 _ => todo!(),
             };
 
             record.push(value);
         }
-        assert!(pos==raw_data.len(), "{} != {}", pos, raw_data.len());
+        assert!(pos == raw_data.len(), "{} != {}", pos, raw_data.len());
 
         event_writers[event_index].write_record(record).unwrap();
 

@@ -14,6 +14,7 @@ pub struct Event {
 impl Event {
     pub fn new(event: String) -> Self {
         // event = "Deposit(address indexed reverse, address indexed address , uint256 amount, uint16 indexed referral, uint256 timestamp);"
+        let event = event.trim().replace("event", "");
         let name_with_body: Vec<&str> = event.split("(").collect();
         let name = String::from(name_with_body[0]);
         let body = name_with_body[1].replace(")", "").replace(";", "");
