@@ -7,9 +7,8 @@ use ethers::{
     utils::{hex::ToHex, keccak256},
 };
 use rocksdb::DB;
-use std::{any::Any, borrow::Borrow, collections::BTreeMap, fs::File, str::FromStr, sync::Arc};
-use std::{borrow::BorrowMut, fmt::Debug, ops::Index};
-use tokio::runtime::Runtime;
+use std::{fs, fs::File, str::FromStr, path::Path};
+use std::{fmt::Debug};
 
 #[tokio::main]
 async fn main() {
@@ -123,10 +122,15 @@ async fn dump_event_logs_from_contract(
 ) {
     let event_signatures: Vec<String> = events.iter().map(|e| e.to_signature()).collect();
     let event_hashes: Vec<H256> = events.iter().map(|e| e.hash()).collect();
+    let path = Path::new(".").join("csv_output");
+    if !path.exists() {
+        fs::create_dir_all(&path).unwrap();
+    }
     let mut event_writers: Vec<Writer<File>> = events
         .iter()
         .map(|e| {
-            csv::Writer::from_writer(File::create(format!("{}_{}.csv", task, e.name)).unwrap())
+            let path = path.join(format!("{}_{}.csv", task, e.name));
+            csv::Writer::from_writer(File::create(path).unwrap())
         })
         .collect();
     let fixed_fields = [
