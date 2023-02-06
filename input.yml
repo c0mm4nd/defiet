@@ -7,8 +7,8 @@ sources:
       - UpdateInterest (uint256 currentBlockNumber, uint256 interestAccumulated, uint256 borrowIndex, uint256 cash, uint256 totalBorrows, uint256 totalReserves)
       - Redeem (address from, address recipient, uint256 redeemiTokenAmount, uint256 redeemUnderlyingAmount)
       - LiquidateBorrow (address liquidator, address borrower, uint256 repayAmount, address iTokenCollateral, uint256 seizeTokens)
-      - Transfer (address from, address to, uint256 value)
-      - NewPendingOwner (address oldPendingOwner, address newPendingOwner)
+      - Transfer (address indexed from, address indexed to, uint256 value)
+      - NewPendingOwner (address indexed oldPendingOwner, address indexed newPendingOwner)
       - Mint (address sender, address recipient, uint256 mintAmount, uint256 mintTokens)
   88mph:
     events:
