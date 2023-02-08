@@ -7,16 +7,19 @@ sources:
       - UpdateInterest (uint256 currentBlockNumber, uint256 interestAccumulated, uint256 borrowIndex, uint256 cash, uint256 totalBorrows, uint256 totalReserves)
       - Redeem (address from, address recipient, uint256 redeemiTokenAmount, uint256 redeemUnderlyingAmount)
       - LiquidateBorrow (address liquidator, address borrower, uint256 repayAmount, address iTokenCollateral, uint256 seizeTokens)
-      - Transfer (address indexed from, address indexed to, uint256 value)
       - NewPendingOwner (address indexed oldPendingOwner, address indexed newPendingOwner)
       - Mint (address sender, address recipient, uint256 mintAmount, uint256 mintTokens)
+      - Transfer (address indexed from, address indexed to, uint256 value)
+      - Approval (address indexed owner, address indexed spender, uint256 value)
   88mph:
     events:
       - EDeposit(address indexed sender,uint256 indexed depositID,uint256 amount,uint256 maturationTimestamp,uint256 interestAmount,uint256 mintMPHAmount)
       - EWithdraw(address indexed sender,uint256 indexed depositID,uint256 indexed fundingID,bool early,uint256 takeBackMPHAmount)
       - EFund(address indexed sender,uint256 indexed fundingID,uint256 deficitAmount,uint256 mintMPHAmount)
       - ESetParamAddress(address indexed sender,string indexed paramName,address newValue)
-      - ESetParamUint(address indexed sender,string indexed paramName,uint256 newValue)    
+      - ESetParamUint(address indexed sender,string indexed paramName,uint256 newValue)
+      - Transfer (address indexed from, address indexed to, uint256 value)
+      - Approval (address indexed owner, address indexed spender, uint256 value)  
   aave-v1:
     events:
       - event Deposit(address indexed _reserve,address indexed _user,uint256 _amount,uint16 indexed _referral,uint256 _timestamp)
@@ -29,6 +32,8 @@ sources:
       - event RebalanceStableBorrowRate(address indexed _reserve,address indexed _user,uint256 _newStableRate,uint256 _borrowBalanceIncrease,uint256 _timestamp)
       - event FlashLoan(address indexed _target,address indexed _reserve,uint256 _amount,uint256 _totalFee,uint256 _protocolFee,uint256 _timestamp)
       - event LiquidationCall(address indexed _collateral,address indexed _reserve,address indexed _user,uint256 _purchaseAmount,uint256 _liquidatedCollateralAmount,uint256 _accruedBorrowInterest,address _liquidator,bool _receiveAToken,uint256 _timestamp) 
+      - Transfer (address indexed from, address indexed to, uint256 value)
+      - Approval (address indexed owner, address indexed spender, uint256 value) 
   aave-v2:
     events:
       - event Repay (address reserve, address user, address repayer, uint256 amount)
@@ -41,21 +46,31 @@ sources:
       - event RebalanceStableBorrowRate(address indexed reserve, address indexed user)
       - event FlashLoan(address indexed target,address indexed initiator,address indexed asset,uint256 amount,uint256 premium,uint16 referralCode)
       - event ReserveDataUpdated(address indexed reserve,uint256 liquidityRate,uint256 stableBorrowRate,uint256 variableBorrowRate,uint256 liquidityIndex,uint256 variableBorrowIndex)
-      - event LiquidationCall(address indexed collateralAsset,address indexed debtAsset,address indexed user,uint256 debtToCover,uint256 liquidatedCollateralAmount,address liquidator,bool receiveAToken)     
+      - event LiquidationCall(address indexed collateralAsset,address indexed debtAsset,address indexed user,uint256 debtToCover,uint256 liquidatedCollateralAmount,address liquidator,bool receiveAToken) 
+      - Transfer (address indexed from, address indexed to, uint256 value)
+      - Approval (address indexed owner, address indexed spender, uint256 value)     
   b.protocol:
     events:
       - UserWithdraw (address user, uint256 lusdAmount, uint256 ethAmount, uint256 numShares)
       - UserDeposit (address user, uint256 lusdAmount, uint256 numShares)
+      - Transfer (address indexed from, address indexed to, uint256 value)
+      - Approval (address indexed owner, address indexed spender, uint256 value)
   beta_finance:
     events:
-      - Repay (index_topic_1 address owner, index_topic_2 uint256 pid, uint256 amount, uint256 share, address payer) # ???
-      - Borrow (index_topic_1 address owner, index_topic_2 uint256 pid, uint256 amount, uint256 share, address borrower) # ???
+      - Repay (address indexed owner, uint256 indexed pid, uint256 amount, uint256 share, address payer) # ???
+      - Borrow (address indexed owner, uint256 indexed pid, uint256 amount, uint256 share, address borrower) # ???
+      - Open (address indexed owner, uint256 indexed pid, address bToken, address collateral)
+      - Put (address indexed owner, uint256 indexed pid, uint256 amount, address payer)
+      - Transfer (address indexed from, address indexed to, uint256 value)
+      - Approval (address indexed owner, address indexed spender, uint256 value) 
   BiFI:
     events:
       - Withdraw (address redeemer, uint256 redeemAmount, uint256 handlerID)
       - Repay (address repayer, uint256 repayAmount, uint256 handlerID)
       - Borrow (address borrower, uint256 borrowAmount, uint256 handlerID)  
       - Deposit (address depositor, uint256 depositAmount, uint256 handlerID)
+      - Transfer (address indexed from, address indexed to, uint256 value)
+      - Approval (address indexed owner, address indexed spender, uint256 value) 
   Compound:
     events:
       - SupplyWithdrawn (address account, address asset, uint256 amount, uint256 startingBalance, uint256 newBalance)
@@ -64,6 +79,8 @@ sources:
       - BorrowRepaid(address account, address asset, uint amount, uint startingBalance, uint newBalance)
       - BorrowLiquidated(address targetAccount,address assetBorrow,uint borrowBalanceBefore,uint borrowBalanceAccumulated,uint amountRepaid,uint borrowBalanceAfter,address liquidator,address assetCollateral,uint collateralBalanceBefore,uint collateralBalanceAccumulated,uint amountSeized,uint collateralBalanceAfter)
       - EquityWithdrawn(address asset, uint equityAvailableBefore, uint amount, address owner)
+      - Transfer (address indexed from, address indexed to, uint256 value)
+      - Approval (address indexed owner, address indexed spender, uint256 value)
   Compound-Token:
     events:
       - AccrueInterest(uint interestAccumulated, uint borrowIndex, uint totalBorrows)
@@ -71,25 +88,46 @@ sources:
       - Borrow(address borrower, uint borrowAmount, uint accountBorrows, uint totalBorrows)
       - RepayBorrow(address payer, address borrower, uint repayAmount, uint accountBorrows, uint totalBorrows)
       - LiquidateBorrow(address liquidator, address borrower, uint repayAmount, address cTokenCollateral, uint seizeTokens)
+      - Transfer (address indexed from, address indexed to, uint256 value)
+      - Approval (address indexed owner, address indexed spender, uint256 value)
   Compound-V3:
     events:
       - Withdraw (address src, address to, uint256 amount)
       - Supply (address from, address dst, uint256 amount)
+      - Transfer (address indexed from, address indexed to, uint256 value)
+      - Approval (address indexed owner, address indexed spender, uint256 value)
   Euler:
     events:
-      - Deposit(address indexed underlying, address indexed account, uint amount);
-      - Withdraw(address indexed underlying, address indexed account, uint amount);
-      - Borrow(address indexed underlying, address indexed account, uint amount);
-      - Repay(address indexed underlying, address indexed account, uint amount);
+      - Deposit (address indexed underlying, address indexed account, uint amount)
+      - RequestDeposit (address indexed account, uint256 amount)
+      - Withdraw (address indexed underlying, address indexed account, uint amount)
+      - RequestWithdraw (address indexed account, uint256 amount)
+      - Borrow (address indexed underlying, address indexed account, uint amount)
+      - RequestBorrow (address indexed account, uint256 amount)
+      - Repay (address indexed underlying, address indexed account, uint amount)
+      - EnterMarket (address indexed underlying, address indexed account)
+      - AssetStatus (address indexed underlying, uint256 totalBalances, uint256 totalBorrows, uint96 reserveBalance, uint256 poolSize, uint256 interestAccumulator, int96 interestRate, uint256 timestamp)
+      - Transfer (address indexed from, address indexed to, uint256 value)
+      - Approval (address indexed owner, address indexed spender, uint256 value)
   LendFlare:
     events:
-      - Liquidate (bytes32 lendingId, address user, uint256 liquidateAmount, uint256 gasSpent, uint8 state)
-      - RepayBorrow (bytes32 lendingId, address user, uint8 state)
+      - Liquidate (bytes32 indexed lendingId, address user, uint256 liquidateAmount, uint256 gasSpent, uint8 state)
+      - RepayBorrow (bytes32 indexed lendingId, address user, uint8 state)
       - Withdraw (address user, uint256 pid, uint256 token0)
+      - Withdrawn (address indexed user, uint256 amount)
       - Deposit (address user, uint256 pid, uint256 token0)
+      - Deposit (address indexed provider, uint256 value)
+      - Deposited (address indexed user, uint256 indexed poolid, uint256 amount)
+      - RemoveLiquidity (address lpToken, address curveSwapAddress, uint256 amount, int128 coinId)
+      - RemoveLiquidityOne (address indexed provider, uint256 token_amount, uint256 coin_amount)
+      - UpdateLiquidityLimit (address user, uint256 original_balance, uint256 original_supply, uint256 working_balance, uint256 working_supply)
+      - DistributedSupplierComp (address indexed cToken, address indexed supplier, uint256 compDelta, uint256 compSupplyIndex)
       - LendingBase (bytes32 lendingId, uint256 marketPid, uint256 supplyPid, int128 curveCoinId, uint256 borrowBlocks)
       - Borrow (bytes32 lendingId, address user, uint256 pid, uint256 token0, uint256 token0Price, uint256 lendingAmount, uint256 borrowNumber)
       - Upgraded (address implementation)
+      - PayFee (bytes32 sponsor, address user, uint256 sponsorAmount)
+      - Transfer (address indexed from, address indexed to, uint256 value)
+      - Approval (address indexed owner, address indexed spender, uint256 value)
   Morpho_AAVE:
     fork: aave-v2
   Morpho_Compound:
