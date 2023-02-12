@@ -36,7 +36,7 @@ sources:
       - Approval (address indexed owner, address indexed spender, uint256 value) 
   aave-v2:
     events:
-      - event Repay (address reserve, address user, address repayer, uint256 amount)
+      - event Repay (address indexed reserve, address indexed user, address indexed repayer, uint256 amount)
       - event Withdraw(address indexed reserve, address indexed user, address indexed to, uint256 amount)
       - event Borrow(address indexed reserve,address user,address indexed onBehalfOf,uint256 amount,uint256 borrowRateMode,uint256 borrowRate,uint16 indexed referral)
       - event Deposit(address indexed reserve,address user,address indexed onBehalfOf,uint256 amount,uint16 indexed referral)  
@@ -51,8 +51,8 @@ sources:
       - Approval (address indexed owner, address indexed spender, uint256 value)     
   b.protocol:
     events:
-      - UserWithdraw (address user, uint256 lusdAmount, uint256 ethAmount, uint256 numShares)
-      - UserDeposit (address user, uint256 lusdAmount, uint256 numShares)
+      - UserWithdraw (address indexed user, uint256 lusdAmount, uint256 ethAmount, uint256 numShares)
+      - UserDeposit (address indexed user, uint256 lusdAmount, uint256 numShares)
       - Transfer (address indexed from, address indexed to, uint256 value)
       - Approval (address indexed owner, address indexed spender, uint256 value)
   beta_finance:
@@ -93,7 +93,7 @@ sources:
   Compound-V3:
     events:
       - Withdraw (address src, address to, uint256 amount)
-      - Supply (address from, address dst, uint256 amount)
+      - Supply (address indexed from, address indexed dst, uint256 indexed amount)
       - Transfer (address indexed from, address indexed to, uint256 value)
       - Approval (address indexed owner, address indexed spender, uint256 value)
   Euler:
