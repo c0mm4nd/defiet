@@ -154,7 +154,7 @@ async fn dump_event_logs_from_contract(
         // .from_block(16_000_000)
         .from_block(0_000_000)
         .to_block(16_200_000)
-        // .events(event_signatures)
+        .events(event_signatures)
         .address(addrs);
     let mut stream = provider.get_logs_paginated(&filter, 100);
     while let Some(log) = stream.next().await {
@@ -177,20 +177,20 @@ async fn dump_event_logs_from_contract(
         let event = &events[event_index];
         log::debug!("{}: found event {:?}", task, event);
 
-        assert!(event.topics.len() == log.topics.len()-1, "config {} != log no fn {}", event.topics.len(), log.topics.len()-1);
+        assert!(event.topics.len() == log.topics.len()-1, "{}.{}: config {} != log no fn {}", task, event.name, event.topics.len(), log.topics.len()-1);
         for (index, param) in event.topics.iter().enumerate() {
             let raw = log.topics[index + 1]; // step over fn name
             let value = match param.evm_type.as_str() {
                 "address" => format!("{:#x}", Address::from(raw)),
-                "uint256" => U256::from(raw.as_bytes()).to_string(),
-                "uint16" => U256::from(raw.as_bytes()).to_string(),
+                "uint256" | "uint128" | "uint64" | "uint32" | "uint16" | "uint8" => U256::from(raw.as_bytes()).to_string(),
                 "bool" => (!raw.is_zero()).to_string(),
                 "string" => {
                     log::error!("{:#x}", raw);
                     // panic!("string in index?")
                     format!("{:#x}", raw) // = keccak(the_string)
                 }
-                _ => format!("{:#x}", Address::from(raw)), // as address
+                _ => todo!()
+                // _ => format!("{:#x}", Address::from(raw)), // as address
             };
 
             record.push(value);
@@ -206,15 +206,15 @@ async fn dump_event_logs_from_contract(
                     pos += 32;
                     format!("{:#x}", Address::from(H256::from_slice(raw)))
                 }
-                "uint256" => {
+                "uint256" | "uint128" | "uint64" | "uint32" | "uint16" | "uint8" => {
                     let raw = &raw_data[pos..pos + 32];
                     pos += 32;
                     U256::from(raw).to_string()
                 }
-                "uint16" => {
+                "int256" | "int128" | "int64" | "int32" | "int16" | "int8" => {
                     let raw = &raw_data[pos..pos + 32];
                     pos += 32;
-                    U256::from(raw).to_string()
+                    I256::from_raw(raw.into()).to_string()
                 }
                 "bool" => {
                     let raw = &raw_data[pos..pos + 32];
@@ -234,7 +234,7 @@ async fn dump_event_logs_from_contract(
 
             record.push(value);
         }
-        assert!(pos == raw_data.len(), "{} != {}", pos, raw_data.len());
+        assert!(pos == raw_data.len(), "{}.{}: data parsed {} != {} in actual", task, event.name, pos, raw_data.len());
 
         event_writers[event_index].write_record(record).unwrap();
 
