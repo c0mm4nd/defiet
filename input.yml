@@ -129,19 +129,25 @@ sources:
       - Transfer (address indexed from, address indexed to, uint256 value)
       - Approval (address indexed owner, address indexed spender, uint256 value)
   Morpho_AAVE:
-    fork: aave-v2
+    events:
+      - event Repay (address reserve, address user, address repayer, uint256 amount)
+      - event Withdraw(address indexed reserve, address indexed user, address indexed to, uint256 amount)
+      - event Borrow(address indexed reserve,address user,address indexed onBehalfOf,uint256 amount,uint256 borrowRateMode,uint256 borrowRate,uint16 indexed referral)
+      - event Deposit(address indexed reserve,address user,address indexed onBehalfOf,uint256 amount,uint16 indexed referral)  
+      - event Swap(address indexed reserve, address indexed user, uint256 rateMode)
+      - event ReserveUsedAsCollateralEnabled(address indexed reserve, address indexed user)
+      - event ReserveUsedAsCollateralDisabled(address indexed reserve, address indexed user)
+      - event RebalanceStableBorrowRate(address indexed reserve, address indexed user)
+      - event FlashLoan(address indexed target,address indexed initiator,address indexed asset,uint256 amount,uint256 premium,uint16 referralCode)
+      - event ReserveDataUpdated(address indexed reserve,uint256 liquidityRate,uint256 stableBorrowRate,uint256 variableBorrowRate,uint256 liquidityIndex,uint256 variableBorrowIndex)
+      - event LiquidationCall(  address indexed collateralAsset,address indexed debtAsset,address indexed user,uint256 debtToCover,uint256 liquidatedCollateralAmount,address liquidator,bool receiveAToken)  
   Morpho_Compound:
-    fork: Compound
     events:
       - Borrow (address borrower, uint256 borrowAmount, uint256 accountBorrows, uint256 totalBorrows)
-      - RepayBorrow (address payer, address borrower, uint256 repayAmount, uint256 accountBorrows, uint256 totalBorrows)
-      - Redeem (address redeemer, uint256 redeemAmount, uint256 redeemTokens)
-      - Deposit (address indexed dst, uint256 wad)
-      - DistributedBorrowerComp (address indexed cToken, address indexed borrower, uint256 compDelta, uint256 compBorrowIndex)
-      - DistributedSupplierComp (address indexed cToken, address indexed supplier, uint256 compDelta, uint256 compSupplyIndex)
-      - AccrueInterest (uint256 cashPrior, uint256 interestAccumulated, uint256 borrowIndex, uint256 totalBorrows)
-      - Transfer (address indexed from, address indexed to, uint256 value)
-      - Approval (address indexed owner, address indexed spender, uint256 value)      
+      - AccrueInterest(uint cashPrior, uint interestAccumulated, uint borrowIndex, uint totalBorrows)
+      - Redeem(address redeemer, uint redeemAmount, uint redeemTokens)
+      - RepayBorrow(address payer, address borrower, uint repayAmount, uint accountBorrows, uint totalBorrows)
+      - LiquidateBorrow(address liquidator, address borrower, uint repayAmount, address cTokenCollateral, uint seizeTokens)
   Notional:
     events:
       - Deposit(address indexed caller, address indexed owner, uint256 assets, uint256 shares)
