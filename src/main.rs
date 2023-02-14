@@ -185,7 +185,7 @@ async fn dump_event_logs_from_contract(
                 "uint256" | "uint128" | "uint64" | "uint32" | "uint16" | "uint8" => U256::from(raw.as_bytes()).to_string(),
                 "bool" => (!raw.is_zero()).to_string(),
                 "string" => {
-                    log::error!("{:#x}", raw);
+                    log::error!("{}.{}: {:#x} is a hash of string", task, event.name, raw);
                     // panic!("string in index?")
                     format!("{:#x}", raw) // = keccak(the_string)
                 }
