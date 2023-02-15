@@ -55,6 +55,9 @@ sources:
       - UserDeposit (address indexed user, uint256 lusdAmount, uint256 numShares)
       - Transfer (address indexed from, address indexed to, uint256 value)
       - Approval (address indexed owner, address indexed spender, uint256 value)
+  b.protocol-Token:
+    events:
+      - Transfer (address indexed from, address indexed to, uint256 value)
   beta_finance:
     events:
       - Repay (address indexed owner, uint256 indexed pid, uint256 amount, uint256 share, address payer) # ???
@@ -62,7 +65,9 @@ sources:
       - Open (address indexed owner, uint256 indexed pid, address bToken, address collateral)
       - Put (address indexed owner, uint256 indexed pid, uint256 amount, address payer)
       - Transfer (address indexed from, address indexed to, uint256 value)
-      - Approval (address indexed owner, address indexed spender, uint256 value) 
+      - Approval (address indexed owner, address indexed spender, uint256 value)
+  beta_finance-Token:
+    fork: b.protocol-Token
   BiFI:
     events:
       - Withdraw (address redeemer, uint256 redeemAmount, uint256 handlerID)
@@ -71,6 +76,8 @@ sources:
       - Deposit (address depositor, uint256 depositAmount, uint256 handlerID)
       - Transfer (address indexed from, address indexed to, uint256 value)
       - Approval (address indexed owner, address indexed spender, uint256 value) 
+  BiFI-Token:
+    fork: b.protocol-Token
   Compound:
     events:
       - SupplyWithdrawn (address account, address asset, uint256 amount, uint256 startingBalance, uint256 newBalance)
@@ -81,22 +88,22 @@ sources:
       - EquityWithdrawn(address asset, uint equityAvailableBefore, uint amount, address owner)
       - Transfer (address indexed from, address indexed to, uint256 value)
       - Approval (address indexed owner, address indexed spender, uint256 value)
-  Compound-Token:
-    events:
       - AccrueInterest (uint256 interestAccumulated, uint256 borrowIndex, uint256 totalBorrows)
       - Redeem (address redeemer, uint256 redeemAmount, uint256 redeemTokens)
       - Borrow (address borrower, uint256 borrowAmount, uint256 accountBorrows, uint256 totalBorrows)
       - RepayBorrow (address payer, address borrower, uint256 repayAmount, uint256 accountBorrows, uint256 totalBorrows)
       - LiquidateBorrow(address liquidator, address borrower, uint repayAmount, address cTokenCollateral, uint seizeTokens)
       - DistributedSupplierComp ( address indexed cToken, address indexed supplier, uint256 compDelta, uint256 compSupplyIndex)
-      - Transfer (address indexed from, address indexed to, uint256 value)
-      - Approval (address indexed owner, address indexed spender, uint256 value)
+  Compound-Token:
+    fork: b.protocol-Token
   Compound-V3:
     events:
       - Withdraw (address indexed src, address indexed to, uint256 amount)
       - SupplyCollateral (address indexed from, address indexed dst, address indexed asset, uint256 amount)
       - Transfer (address indexed from, address indexed to, uint256 value)
       - Approval (address indexed owner, address indexed spender, uint256 value)
+  Compound-V3-Token:
+    fork: b.protocol-Token
   Euler:
     events:
       - Deposit (address indexed underlying, address indexed account, uint amount)
@@ -110,6 +117,8 @@ sources:
       - AssetStatus (address indexed underlying, uint256 totalBalances, uint256 totalBorrows, uint96 reserveBalance, uint256 poolSize, uint256 interestAccumulator, int96 interestRate, uint256 timestamp)
       - Transfer (address indexed from, address indexed to, uint256 value)
       - Approval (address indexed owner, address indexed spender, uint256 value)
+  Euler-Token:
+    fork: b.protocol-Token
   LendFlare:
     events:
       - Liquidate (bytes32 indexed lendingId, address user, uint256 liquidateAmount, uint256 gasSpent, uint8 state)
@@ -129,10 +138,24 @@ sources:
       - PayFee (bytes32 sponsor, address user, uint256 sponsorAmount)
       - Transfer (address indexed from, address indexed to, uint256 value)
       - Approval (address indexed owner, address indexed spender, uint256 value)
+  LendFlare-Token:
+    fork: b.protocol-Token
   Morpho_AAVE:
-    fork: aave-v2
+    events:
+      - event Repay (address reserve, address user, address repayer, uint256 amount)
+      - event Withdraw(address indexed reserve, address indexed user, address indexed to, uint256 amount)
+      - event Borrow(address indexed reserve,address user,address indexed onBehalfOf,uint256 amount,uint256 borrowRateMode,uint256 borrowRate,uint16 indexed referral)
+      - event Deposit(address indexed reserve,address user,address indexed onBehalfOf,uint256 amount,uint16 indexed referral)  
+      - event Swap(address indexed reserve, address indexed user, uint256 rateMode)
+      - event ReserveUsedAsCollateralEnabled(address indexed reserve, address indexed user)
+      - event ReserveUsedAsCollateralDisabled(address indexed reserve, address indexed user)
+      - event RebalanceStableBorrowRate(address indexed reserve, address indexed user)
+      - event FlashLoan(address indexed target,address indexed initiator,address indexed asset,uint256 amount,uint256 premium,uint16 referralCode)
+      - event ReserveDataUpdated(address indexed reserve,uint256 liquidityRate,uint256 stableBorrowRate,uint256 variableBorrowRate,uint256 liquidityIndex,uint256 variableBorrowIndex)
+      - event LiquidationCall(  address indexed collateralAsset,address indexed debtAsset,address indexed user,uint256 debtToCover,uint256 liquidatedCollateralAmount,address liquidator,bool receiveAToken)  
+  Morpho_AAVE-Token:
+    fork: b.protocol-Token
   Morpho_Compound:
-    fork: Compound
     events:
       - Borrow (address borrower, uint256 borrowAmount, uint256 accountBorrows, uint256 totalBorrows)
       - RepayBorrow (address payer, address borrower, uint256 repayAmount, uint256 accountBorrows, uint256 totalBorrows)
@@ -142,7 +165,9 @@ sources:
       - DistributedSupplierComp (address indexed cToken, address indexed supplier, uint256 compDelta, uint256 compSupplyIndex)
       - AccrueInterest (uint256 cashPrior, uint256 interestAccumulated, uint256 borrowIndex, uint256 totalBorrows)
       - Transfer (address indexed from, address indexed to, uint256 value)
-      - Approval (address indexed owner, address indexed spender, uint256 value)      
+      - Approval (address indexed owner, address indexed spender, uint256 value)    
+  Morpho_Compound-Token:
+    fork: b.protocol-Token
   Notional:
     events:
       - Deposit(address indexed caller, address indexed owner, uint256 assets, uint256 shares)
@@ -182,6 +207,8 @@ sources:
       - Withdraw(address indexed asset, address indexed depositor, address indexed receiver, uint256 amount, bool collateralOnly)
       - Transfer(address indexed from, address indexed to, uint256 value)
       - Approval(address indexed owner, address indexed spender, uint256 value)
+  Silo_Finance-Token:
+    fork: b.protocol-Token
   Sturdy:
     events:
       - Deposit(address indexed reserve,address user,address indexed onBehalfOf,uint256 amount,uint16 indexed referral)
@@ -201,6 +228,8 @@ sources:
       - LiquidationCall(address indexed _collateral,address indexed _reserve,address indexed _user,uint256 _purchaseAmount,uint256 _liquidatedCollateralAmount,uint256 _accruedBorrowInterest,address _liquidator,bool _receiveAToken,uint256 _timestamp)
       - Transfer(address indexed from, address indexed to, uint256 value)
       - Approval (address indexed owner, address indexed spender, uint256 value)
+  Sturdy-Token:
+    fork: b.protocol-Token
   Wing_Finance:
     events:
       - RepayBorrow (address payer, address borrower, uint256 repayAmount, uint256 accountBorrows, uint256 totalBorrows)
@@ -221,7 +250,7 @@ sources:
       - Transfer(address indexed from, address indexed to, uint256 value)
       - Approval (address indexed owner, address indexed spender, uint256 value)
   Yield_Protocol-Token:
-    event:
+    events:
       - Transfer(address indexed from, address indexed to, uint256 value)
 contracts:
   dForce:
