@@ -1,7 +1,6 @@
 use std::collections::BTreeMap;
 
-use ethers::{utils::keccak256, types::H256};
-
+use ethers::{types::H256, utils::keccak256};
 
 #[derive(Debug, Clone)]
 pub struct Event {
@@ -21,13 +20,13 @@ impl Event {
         let mut params = Vec::new();
         let mut topics = Vec::new();
         let mut data = Vec::new();
-        
+
         let params_str_list: Vec<&str> = body.split(",").collect();
         let params_count: i32 = params_str_list.len().try_into().unwrap();
         for params_str in params_str_list {
             let triple: Vec<&str> = params_str.trim().split(" ").collect();
             assert!(triple.len() >= 2, "triple len incorrect");
-            let name = triple[triple.len() - 1].trim().to_string(); 
+            let name = triple[triple.len() - 1].trim().to_string();
             let evm_type = triple[0].trim().to_string();
             let indexed = triple[1] == "indexed"; // && !["string".to_string()].contains(&evm_type);
             let param = EventParam {
@@ -39,7 +38,7 @@ impl Event {
             params.push(param.clone());
             if indexed {
                 topics.push(param);
-            }else {
+            } else {
                 data.push(param);
             }
         }
@@ -97,7 +96,6 @@ struct Struct {
 }
 
 type StructParam = EventParam;
-
 
 #[cfg(test)]
 mod tests {

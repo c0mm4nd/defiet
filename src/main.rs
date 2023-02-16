@@ -1,18 +1,13 @@
 mod event_parser;
 
 use csv::Writer;
-use ethers::{
-    prelude::*,
-    providers::Provider,
-    utils::{hex::ToHex, keccak256},
-};
-use rocksdb::DB;
-use std::{fs, fs::File, str::FromStr, path::Path};
-use std::{fmt::Debug};
+use ethers::{prelude::*, providers::Provider, utils::keccak256};
+use std::fmt::Debug;
+use std::{fs, fs::File, path::Path, str::FromStr};
 
 #[tokio::main]
 async fn main() {
-    pretty_env_logger::init();
+    pretty_env_logger::init_timed();
     // let db = DB::open_default("./db").unwrap();
     let provider = Provider::<Ws>::connect("ws://172.24.1.2:8545")
         .await
@@ -111,7 +106,10 @@ fn parse_config() -> Kanban {
         tasks.push(task);
     }
 
-    return Kanban { parallel:input["parallel"].as_bool().unwrap(), tasks };
+    return Kanban {
+        parallel: input["parallel"].as_bool().unwrap(),
+        tasks,
+    };
 }
 
 async fn dump_event_logs_from_contract(
@@ -177,20 +175,28 @@ async fn dump_event_logs_from_contract(
         let event = &events[event_index];
         log::debug!("{}: found event {:?}", task, event);
 
-        assert!(event.topics.len() == log.topics.len()-1, "{}.{}: config {} != log no fn {}", task, event.name, event.topics.len(), log.topics.len()-1);
+        assert!(
+            event.topics.len() == log.topics.len() - 1,
+            "{}.{}: config {} != log no fn {}",
+            task,
+            event.name,
+            event.topics.len(),
+            log.topics.len() - 1
+        );
         for (index, param) in event.topics.iter().enumerate() {
             let raw = log.topics[index + 1]; // step over fn name
             let value = match param.evm_type.as_str() {
                 "address" => format!("{:#x}", Address::from(raw)),
-                "uint256" | "uint128" | "uint64" | "uint32" | "uint16" | "uint8" => U256::from(raw.as_bytes()).to_string(),
+                "uint256" | "uint128" | "uint64" | "uint32" | "uint16" | "uint8" => {
+                    U256::from(raw.as_bytes()).to_string()
+                }
                 "bool" => (!raw.is_zero()).to_string(),
                 "string" => {
                     log::error!("{}.{}: {:#x} is a hash of string", task, event.name, raw);
                     // panic!("string in index?")
                     format!("{:#x}", raw) // = keccak(the_string)
                 }
-                _ => todo!()
-                // _ => format!("{:#x}", Address::from(raw)), // as address
+                _ => todo!(), // _ => format!("{:#x}", Address::from(raw)), // as address
             };
 
             record.push(value);
@@ -226,15 +232,22 @@ async fn dump_event_logs_from_contract(
                     let raw = &raw_data[pos..pos + 32];
                     pos += 32;
                     let len_u256 = U256::from(raw).as_usize();
-                    let raw = &raw_data[pos..pos + 32*len_u256];
+                    let raw = &raw_data[pos..pos + 32 * len_u256];
                     String::from_utf8(raw.to_vec()).unwrap()
-                },
+                }
                 _ => panic!("unknown type {} in data", param.evm_type),
             };
 
             record.push(value);
         }
-        assert!(pos == raw_data.len(), "{}.{}: data parsed {} != {} in actual", task, event.name, pos, raw_data.len());
+        assert!(
+            pos == raw_data.len(),
+            "{}.{}: data parsed {} != {} in actual",
+            task,
+            event.name,
+            pos,
+            raw_data.len()
+        );
 
         event_writers[event_index].write_record(record).unwrap();
 
