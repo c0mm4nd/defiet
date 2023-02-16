@@ -1,0 +1,34 @@
+88mph-pools: # https://github.com/88mphapp/88mph-contracts
+  contracts: # https://github.com/88mphapp/88mph-contracts/tree/v3/deployments/mainnet
+    - 0x35966201A7724b952455B73A36C8846D8745218e # 88mph cDAI Pool
+    - 0x374226dbAa3e44bF3923AfB63f5Fd83928B7e148 # 88mph cUSDC Pool
+    - 0x19E10132841616CE4790920d5f94B8571F9b9341 # 88mph cUNI Pool
+    - 0xe615e59353f70cA2424Aa0F24F49C639B8E924D3 # 88mph yCRV Pool
+    - 0x681Aaa7CF3F7E1f110842f0149bA8A4AF53Ef2Fd # 88mph crvSBTC Pool deployed at
+    - 0x23Fa6b36E870ca5753853538D17C3ca7f5269e84 # 88mph Harvest yCRV Pool deployed at
+    - 0xe8C52367b81113ED32bb276184e521C2fbE9393A # 88mph aUSDC Pool deployed at
+    - 0xb1ABAac351e06d40441CF2CD97F6f0098e6473F2 # 88mph Harvest crvHUSD Pool
+    - 0x2F3EFD1a90a2336ab8fa1B9060380DC37361Ca55 # 88mph Harvest 3CRV Pool deployed at
+    - 0x3f5611F7762cc39FC11E10C864ae38526f650e9D # 88mph Harvest crvHBTC Pool deployed at
+    - 0x6712BAab01FA2dc7bE6635746Ec2Da6F8Bd73e71 # 88mph aSUSD Pool deployed at
+    - 0xDC86AC6140026267E0873B27c8629eFE748E7146 # 88mph aDAI Pool deployed at
+    - 0xD4837145c7e13D580904e8431cfD481f9794fC41 # 88mph Harvest crvOBTC Pool deployed at
+    - 0x904F81EFF3c35877865810CCA9a63f2D9cB7D4DD # 88mph yaLINK Pool deployed at
+    - 0x303CB7Ede0c3AD99CE017CDC3aBAcD65164Ff486 # 88mph Harvest CRV:STETH Pool deployed at
+    - 0x22E6b9A65163CE1225D1F65EF7942a979d093039 # 88mph Harvest CRV:RENWBTC Pool deployed at
+  events:
+    - EDeposit(address indexed sender,uint256 indexed depositID,uint256 amount,uint256 maturationTimestamp,uint256 interestAmount,uint256 mintMPHAmount)
+    - event ETopupDeposit(address indexed sender,uint64 indexed depositID,uint256 depositAmount,uint256 interestAmount,uint256 feeAmount);
+    - event ERolloverDeposit(address indexed sender,uint64 indexed depositID,uint64 indexed newDepositID);
+    - EWithdraw(address indexed sender,uint256 indexed depositID,uint256 indexed fundingID,bool early,uint256 takeBackMPHAmount)
+    - EFund(address indexed sender,uint256 indexed fundingID,uint256 deficitAmount,uint256 mintMPHAmount)
+    - event EPayFundingInterest(uint256 indexed fundingID,uint256 interestAmount,uint256 refundAmount);
+    - ESetParamAddress(address indexed sender,string indexed paramName,address newValue)
+    - ESetParamUint(address indexed sender,string indexed paramName,uint256 newValue)
+88mph-Token:
+  contracts:
+    - 0x8888801aF4d980682e47f1A9036e589479e835C5 # MPHToken
+  events:
+    - Transfer (address indexed from, address indexed to, uint256 value)
+    - Approval (address indexed owner, address indexed spender, uint256 value)
+#TODO: add Deposit & Bond's Transfer !

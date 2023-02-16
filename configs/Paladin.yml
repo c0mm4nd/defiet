@@ -1,0 +1,22 @@
+Paladin_Finance:
+  contracts:
+    - 0x7835d976516F82cA8a3Ed2942C4c6F9C4E44bb74
+  events:
+    - Deposit(address user, uint amount, address palPool)
+    - Deposit(address user, uint256 amount, address palPool)
+    - Withdraw(address user, uint256 amount, address palPool)
+    - Withdraw(address user, uint amount, address palPool)
+    - NewLoan(address borrower, address delegatee, address underlying, uint amount, address palPool, address loanAddress, uint256 palLoanTokenId, uint startBlock)
+    - NewLoan(address borrower, address delegatee, address underlying, uint256 amount, address palPool, address loanAddress, uint256 palLoanTokenId, uint256 startBlock)
+    - ExpandLoan(address borrower, address delegatee, address underlying, address palPool, uint newFeesAmount, address loanAddress, uint256 palLoanTokenId)
+    - ExpandLoan(address borrower, address delegatee, address underlying, address palPool, uint256 newFeesAmount, address loanAddress, uint256 palLoanTokenId)
+    - ChangeLoanDelegatee( address borrower, address newDelegatee, address underlying, address palPool, address loanAddress, uint256 palLoanTokenId)
+    - CloseLoan(address borrower, address delegatee, address underlying, uint amount, address palPool, uint usedFees, address loanAddress, uint256 palLoanTokenId, bool wasKilled)
+    - CloseLoan(address borrower, address delegatee, address underlying, uint256 amount, address palPool, uint256 usedFees, address loanAddress, uint256 palLoanTokenId, bool wasKilled)
+    - Transfer(address indexed from, address indexed to, uint256 value)
+    - Approval(address indexed owner, address indexed spender, uint256 value)
+Paladin_Finance-tokens: # TODO
+  contracts:
+    - 0xAB846Fb6C81370327e784Ae7CbB6d6a6af6Ff4BF
+  events:
+    - Transfer(address indexed from, address indexed to, uint256 value)

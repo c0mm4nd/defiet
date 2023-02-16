@@ -1,0 +1,16 @@
+Notional:
+  contracts:
+    - 0x9abd0b8868546105F6F48298eaDC1D9c82f7f683 # Notional Escrow
+    - 0xBbA899578bd3fA3DAa863A340f5600797993eF08
+  events:
+    - Deposit(address indexed caller, address indexed owner, uint256 assets, uint256 shares)
+    - Deposit(uint16 indexed currency, address account, uint256 value)
+    - Deposit(address indexed dst, uint256 wad)
+    - Withdraw(address indexed caller,address indexed receiver,address indexed owner,uint256 assets,uint256 shares)
+    - Withdraw(uint16 indexed currency, address account, uint256 value)
+Notional-Token:
+  contracts:
+    - 0xCFEAead4947f0705A14ec42aC3D44129E1Ef3eD5
+  events:
+    - Transfer(address indexed from, address indexed to, uint256 value)
+    - Approval(address indexed owner, address indexed spender, uint256 value)

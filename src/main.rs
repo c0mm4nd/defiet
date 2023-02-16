@@ -1,13 +1,27 @@
 mod event_parser;
 
+use clap::Parser;
 use csv::Writer;
 use ethers::{prelude::*, providers::Provider, utils::keccak256};
 use std::fmt::Debug;
 use std::{fs, fs::File, path::Path, str::FromStr};
 
+#[derive(Parser, Debug)]
+#[command(author, version, about, long_about = None)]
+struct Args {
+    /// config path
+    #[arg(short, long, default_value = "./input.yml")]
+    config: String,
+
+    #[arg(short, long, default_value_t = false)]
+    parallel: bool,
+}
+
 #[tokio::main]
 async fn main() {
     pretty_env_logger::init_timed();
+    let args = Args::parse();
+
     // let db = DB::open_default("./db").unwrap();
     let provider = Provider::<Ws>::connect("ws://172.24.1.2:8545")
         .await
@@ -15,12 +29,12 @@ async fn main() {
     let v = provider.client_version().await.unwrap();
     log::warn!("{v}");
 
-    let kanban = parse_config();
+    let kanban = parse_config(args.config);
     let tasks = kanban.tasks;
     let mut handles: Vec<_> = vec![];
     for task in tasks {
         let provider = provider.clone();
-        if kanban.parallel {
+        if args.parallel {
             handles.push(tokio::spawn(async move {
                 log::warn!("Start task {}", task.name);
                 dump_event_logs_from_contract(
@@ -49,7 +63,6 @@ async fn main() {
 
 #[derive(Debug, Clone)]
 struct Kanban {
-    parallel: bool,
     tasks: Vec<Task>,
 }
 
@@ -60,56 +73,57 @@ struct Task {
     events: Vec<event_parser::Event>,
 }
 
-fn parse_config() -> Kanban {
-    let file = File::open("input.yml").unwrap();
-    let input: serde_yaml::Mapping = serde_yaml::from_reader(file).unwrap();
-    log::warn!("{:?}", input);
+fn parse_config(path: String) -> Kanban {
+    let meta = fs::metadata(&path).unwrap();
+    let input: serde_yaml::Mapping = if meta.is_dir() {
+        let mut map = serde_yaml::Mapping::new();
+        for file in fs::read_dir(path).unwrap() {
+            let file = file.unwrap();
 
-    let input_contracts = input["contracts"].as_mapping().unwrap();
-    let input_events = input["sources"].as_mapping().unwrap();
-    let task_names = input_contracts.keys();
-    let mut tasks: Vec<Task> = Vec::new();
-    for task_name in task_names {
-        let sources = input_events.get(task_name).unwrap().as_mapping().unwrap();
-        let events: Vec<event_parser::Event> = match sources.get("fork") {
-            Some(fork) => {
-                let fork_name = fork.as_str().unwrap();
-                tasks
-                    .iter()
-                    .find(|&task| task.name == fork_name)
-                    .unwrap()
-                    .events
-                    .to_vec()
+            if file.file_name().to_str().unwrap().ends_with(".yml") {
+                let file = File::open(file.path()).unwrap();
+                let unit: serde_yaml::Mapping = serde_yaml::from_reader(file).unwrap();
+                for (k, v) in unit {
+                    map.insert(k, v);
+                }
             }
-            None => sources["events"]
-                .as_sequence()
-                .unwrap()
-                .to_owned()
-                .iter()
-                .map(|c| event_parser::Event::new(String::from(c.as_str().unwrap())))
-                .collect(),
-        };
+        }
+        map
+    } else {
+        let file = File::open(path).unwrap();
+        serde_yaml::from_reader(file).unwrap()
+    };
 
+    log::debug!("{:?}", input);
+
+    let mut tasks: Vec<Task> = Vec::new();
+    for (task_name, task_detail) in input {
+        log::debug!("{:?}", task_name);
+        let contracts = task_detail["contracts"].as_sequence().unwrap();
+        if contracts.len() == 0 {
+            continue;
+        }
+
+        let input_events = task_detail["events"].as_sequence().unwrap();
+        let events: Vec<event_parser::Event> = input_events
+            .to_owned()
+            .iter()
+            .map(|c| event_parser::Event::new(String::from(c.as_str().unwrap())))
+            .collect();
         let task = Task {
             name: task_name.as_str().unwrap().to_owned(),
-            contracts: input_contracts
-                .get(task_name)
-                .unwrap()
-                .as_sequence()
-                .unwrap()
+            contracts: contracts
                 .to_owned()
                 .iter()
                 .map(|c| Address::from_str(c.as_str().unwrap()).unwrap())
                 .collect(),
             events,
         };
+
         tasks.push(task);
     }
 
-    return Kanban {
-        parallel: input["parallel"].as_bool().unwrap(),
-        tasks,
-    };
+    return Kanban { tasks };
 }
 
 async fn dump_event_logs_from_contract(
@@ -195,6 +209,11 @@ async fn dump_event_logs_from_contract(
                     log::error!("{}.{}: {:#x} is a hash of string", task, event.name, raw);
                     // panic!("string in index?")
                     format!("{:#x}", raw) // = keccak(the_string)
+                }
+                "bytes32" => {
+                    log::error!("{}.{}: {:#x} is a byte32", task, event.name, raw);
+                    // panic!("string in index?")
+                    format!("{:#x}", raw)
                 }
                 _ => todo!(), // _ => format!("{:#x}", Address::from(raw)), // as address
             };

@@ -1,0 +1,14 @@
+beta_finance: # TODO
+  contracts:
+    - 0x068af1Ec336344cd122b9811ef90D2384519005f
+  events:
+    - Repay (address indexed owner, uint256 indexed pid, uint256 amount, uint256 share, address payer) # ???
+    - Borrow (address indexed owner, uint256 indexed pid, uint256 amount, uint256 share, address borrower) # ???
+    - Open (address indexed owner, uint256 indexed pid, address bToken, address collateral)
+    - Put (address indexed owner, uint256 indexed pid, uint256 amount, address payer)
+beta_finance-tokens:
+  contracts:
+    - 0xBe1a001FE942f96Eea22bA08783140B9Dcc09D28
+  events:
+    - Transfer (address indexed from, address indexed to, uint256 value)
+    - Approval (address indexed owner, address indexed spender, uint256 value)\

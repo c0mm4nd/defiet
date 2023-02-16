@@ -1,0 +1,14 @@
+Yield_Protocol: # TODO
+  contracts:
+    - 0xE33B15629739770a27c4726a22BE61128aa1c781
+  events:
+    - Deposit(address indexed user, uint256 indexed pid, uint256 amount)
+    - Withdraw(address indexed user, uint256 indexed pid)
+    - Claim(address indexed user, uint256 indexed pid)
+    - Unstake(address indexed user, uint256 indexed pid)
+Yield_Protocol-Token:
+  contracts:
+    - 0xa8B61CfF52564758A204F841E636265bEBC8db9B
+  events:
+    - Transfer(address indexed from, address indexed to, uint256 value)
+    - Approval (address indexed owner, address indexed spender, uint256 value)

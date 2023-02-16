@@ -1,0 +1,19 @@
+Euler: # TODO
+  contracts:
+    - 0x59828FdF7ee634AaaD3f58B19fDBa3b03E2D9d80
+  events:
+    - Deposit (address indexed underlying, address indexed account, uint amount)
+    - RequestDeposit (address indexed account, uint256 amount)
+    - Withdraw (address indexed underlying, address indexed account, uint amount)
+    - RequestWithdraw (address indexed account, uint256 amount)
+    - Borrow (address indexed underlying, address indexed account, uint amount)
+    - RequestBorrow (address indexed account, uint256 amount)
+    - Repay (address indexed underlying, address indexed account, uint amount)
+    - EnterMarket (address indexed underlying, address indexed account)
+    - AssetStatus (address indexed underlying, uint256 totalBalances, uint256 totalBorrows, uint96 reserveBalance, uint256 poolSize, uint256 interestAccumulator, int96 interestRate, uint256 timestamp)
+Euler-Token:
+  contracts:
+    - 0xd9fcd98c322942075a5c3860693e9f4f03aae07b
+  events:
+    - Transfer (address indexed from, address indexed to, uint256 value)
+    - Approval (address indexed owner, address indexed spender, uint256 value)

@@ -1,0 +1,38 @@
+Compound:
+  contracts:
+    - 0x3FDA67f7583380E67ef93072294a7fAc882FD7E7
+  events:
+    - SupplyWithdrawn (address account, address asset, uint256 amount, uint256 startingBalance, uint256 newBalance)
+    - SupplyReceived(address account, address asset, uint amount, uint startingBalance, uint newBalance)
+    - BorrowTaken(address account, address asset, uint amount, uint startingBalance, uint borrowAmountWithFee, uint newBalance)
+    - BorrowRepaid(address account, address asset, uint amount, uint startingBalance, uint newBalance)
+    - BorrowLiquidated(address targetAccount,address assetBorrow,uint borrowBalanceBefore,uint borrowBalanceAccumulated,uint amountRepaid,uint borrowBalanceAfter,address liquidator,address assetCollateral,uint collateralBalanceBefore,uint collateralBalanceAccumulated,uint amountSeized,uint collateralBalanceAfter)
+    - EquityWithdrawn(address asset, uint equityAvailableBefore, uint amount, address owner)
+    - AccrueInterest (uint256 interestAccumulated, uint256 borrowIndex, uint256 totalBorrows)
+    - Redeem (address redeemer, uint256 redeemAmount, uint256 redeemTokens)
+    - Borrow (address borrower, uint256 borrowAmount, uint256 accountBorrows, uint256 totalBorrows)
+    - RepayBorrow (address payer, address borrower, uint256 repayAmount, uint256 accountBorrows, uint256 totalBorrows)
+    - LiquidateBorrow(address liquidator, address borrower, uint repayAmount, address cTokenCollateral, uint seizeTokens)
+    - DistributedSupplierComp ( address indexed cToken, address indexed supplier, uint256 compDelta, uint256 compSupplyIndex)
+Compound-Token:
+  contracts:
+    - 0x39AA39c021dfbaE8faC545936693aC917d5E7563
+    - 0xf650C3d88D12dB855b8bf7D11Be6C55A4e07dCC9
+    - 0x35A18000230DA775CAc24873d00Ff85BccdeD550
+    - 0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643
+    - 0x4Ddc2D193948926D02f9B1fE9e1daa0718270ED5
+  events:
+    - Transfer (address indexed from, address indexed to, uint256 value)
+    - Approval (address indexed owner, address indexed spender, uint256 value)
+Compound-V3: # TODO
+  contracts:
+    - 0xc3d688B66703497DAA19211EEdff47f25384cdc3
+  events:
+    - Withdraw (address indexed src, address indexed to, uint256 amount)
+    - SupplyCollateral (address indexed from, address indexed dst, address indexed asset, uint256 amount)
+Compound-V3-Token:
+  contracts:
+    - 0xc00e94Cb662C3520282E6f5717214004A7f26888
+  events:
+    - Transfer (address indexed from, address indexed to, uint256 value)
+    - Approval (address indexed owner, address indexed spender, uint256 value)

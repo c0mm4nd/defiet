@@ -1,0 +1,26 @@
+Silo_Finance: # TODO
+  contracts:
+    - 0xb2374f84b3ceeff6492943df613c9bcf45322a0c
+  events:
+    - Borrow(address indexed asset, address indexed user, uint256 amount)
+    - Deposit(address indexed asset, address indexed depositor, uint256 amount, bool collateralOnly)
+    - Liquidate(address indexed asset, address indexed user, uint256 shareAmountRepaid, uint256 seizedCollateral)
+    - Repay(address indexed asset, address indexed user, uint256 amount)
+    - Withdraw(address indexed asset, address indexed depositor, address indexed receiver, uint256 amount, bool collateralOnly)
+
+Silo_Finance-Token:
+  contracts:
+    - 0x6650C679c3e8A52607501069028683eb8effE4f9
+    - 0x0ea9CE2044deFd1D89A677EE4EFE2e95A579B448
+    - 0x9016a7B1112bE6790254FF60Ec936a55d2739a64
+    - 0xF3f92B1b2A4Af2b238b78AdbCEFdd1Cb7cAE0D36
+    - 0x9d2841bb88e173E929B227b1000f90d73e8ce081
+    - 0xeCC96f56Ea198991b85A10F2845D04F96Ec924eA
+    - 0x8e7a059A3d7b270Fbd30aC751c2c5A55A02c8A8e
+    - 0x3C9124C18CE9fB99724cf0a8080bEeeF8B0D3cf6
+    - 0x720ba6B092822a8F965943095CdAF06C0D110Dd0
+    - 0x5eb2DdD69501eeC898c745714B8445927509C969
+    - 0x416DE9AD46C53AAAb2352F91120952393946d2ac
+  events:
+    - Transfer(address indexed from, address indexed to, uint256 value)
+    - Approval(address indexed owner, address indexed spender, uint256 value)

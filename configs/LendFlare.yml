@@ -1,0 +1,23 @@
+LendFlare:
+  contracts:
+    - 0xac86b0d995a2BA4058860EAF0c0230895b8dAa07
+  # https://github.com/LendFlare/lendflare_finance_contracts/search?q=event
+  # Staking reward related events are omitted
+  events:
+    # https://github.com/LendFlare/lendflare_finance_contracts/blob/main/contracts/LendingMarket.sol
+    - event LendingBase(bytes32 indexed lendingId,uint256 marketPid,uint256 supplyPid,int128 curveCoinId,uint256 borrowBlocks);
+    - event Borrow(bytes32 indexed lendingId,address indexed user,uint256 pid,uint256 token0,uint256 token0Price,uint256 lendingAmount,uint256 borrowNumber);
+    - event Initialized(address indexed thisAddress);
+    - event RepayBorrow(bytes32 indexed lendingId,address user,UserLendingState state);
+    - event Liquidate(bytes32 indexed lendingId,address user,uint256 liquidateAmount,uint256 gasSpent,UserLendingState state);
+    - event SetOwner(address owner);
+    - event SetGovernance(address governance);
+    - event SetBorrowBlock(uint256 borrowBlock, bool state);
+LendFlare-Token:
+  contracts:
+    - 0xB620Be8a1949AA9532e6a3510132864EF9Bc3F82
+  events:
+    # https://github.com/LendFlare/lendflare_finance_contracts/blob/main/contracts/LendFlareToken.sol
+    - event UpdateMiningParameters(uint256 time, uint256 rate, uint256 supply);
+    - event Transfer(address indexed _from, address indexed _to, uint256 _value);
+    - event Approval(address indexed _owner,address indexed _spender,uint256 _value);
