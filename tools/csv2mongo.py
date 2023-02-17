@@ -2,6 +2,7 @@ from pymongo import MongoClient
 from os import listdir
 from os.path import isfile, join
 import csv
+from threading import Thread
 import logging
 logging.basicConfig(
     format='%(asctime)s %(levelname)-8s %(message)s',
@@ -12,9 +13,9 @@ client = MongoClient('mongodb://%s:%s@172.24.1.2:2717' % ("lab0", "icaneatglass"
 db = client["DeFiET"]
 
 folder = "csv_output"
-for f in listdir("csv_output"):
-    if not isfile(join(folder, f)):
-        continue
+threads = []
+
+def load(f):
     logging.warning("start for " + f)
     coll_name = f.replace(".csv", "")
     coll = db[coll_name]
@@ -22,4 +23,14 @@ for f in listdir("csv_output"):
         reader = csv.DictReader(csvfile)
         for row in reader:
             coll.insert_one(row)
-    logging.warning(f + "ends")
+    logging.warning(f + " ends")
+
+for f in listdir("csv_output"):
+    if not isfile(join(folder, f)):
+        continue
+    t = Thread(target=load, args=(f,))
+    t.run()
+    threads.append(t)
+
+for t in threads:
+    t.join()
