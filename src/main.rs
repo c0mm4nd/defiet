@@ -148,9 +148,10 @@ async fn dump_event_logs_from_contract(
     let fixed_fields = [
         "block_number",
         "transaction_hash",
-        "caller", // tx from
-        "contract", // tx to
-        // "transaction_log_index",
+        "transaction_from", // tx from
+        "transaction_to", // tx to
+        "contract",
+                  // "transaction_log_index",
     ];
     for (i, e) in events.iter().enumerate() {
         let mut fields = Vec::from(fixed_fields);
@@ -175,7 +176,11 @@ async fn dump_event_logs_from_contract(
         let log = log.unwrap();
         // log::debug!("{:?}", log);
 
-        let tx = provider.get_transaction(log.transaction_hash.unwrap()).await.unwrap().unwrap();
+        let tx = provider
+            .get_transaction(log.transaction_hash.unwrap())
+            .await
+            .unwrap()
+            .unwrap();
 
         let mut record: Vec<String> = Vec::new();
         record.push(log.block_number.unwrap().to_string());
@@ -185,6 +190,7 @@ async fn dump_event_logs_from_contract(
             None => "".to_owned(),
             Some(to) => format!("{:#x}", to),
         });
+        record.push(format!("{:#x}", log.address));
         // record.push(log.transaction_log_index.unwrap().to_string());
 
         let fn_hash = log.topics[0];
