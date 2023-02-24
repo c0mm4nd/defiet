@@ -23,10 +23,10 @@ Morpho_Compound:
   contracts:
     - 0x8888882f8f843896699869179fB6E4f7e3B58888
   events:
+    - Mint (address minter, uint256 mintAmount, uint256 mintTokens) # Supply流动性 类似于Deposit
     - Borrow (address borrower, uint256 borrowAmount, uint256 accountBorrows, uint256 totalBorrows)
     - RepayBorrow (address payer, address borrower, uint256 repayAmount, uint256 accountBorrows, uint256 totalBorrows)
     - Redeem (address redeemer, uint256 redeemAmount, uint256 redeemTokens)
-    - Deposit (address indexed dst, uint256 wad)
     - DistributedBorrowerComp (address indexed cToken, address indexed borrower, uint256 compDelta, uint256 compBorrowIndex)
     - DistributedSupplierComp (address indexed cToken, address indexed supplier, uint256 compDelta, uint256 compSupplyIndex)
     - AccrueInterest (uint256 cashPrior, uint256 interestAccumulated, uint256 borrowIndex, uint256 totalBorrows)

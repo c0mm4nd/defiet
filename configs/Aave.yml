@@ -47,9 +47,9 @@ aave-v1-tokens:
     - event RedirectedBalanceUpdated(address indexed _targetAddress,uint256 _targetBalanceIncrease,uint256 _targetIndex,uint256 _redirectedBalanceAdded,uint256 _redirectedBalanceRemoved);
     - event InterestRedirectionAllowanceChanged(address indexed _from,address indexed _to);
 aave-v2:
-  contracts:
+  contracts: # https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
     - 0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9
-  events:
+  events: # https://github.com/aave/protocol-v2/blob/baeb455fad42d3160d571bd8d3a795948b72dd85/contracts/interfaces/ILendingPool.sol
     - event Repay (address indexed reserve, address indexed user, address indexed repayer, uint256 amount)
     - event Withdraw(address indexed reserve, address indexed user, address indexed to, uint256 amount)
     - event Borrow(address indexed reserve,address user,address indexed onBehalfOf,uint256 amount,uint256 borrowRateMode,uint256 borrowRate,uint16 indexed referral)
@@ -77,3 +77,4 @@ aave-v2-varDebt:
   events:
     - Transfer (address indexed from, address indexed to, uint256 value)
     - Approval (address indexed owner, address indexed spender, uint256 value)
+# aave-v3: # omit it

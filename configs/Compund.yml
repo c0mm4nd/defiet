@@ -30,6 +30,7 @@ Compound-V3: # TODO
   events:
     - Withdraw (address indexed src, address indexed to, uint256 amount)
     - SupplyCollateral (address indexed from, address indexed dst, address indexed asset, uint256 amount)
+    - WithdrawCollateral (address indexed src, address indexed to, address indexed asset, uint256 amount)
 Compound-V3-Token:
   contracts:
     - 0xc00e94Cb662C3520282E6f5717214004A7f26888
