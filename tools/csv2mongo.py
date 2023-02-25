@@ -32,7 +32,7 @@ for f in listdir("csv_output"):
     if not isfile(join(folder, f)):
         continue
     t = Thread(target=load, args=(f,))
-    t.run()
+    t.start()
     threads.append(t)
 
 for t in threads:
