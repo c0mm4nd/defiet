@@ -1,4 +1,4 @@
-from pymongo import MongoClient
+from pymongo import MongoClient, InsertOne
 from os import listdir
 from os.path import isfile, join
 import csv
@@ -19,10 +19,13 @@ def load(f):
     logging.warning("start for " + f)
     coll_name = f.replace(".csv", "")
     coll = db[coll_name]
+    writes = []
     with open(join(folder, f)) as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
-            coll.insert_one(row)
+            writes.append(InsertOne(row))
+    if len(writes) > 0:
+        coll.bulk_write(writes)
     logging.warning(f + " ends")
 
 for f in listdir("csv_output"):

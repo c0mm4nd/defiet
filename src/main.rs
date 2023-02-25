@@ -2,7 +2,7 @@ mod event_parser;
 
 use clap::Parser;
 use csv::Writer;
-use ethers::{prelude::*, providers::Provider, utils::keccak256};
+use ethers::{prelude::*, providers::Provider};
 use std::fmt::Debug;
 use std::{fs, fs::File, path::Path, str::FromStr};
 
