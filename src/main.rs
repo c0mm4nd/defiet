@@ -3,6 +3,7 @@ mod event_parser;
 use clap::Parser;
 use csv::Writer;
 use ethers::{prelude::*, providers::Provider};
+use serde_yaml::Mapping;
 use std::fmt::Debug;
 use std::{fs, fs::File, path::Path, str::FromStr};
 
@@ -29,7 +30,7 @@ async fn main() {
     let v = provider.client_version().await.unwrap();
     log::warn!("{v}");
 
-    let kanban = parse_config(args.config);
+    let kanban = parse_config(provider.clone(), args.config).await;
     let tasks = kanban.tasks;
     let mut handles: Vec<_> = vec![];
     for task in tasks {
@@ -73,7 +74,7 @@ struct Task {
     events: Vec<event_parser::Event>,
 }
 
-fn parse_config(path: String) -> Kanban {
+async fn parse_config(provider: Provider<Ws>, path: String) -> Kanban {
     let meta = fs::metadata(&path).unwrap();
     let input: serde_yaml::Mapping = if meta.is_dir() {
         let mut map = serde_yaml::Mapping::new();
@@ -97,9 +98,18 @@ fn parse_config(path: String) -> Kanban {
     log::debug!("{:?}", input);
 
     let mut tasks: Vec<Task> = Vec::new();
-    for (task_name, task_detail) in input {
+    for (task_name, v) in input {
         log::debug!("{:?}", task_name);
-        let contracts = task_detail["contracts"].as_sequence().unwrap();
+        let task_detail = v.as_mapping().unwrap();
+        let mut contracts =  match task_detail.get("contracts") {
+            Some(contracts) => contracts.as_sequence().unwrap().iter().map(|addr| Address::from_str(addr.as_str().unwrap()).unwrap()).collect(),
+            None => Vec::new(),
+        };
+        if task_detail.contains_key("contract-factory") {
+            let contracts_from_factory = get_contracts_from_factory(provider.clone(), task_detail["factory"].as_mapping().unwrap()).await;
+            contracts.extend(contracts_from_factory);
+        }
+
         if contracts.len() == 0 {
             continue;
         }
@@ -112,11 +122,7 @@ fn parse_config(path: String) -> Kanban {
             .collect();
         let task = Task {
             name: task_name.as_str().unwrap().to_owned(),
-            contracts: contracts
-                .to_owned()
-                .iter()
-                .map(|c| Address::from_str(c.as_str().unwrap()).unwrap())
-                .collect(),
+            contracts: contracts,
             events,
         };
 
@@ -124,6 +130,33 @@ fn parse_config(path: String) -> Kanban {
     }
 
     return Kanban { tasks };
+}
+
+async fn get_contracts_from_factory(    provider: Provider<Ws>, factory_config: &Mapping) -> Vec<H160> {
+    let mut contracts = Vec::new();
+    if factory_config.contains_key("event") {
+        // catch addresses by events
+        let factories: Vec<H160> = factory_config["contracts"].as_sequence().unwrap().iter().map(|addr| Address::from_str(addr.as_str().unwrap()).unwrap()).collect();
+        let event = event_parser::Event::new(factory_config["event"].as_str().unwrap().to_string());
+        let filter = Filter::new()
+        // .from_block(16_000_000)
+            .from_block(0_000_000)
+            .to_block(16_200_000)
+            .event(&event.to_signature())
+            .address(factories);
+        let arg_index: usize = factory_config["arg"].as_i64().unwrap_or(0).try_into().unwrap();
+        let mut stream = provider.get_logs_paginated(&filter, 100);
+        while let Some(log) = stream.next().await {
+            let log = log.unwrap();
+            if arg_index < log.topics.len() {
+                let new_contract_addr = Address::from(log.topics[arg_index]);
+                contracts.push(new_contract_addr);
+            }
+            // TODO: support data
+        }
+    }
+
+    return contracts;
 }
 
 async fn dump_event_logs_from_contract(
