@@ -27,7 +27,10 @@ impl Event {
             let triple: Vec<&str> = params_str.trim().split(" ").collect();
             assert!(triple.len() >= 2, "triple len incorrect");
             let name = triple[triple.len() - 1].trim().to_string();
-            let evm_type = triple[0].trim().to_string();
+            let mut evm_type = triple[0].trim().to_string();
+            if evm_type == "uint" {
+                evm_type = "uint256".to_string();
+            }
             let indexed = triple[1] == "indexed"; // && !["string".to_string()].contains(&evm_type);
             let param = EventParam {
                 name,
