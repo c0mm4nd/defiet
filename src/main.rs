@@ -150,8 +150,9 @@ async fn get_contracts_from_factory(    provider: Provider<Ws>, factory_config: 
         while let Some(log) = stream.next().await {
             let log = log.unwrap();
             if arg_index < log.topics.len() {
-                let new_contract_addr = Address::from(log.topics[arg_index]);
+                let new_contract_addr = Address::from(log.topics[1+arg_index]);
                 contracts.push(new_contract_addr);
+                log::debug!("got contract {:#x} from factory {:#x}", new_contract_addr, log.address);
             }
             // TODO: support data
         }
