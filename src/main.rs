@@ -32,6 +32,7 @@ async fn main() {
 
     let kanban = parse_config(provider.clone(), args.config).await;
     let tasks = kanban.tasks;
+
     let mut handles: Vec<_> = vec![];
     for task in tasks {
         let provider = provider.clone();
@@ -105,7 +106,7 @@ async fn parse_config(provider: Provider<Ws>, path: String) -> Kanban {
             Some(contracts) => contracts.as_sequence().unwrap().iter().map(|addr| Address::from_str(addr.as_str().unwrap()).unwrap()).collect(),
             None => Vec::new(),
         };
-        if task_detail.contains_key("contract-factory") {
+        if task_detail.contains_key("factory") {
             let contracts_from_factory = get_contracts_from_factory(provider.clone(), task_detail["factory"].as_mapping().unwrap()).await;
             contracts.extend(contracts_from_factory);
         }
