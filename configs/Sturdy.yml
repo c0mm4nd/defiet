@@ -3,12 +3,10 @@ Sturdy: # TODO
     - 0xA422CA380bd70EeF876292839222159E41AAEe17
   events:
     - Deposit(address indexed reserve,address user,address indexed onBehalfOf,uint256 amount,uint16 indexed referral)
-    - Deposit(address indexed sender, address indexed owner, uint256 assets, uint256 shares)
     - DepositCollateral(address indexed collateralAsset, address indexed from, uint256 amount)
     - Withdraw(address indexed reserve, address indexed user, address indexed to, uint256 amount)
     - RedeemUnderlying(address indexed _reserve,address indexed _user,uint256 _amount,uint256 _timestamp)
-    - Borrow(address indexed _reserve,address indexed _user,uint256 _amount,uint256 _borrowRateMode,uint256 _borrowRate,uint256 _originationFee,uint256 _borrowBalanceIncrease,uint16 indexed _referral,uint256 _timestamp)
-    - Repay(address indexed _reserve,address indexed _user,address indexed _repayer,uint256 _amountMinusFees,uint256 _fees,uint256 _borrowBalanceIncrease,uint256 _timestamp)
+    - Borrow (address indexed reserve, address user, address indexed onBehalfOf, uint256 amount, uint256 borrowRateMode, uint256 borrowRate, uint16 indexed referral)
     - Repay(address indexed reserve, address indexed user, address indexed repayer, uint256 amount)
     - Swap(address indexed _reserve,address indexed _user,uint256 _newRateMode,uint256 _newRate,uint256 _borrowBalanceIncrease,uint256 _timestamp)
     - ReserveUsedAsCollateralEnabled(address indexed _reserve, address indexed _user)

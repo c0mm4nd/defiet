@@ -1,11 +1,12 @@
-beta_finance: # TODO
+beta_finance:
   contracts:
-    - 0x068af1Ec336344cd122b9811ef90D2384519005f
+    - 0x972a785b390D05123497169a04c72dE652493BE1
   events:
-    - Repay (address indexed owner, uint256 indexed pid, uint256 amount, uint256 share, address payer) # ???
-    - Borrow (address indexed owner, uint256 indexed pid, uint256 amount, uint256 share, address borrower) # ???
+    - Repay (address indexed owner, uint256 indexed pid, uint256 amount, uint256 share, address payer)
+    - Take (address indexed owner, uint256 indexed pid, uint256 amount, address to) # Repay后，take拿回抵押物
+    - Borrow (address indexed owner, uint256 indexed pid, uint256 amount, uint256 share, address borrower)
     - Open (address indexed owner, uint256 indexed pid, address bToken, address collateral)
-    - Put (address indexed owner, uint256 indexed pid, uint256 amount, address payer)
+    - Put (address indexed owner, uint256 indexed pid, uint256 amount, address payer) # borrow时，需要put抵押物
 beta_finance-tokens:
   contracts:
     - 0xBe1a001FE942f96Eea22bA08783140B9Dcc09D28

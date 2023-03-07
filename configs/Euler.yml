@@ -10,6 +10,8 @@ Euler: # TODO
     #- RequestBorrow (address indexed account, uint256 amount)
     - Repay (address indexed underlying, address indexed account, uint amount)
     #- RequestRepay (address indexed account, uint256 amount)
+    - Liquidation(address indexed liquidator, address indexed violator, address indexed underlying, address collateral, uint repay, uint yield, uint healthScore, uint baseDiscount, uint discount)
+    - RequestMint (address indexed account, uint256 amount)
     - EnterMarket (address indexed underlying, address indexed account)
     - AssetStatus (address indexed underlying, uint256 totalBalances, uint256 totalBorrows, uint96 reserveBalance, uint256 poolSize, uint256 interestAccumulator, int96 interestRate, uint256 timestamp)
 Euler-Token:
