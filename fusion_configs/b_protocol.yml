@@ -1,0 +1,14 @@
+b_protocol:
+  deopsit: 
+    name: UserDeposit
+    user: user
+    asset: null # lusd
+    amount: lusdAmount
+  withdraw: 
+    name: UserWithdraw
+    user: user
+    asset: null # lusd
+    amount: lusdAmount
+  borrow: null
+  repay: null
+  liquidate: null

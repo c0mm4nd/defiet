@@ -1,0 +1,34 @@
+beta_finance:
+  deopsit: 
+    name: Put
+    user: owner
+    depositor: payer
+    asset: null
+    amount: amount
+  withdraw: 
+    name: Take
+    user: owner
+    asset: null
+    amount: amount
+    withdrawer: to
+  borrow:
+    name: Borrow
+    user: owner
+    borrower: borrower
+    asset: null
+    amount: amount
+    borrot_rate: null # share/rate?
+  repay: 
+    name: Repay
+    user: owner
+    repayer: payer
+    asset: null
+    amount: amount
+    fee: null #share?
+  liquidate: 
+    name: Open
+    user: owner
+    collateral: collateral
+    asset: bToken
+    amount: null
+    interest: null

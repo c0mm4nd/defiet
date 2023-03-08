@@ -1,0 +1,22 @@
+BiFI:
+  deopsit: 
+    name: Deopsit
+    depositor: deopsitor
+    asset: handlerID
+    amount: depositAmount
+  withdraw: 
+    name: Withdraw
+    withdrawer: redeemer
+    asset: handlerID
+    amount: redeemAmount
+  borrow: 
+    name: Borrow
+    borrower: borrower
+    asset: handlerID
+    amount: borrowAmount
+  repay: 
+    name: Repay
+    repayer: repayer
+    asset: handlerID
+    amount: repayAmount
+  liquidate: null

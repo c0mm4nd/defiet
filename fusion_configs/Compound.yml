@@ -1,0 +1,37 @@
+Compound-v2:
+  deopsit: 
+    name: SupplyReceived
+    depositor: account
+    asset: asset
+    amount: amount
+  withdraw: 
+    name: SupplyWithdrawn
+    withdrawer: account
+    asset: asset
+    amount: amount
+  borrow: 
+    name: BorrorTaken
+    borrower: account
+    asset: asset
+    amount: amount
+  repay: 
+    name: BorrowRepaid
+    repayer: account
+    asset: asset
+    amount: amount
+  liquidate: #TODO: not sure
+    name: BorrowLiquidated
+    liquidator: liquidator
+    asset: assetBorrow
+    amount: 
+Compound-v3:
+  deopsit: 
+    name: Supply
+  withdraw: 
+    name: Withdraw
+  borrow: 
+    name: 
+  repay: 
+    name: 
+  liquidate: 
+    name: 

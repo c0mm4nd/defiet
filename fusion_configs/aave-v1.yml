@@ -1,0 +1,63 @@
+aave-v1:
+  deopsit: 
+    name: Deopsit
+    user: _user
+    asset: _reverse
+    amount: _amount
+  withdraw: 
+    name: RedeemUnderlying
+    user: _user
+    asset: _reverse
+    amount: _amount
+  borrow: 
+    name: Borrow
+    user: _user
+    asset: _reverse
+    amount: _amount
+    borrow_rate: _borrowRate
+  repay: 
+    name: Repay
+    user: _user
+    repayer: _repayer
+    asset: _reverse
+    amount: _amountMinusFees
+    fee: _fees
+  liquidate: 
+    name: LiquidationCall
+    user: _user
+    collateral: _collateral
+    asset: _reverse
+    amount: _liquidatedCollateralAmount
+    interest: _accruedBorrowInterest
+aave-v2:
+  deopsit: 
+    name: Deopsit
+    user: user
+    deopsitor: onBehalfOf
+    asset: reverse
+    amount: amount
+  withdraw: 
+    name: Withdraw
+    user: user
+    withdrawer: to
+    asset: reverse
+    amount: amount
+  borrow: 
+    name: Borrow
+    user: user
+    borrower: onBehalfOf
+    amount: amount
+    borrot_rate: borrowRate
+  repay: 
+    name: Repay
+    user: user
+    repayer: repayer
+    asset: reverse
+    amount: amount
+  liquidate: 
+    name: LiquidationCall
+    user: user
+    liquidator: liquidator
+    collateral: collateralAsset
+    asset: _reverse
+    amount: liquidatedCollateralAmount
