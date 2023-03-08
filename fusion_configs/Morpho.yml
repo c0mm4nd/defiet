@@ -1,0 +1,30 @@
+Morpho:
+  deopsit: 
+    name: Supplied
+    user: _supplier
+    depositor: _supplier
+    asset: _poolTokenAddress
+    amount: _amount
+  withdraw: 
+    name: Withdrawn
+    user: _supplier
+    withdrawer: _receiver
+    asset: _poolTokenAddress
+    amount: _amount
+  borrow: 
+    name: Borrowed
+    user: _user
+    asset: _poolTokenAddress
+    amount: _amount
+  repay: 
+    name: Repaid
+    user: _repayer
+    repayer: _onBehalf
+    asset: _poolTokenAddress
+    amount: _amount
+  liquidate: 
+    name: Liquidated
+    user: _poolTokenBorrowedAddress
+    collateral: _poolTokenCollateralAddress
+    asset: _liquidated
+    amount: _amountSeized

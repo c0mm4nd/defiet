@@ -8,8 +8,8 @@ LendFlare:
     - event LendingBase(bytes32 indexed lendingId,uint256 marketPid,uint256 supplyPid,int128 curveCoinId,uint256 borrowBlocks);
     - event Borrow(bytes32 indexed lendingId,address indexed user,uint256 pid,uint256 token0,uint256 token0Price,uint256 lendingAmount,uint256 borrowNumber);
     - event Initialized(address indexed thisAddress);
-    - event RepayBorrow(bytes32 indexed lendingId,address user,UserLendingState state);
-    - event Liquidate(bytes32 indexed lendingId,address user,uint256 liquidateAmount,uint256 gasSpent,UserLendingState state);
+    - event RepayBorrow(bytes32 indexed lendingId,address user,uint256 state);
+    - event Liquidate(bytes32 indexed lendingId,address user,uint256 liquidateAmount,uint256 gasSpent,uint256 state);
     - event SetOwner(address owner);
     - event SetGovernance(address governance);
     - event SetBorrowBlock(uint256 borrowBlock, bool state);

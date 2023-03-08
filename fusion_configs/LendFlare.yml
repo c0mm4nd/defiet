@@ -1,0 +1,11 @@
+LendFlare: 
+  deopsit: 
+    name: Deopsit
+  withdraw: 
+    name: Withdraw
+  borrow: 
+    name: Borrow
+  repay: 
+    name: RepayBorrow
+  liquidate: 
+    name: Liquidate

@@ -1,0 +1,10 @@
+Euler:
+  deopsit:
+    name: Deopsit
+  withdraw: 
+    name: Withdraw
+  borrow: 
+    name: Borrow
+  repay: 
+    name: Repay
+  liquidate: null

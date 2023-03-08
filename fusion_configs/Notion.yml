@@ -1,0 +1,14 @@
+Notional:
+  deopsit:
+    name: Deopsit
+    user: account
+    asset: currency
+    amount: value
+  withdraw: 
+    name: Withdraw
+    user: account
+    asset: currency
+    amount: value
+  borrow: null
+  repay: null
+  liquidate: null

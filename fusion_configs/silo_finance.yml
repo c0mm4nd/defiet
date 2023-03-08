@@ -1,0 +1,27 @@
+Silo_Finance:
+  deopsit: 
+    name: Deopsit
+    user: user
+    asset: asset
+    amount: amount
+  withdraw: 
+    name: Withdraw
+    user: user
+    withdrawer: receiver
+    asset: asset
+    amount: amount
+  borrow:
+    name: Borrow
+    user: user
+    asset: asset
+    amount: amount
+  repay: 
+    name: RepayBorrow
+    user: user
+    asset: asset
+    amount: amount
+  liquidate: 
+    name: Liquidate
+    user: user
+    asset: asset
+    amount: seizedCollateral

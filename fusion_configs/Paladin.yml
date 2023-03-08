@@ -1,0 +1,24 @@
+Paladin_Finance:
+  deopsit: 
+    name: Deopsit
+    user: user
+    asset: palPool
+    amount: amount
+  withdraw: 
+    name: Withdraw
+    user: user
+    asset: palPool
+    amount: amount
+  borrow: 
+    name: NewLoan # & Paladin_Finance_ExpandLoan ?
+    user: delegatee
+    borrower: borrower
+    asset: palPool
+    amount: amount
+  repay: 
+    name: CloseLoad
+    user: delegatee
+    repayer: borrower
+    asset: palPool
+    amount: amount
+  liquidate: null
