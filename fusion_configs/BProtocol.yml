@@ -1,4 +1,4 @@
-b_protocol:
+b-protocol-pools:
   deopsit: 
     name: UserDeposit
     user: user

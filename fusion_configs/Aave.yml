@@ -1,4 +1,4 @@
-aave-v1:
+aave-v1-pools:
   deopsit: 
     name: Deopsit
     user: _user
@@ -29,7 +29,7 @@ aave-v1:
     asset: _reverse
     amount: _liquidatedCollateralAmount
     interest: _accruedBorrowInterest
-aave-v2:
+aave-v2-pools:
   deopsit: 
     name: Deopsit
     user: user

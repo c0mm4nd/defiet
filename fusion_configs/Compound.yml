@@ -1,4 +1,4 @@
-Compound-v2:
+compound-v2-pools:
   deopsit: 
     name: SupplyReceived
     depositor: account
@@ -24,7 +24,7 @@ Compound-v2:
     liquidator: liquidator
     asset: assetBorrow
     amount: 
-Compound-v3:
+compound-v3-pools:
   deopsit: 
     name: Supply
   withdraw: 
