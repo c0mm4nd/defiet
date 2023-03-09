@@ -10,10 +10,15 @@ use std::{fs, fs::File, path::Path, str::FromStr};
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Args {
-    /// config path
+    /// Ethereum node's WS provider string
+    #[arg(short, long, default_value = "ws://127.0.0.1:8545")]
+    provider: String,
+
+    /// config path, can be file or folder
     #[arg(short, long, default_value = "./input.yml")]
     config: String,
 
+    /// run for each protocol in parallel
     #[arg(short, long, default_value_t = false)]
     parallel: bool,
 }
@@ -24,7 +29,7 @@ async fn main() {
     let args = Args::parse();
 
     // let db = DB::open_default("./db").unwrap();
-    let provider = Provider::<Ws>::connect("ws://172.24.1.2:8545")
+    let provider = Provider::<Ws>::connect(args.provider)
         .await
         .unwrap(); // // Provider::<Ws>::connect("wss://mainnet.infura.io/ws/v3/dc6980e1063b421bbcfef8d7f58ccd43")
     let v = provider.client_version().await.unwrap();
