@@ -1,4 +1,4 @@
-Sturdy: # TODO
+sturdy-pools: # TODO
   contracts:
     - 0xA422CA380bd70EeF876292839222159E41AAEe17
   events:
@@ -15,7 +15,7 @@ Sturdy: # TODO
     - FlashLoan(address indexed _target,address indexed _reserve,uint256 _amount,uint256 _totalFee,uint256 _protocolFee,uint256 _timestamp)
     - OriginationFeeLiquidated(address indexed _collateral,address indexed _reserve,address indexed _user,uint256 _feeLiquidated,uint256 _liquidatedCollateralForFee,uint256 _timestamp)
     - LiquidationCall(address indexed _collateral,address indexed _reserve,address indexed _user,uint256 _purchaseAmount,uint256 _liquidatedCollateralAmount,uint256 _accruedBorrowInterest,address _liquidator,bool _receiveAToken,uint256 _timestamp)
-Sturdy-Token:
+sturdy-tokens:
   contracts:
     - 0x51D5c5D784334a4b52a07AC13D9db79cBefa1642
     - 0xE408768fc65116143E1F65Ff9356cD0De6868fCc

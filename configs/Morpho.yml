@@ -1,4 +1,4 @@
-Morpho:
+morpho-pools:
   contracts:
     - 0x777777c9898D384F785Ee44Acfe945efDFf5f3E0 # Morpho AAVE v2
     - 0x8888882f8f843896699869179fB6E4f7e3B58888 # Morpho Compound

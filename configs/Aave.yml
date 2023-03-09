@@ -1,4 +1,4 @@
-aave-v1: # https://app-v1.aave.com
+aave-v1-pools: # https://app-v1.aave.com
   contracts: # https://docs.aave.com/developers/v/1.0/deployed-contracts/deployed-contract-instances
     - 0x398eC7346DcD622eDc5ae82352F02bE94C62d119
   events:
@@ -46,7 +46,7 @@ aave-v1-tokens:
     - event InterestStreamRedirected(address indexed _from,address indexed _to,uint256 _redirectedBalance,uint256 _fromBalanceIncrease,uint256 _fromIndex);
     - event RedirectedBalanceUpdated(address indexed _targetAddress,uint256 _targetBalanceIncrease,uint256 _targetIndex,uint256 _redirectedBalanceAdded,uint256 _redirectedBalanceRemoved);
     - event InterestRedirectionAllowanceChanged(address indexed _from,address indexed _to);
-aave-v2:
+aave-v2-pools:
   contracts: # https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
     - 0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9
   events: # https://github.com/aave/protocol-v2/blob/baeb455fad42d3160d571bd8d3a795948b72dd85/contracts/interfaces/ILendingPool.sol
@@ -62,17 +62,7 @@ aave-v2:
     - event ReserveDataUpdated(address indexed reserve,uint256 liquidityRate,uint256 stableBorrowRate,uint256 variableBorrowRate,uint256 liquidityIndex,uint256 variableBorrowIndex)
     - event LiquidationCall(address indexed collateralAsset,address indexed debtAsset,address indexed user,uint256 debtToCover,uint256 liquidatedCollateralAmount,address liquidator,bool receiveAToken)
 # TODO: fill according to https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
-aave-v2-atokens:
-  contracts: []
-  events:
-    - Transfer (address indexed from, address indexed to, uint256 value)
-    - Approval (address indexed owner, address indexed spender, uint256 value)
-aave-v2-stableDebt:
-  contracts: []
-  events:
-    - Transfer (address indexed from, address indexed to, uint256 value)
-    - Approval (address indexed owner, address indexed spender, uint256 value)
-aave-v2-varDebt:
+aave-v2-tokens: # TODO: ATokens, stable-debt, var-debt
   contracts: []
   events:
     - Transfer (address indexed from, address indexed to, uint256 value)

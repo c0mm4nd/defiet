@@ -1,4 +1,4 @@
-LendFlare:
+lend-flare-pools:
   contracts:
     - 0xac86b0d995a2BA4058860EAF0c0230895b8dAa07
   # https://github.com/LendFlare/lendflare_finance_contracts/search?q=event
@@ -13,7 +13,7 @@ LendFlare:
     - event SetOwner(address owner);
     - event SetGovernance(address governance);
     - event SetBorrowBlock(uint256 borrowBlock, bool state);
-LendFlare-Token:
+lend-flare-tokens:
   contracts:
     - 0xB620Be8a1949AA9532e6a3510132864EF9Bc3F82
   events:

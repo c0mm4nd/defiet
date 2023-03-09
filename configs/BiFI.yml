@@ -1,4 +1,4 @@
-BiFI: # TODO
+bi-fi-pools: # TODO
   contracts:
     - 0x13000C4a215EfE7E414bB329b2F11c39BCF92D78
   events:
@@ -6,7 +6,7 @@ BiFI: # TODO
     - Repay (address repayer, uint256 repayAmount, uint256 handlerID)
     - Borrow (address borrower, uint256 borrowAmount, uint256 handlerID)
     - Deposit (address depositor, uint256 depositAmount, uint256 handlerID)
-BiFI-Token:
+bi-fi-tokens:
   contracts:
     - 0x2791BfD60D232150Bff86b39B7146c0eaAA2BA81
   events:

@@ -1,5 +1,5 @@
 # https://github.com/dforce-network/LendingContractsV2/blob/master/DeployedAddresses.md
-dForce-controller:
+d-force-pools:
   contracts:
     - 0x8B53Ab2c0Df3230EA327017C91Eb909f815Ad113 # Controller
   events: # https://github.com/dforce-network/LendingContractsV2, all admin event omitted
@@ -7,26 +7,23 @@ dForce-controller:
     - event MarketExited(address iToken, address account); # Emitted when an account exits a market
     - event BorrowedAdded(address iToken, address account); # Emitted when an account add a borrow asset
     - event BorrowedRemoved(address iToken, address account); # Emitted when an account remove a borrow asset
-dForce-rewardDistributor:
+# dForce-rewardDistributor:
+#   contracts:
+#     - 0x03E3E97C8bff9549FAc5CBfAce5Cd13E0Abe0A92
+#   events: # https://github.com/dforce-network/LendingContractsV2/blob/master/contracts/interface/IRewardDistributorV3.sol
+#     - event RewardDistributed(address iToken, address account, uint256 amount, uint256 accountIndex);
+# dForce-MSDController: # Multicurrency Stable Debt
+#   contracts:
+#     - 0x45677a101D70E9910C418D9426bC6c5874CE2Fd7
+#   events:
+#     - event MSDEarningAdded(address token,address minter,uint256 earning,uint256 totalEarning); # Emitted when `token`'s earning is added by `minter`.
+#     - event MSDDebtAdded(address token,address minter,uint256 debt,uint256 totalDebt); #  Emitted when `token`'s debt is added by `minter`.
+#     - event ReservesWithdrawn(address owner,address token,uint256 amount,uint256 oldTotalReserves,uint256 newTotalReserves);
+d-force-tokens: # include iMSD
   contracts:
-    - 0x03E3E97C8bff9549FAc5CBfAce5Cd13E0Abe0A92
-  events: # https://github.com/dforce-network/LendingContractsV2/blob/master/contracts/interface/IRewardDistributorV3.sol
-    - event RewardDistributed(address iToken, address account, uint256 amount, uint256 accountIndex);
-dForce-MSDController: # Multicurrency Stable Debt
-  contracts:
-    - 0x45677a101D70E9910C418D9426bC6c5874CE2Fd7
-  events:
-    - event MSDEarningAdded(address token,address minter,uint256 earning,uint256 totalEarning); # Emitted when `token`'s earning is added by `minter`.
-    - event MSDDebtAdded(address token,address minter,uint256 debt,uint256 totalDebt); #  Emitted when `token`'s debt is added by `minter`.
-    - event ReservesWithdrawn(address owner,address token,uint256 amount,uint256 oldTotalReserves,uint256 newTotalReserves);
-dForce-MSDS:
-  contracts:
+    # main
     - 0xE3ec7De9375bFc22F4481C4605431d67ED5Bd260 # MSDS
-  events:
-    - Transfer (address indexed from, address indexed to, uint256 value)
-    - Approval (address indexed owner, address indexed spender, uint256 value)
-dForce-tokens: # include iMSD
-  contracts:
+    # 
     - 0x5812fCF91adc502a765E5707eBB3F36a07f63c02 # iWBTC
     - 0x5ACD75f21659a59fFaB9AEBAf350351a8bfaAbc0 # iETH
     - 0x1180c114f7fAdCB6957670432a3Cf8Ef08Ab5354 # iUSDT

@@ -1,4 +1,4 @@
-Wing_Finance: # TODO
+wing-finance-pools: # TODO
   contracts:
     - 0x4FA2425edf435B52016447Ab897d300d78c0Afe4
   events:
@@ -7,7 +7,7 @@ Wing_Finance: # TODO
     - LiquidateBorrow (address liquidator, address borrower, uint256 repayAmount, address cTokenCollateral, uint256 seizeTokens)
     - Transfer (address indexed from, address indexed to, uint256 value)
     - Approval (address indexed owner, address indexed spender, uint256 value)
-Wing_Finance-Token:
+wing-finance-tokens:
   contracts:
     - 0xDb0f18081b505A7DE20B18ac41856BCB4Ba86A1a
   events:

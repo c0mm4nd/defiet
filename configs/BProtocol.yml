@@ -1,4 +1,4 @@
-b_protocol: # TODO
+b-protocol-pools: # TODO
   contracts:
     - 0x00FF66AB8699AAfa050EE5EF5041D1503aa0849a
     - 0x54bC9113f1f55cdBDf221daf798dc73614f6D972
@@ -7,7 +7,7 @@ b_protocol: # TODO
     - UserDeposit (address indexed user, uint256 lusdAmount, uint256 numShares)
     - Transfer (address indexed from, address indexed to, uint256 value)
     - Approval (address indexed owner, address indexed spender, uint256 value)
-b_protocol-Token:
+b-protocol-tokens:
   contracts:
     - 0xbbBBBBB5AA847A2003fbC6b5C16DF0Bd1E725f61
   events:

@@ -1,4 +1,4 @@
-Compound-v2: # https://docs.compound.finance/v2/
+compound-v2-pools: # https://docs.compound.finance/v2/
   contracts:
     - 0x3FDA67f7583380E67ef93072294a7fAc882FD7E7 # Comptroller
   events:
@@ -14,7 +14,7 @@ Compound-v2: # https://docs.compound.finance/v2/
     - RepayBorrow (address payer, address borrower, uint256 repayAmount, uint256 accountBorrows, uint256 totalBorrows)
     - LiquidateBorrow(address liquidator, address borrower, uint repayAmount, address cTokenCollateral, uint seizeTokens)
     - DistributedSupplierComp ( address indexed cToken, address indexed supplier, uint256 compDelta, uint256 compSupplyIndex)
-Compound-v2-Token:
+compound-v2-tokens:
   contracts:
     - 0xe65cdB6479BaC1e22340E4E755fAE7E509EcD06c # cAAVE
     - 0x6C8c6b02E7b2BE14d4fA6022Dfd6d75921D90E4E # cBAT
@@ -40,24 +40,24 @@ Compound-v2-Token:
   events:
     - Transfer (address indexed from, address indexed to, uint256 value)
     - Approval (address indexed owner, address indexed spender, uint256 value)
-Compound-v2-Governance:
-  contracts:
-    - 0xc0Da02939E1441F497fd74F78cE7Decb17B66529
-  events: # https://github.com/compound-finance/compound-protocol/blob/master/contracts/Governance/GovernorBravoInterfaces.sol
-    - event ProposalCreated(uint id, address proposer, address[] targets, uint[] values, string[] signatures, bytes[] calldatas, uint startBlock, uint endBlock, string description);
-    - event VoteCast(address indexed voter, uint proposalId, uint8 support, uint votes, string reason); # An event emitted when a vote has been cast on a proposal
-    - event ProposalCanceled(uint id); # An event emitted when a proposal has been canceled
-    - event ProposalQueued(uint id, uint eta); # An event emitted when a proposal has been queued in the Timelock
-    - event ProposalExecuted(uint id); # An event emitted when a proposal has been executed in the Timelock
-    - event VotingDelaySet(uint oldVotingDelay, uint newVotingDelay); # An event emitted when the voting delay is set
-    - event VotingPeriodSet(uint oldVotingPeriod, uint newVotingPeriod); # An event emitted when the voting period is set
-    - event NewImplementation(address oldImplementation, address newImplementation); # Emitted when implementation is changed
-    - event ProposalThresholdSet(uint oldProposalThreshold, uint newProposalThreshold); # Emitted when proposal threshold is set    
-    - event NewPendingAdmin(address oldPendingAdmin, address newPendingAdmin); # Emitted when pendingAdmin is changed
-    - event NewAdmin(address oldAdmin, address newAdmin); # Emitted when pendingAdmin is accepted, which means admin is updated
-    - event WhitelistAccountExpirationSet(address account, uint expiration); # Emitted when whitelist account expiration is set
-    - event WhitelistGuardianSet(address oldGuardian, address newGuardian); # Emitted when the whitelistGuardian is set
-Compound-v3: # https://github.com/compound-finance/comet
+# Compound-v2-Governance:
+#   contracts:
+#     - 0xc0Da02939E1441F497fd74F78cE7Decb17B66529
+#   events: # https://github.com/compound-finance/compound-protocol/blob/master/contracts/Governance/GovernorBravoInterfaces.sol
+#     - event ProposalCreated(uint id, address proposer, address[] targets, uint[] values, string[] signatures, bytes[] calldatas, uint startBlock, uint endBlock, string description);
+#     - event VoteCast(address indexed voter, uint proposalId, uint8 support, uint votes, string reason); # An event emitted when a vote has been cast on a proposal
+#     - event ProposalCanceled(uint id); # An event emitted when a proposal has been canceled
+#     - event ProposalQueued(uint id, uint eta); # An event emitted when a proposal has been queued in the Timelock
+#     - event ProposalExecuted(uint id); # An event emitted when a proposal has been executed in the Timelock
+#     - event VotingDelaySet(uint oldVotingDelay, uint newVotingDelay); # An event emitted when the voting delay is set
+#     - event VotingPeriodSet(uint oldVotingPeriod, uint newVotingPeriod); # An event emitted when the voting period is set
+#     - event NewImplementation(address oldImplementation, address newImplementation); # Emitted when implementation is changed
+#     - event ProposalThresholdSet(uint oldProposalThreshold, uint newProposalThreshold); # Emitted when proposal threshold is set    
+#     - event NewPendingAdmin(address oldPendingAdmin, address newPendingAdmin); # Emitted when pendingAdmin is changed
+#     - event NewAdmin(address oldAdmin, address newAdmin); # Emitted when pendingAdmin is accepted, which means admin is updated
+#     - event WhitelistAccountExpirationSet(address account, uint expiration); # Emitted when whitelist account expiration is set
+#     - event WhitelistGuardianSet(address oldGuardian, address newGuardian); # Emitted when the whitelistGuardian is set
+compound-v3-pools: # https://github.com/compound-finance/comet
   contracts:
     - 0xc3d688B66703497DAA19211EEdff47f25384cdc3 # cUSDCv3
     - 0xA17581A9E3356d9A858b789D68B4d866e593aE94 # cWETHv3
@@ -73,51 +73,49 @@ Compound-v3: # https://github.com/compound-finance/comet
     - event BuyCollateral(address indexed buyer, address indexed asset, uint baseAmount, uint collateralAmount); # Event emitted when a collateral asset is purchased from the protocol
     - event PauseAction(bool supplyPaused, bool transferPaused, bool withdrawPaused, bool absorbPaused, bool buyPaused); # Event emitted when an action is paused/unpaused
     - event WithdrawReserves(address indexed to, uint amount); # Event emitted when reserves are withdrawn by the governor
-Compound-v3-Configurator: # some admin opeartions
+# compound-v3-Configurator: # some admin opeartions
+#   contracts:
+#     - 0x316f9708bB98af7dA9c68C1C3b5e79039cD336E3 # for both USDC & WETH
+#   events:
+#     - event AddAsset(address indexed cometProxy, AssetConfig assetConfig);
+#     - event CometDeployed(address indexed cometProxy, address indexed newComet);
+#     - event GovernorTransferred(address indexed oldGovernor, address indexed newGovernor);
+#     - event SetFactory(address indexed cometProxy, address indexed oldFactory, address indexed newFactory);
+#     - event SetGovernor(address indexed cometProxy, address indexed oldGovernor, address indexed newGovernor);
+#     - event SetConfiguration(address indexed cometProxy, Configuration oldConfiguration, Configuration newConfiguration);
+#     - event SetPauseGuardian(address indexed cometProxy, address indexed oldPauseGuardian, address indexed newPauseGuardian);
+#     - event SetBaseTokenPriceFeed(address indexed cometProxy, address indexed oldBaseTokenPriceFeed, address indexed newBaseTokenPriceFeed);
+#     - event SetExtensionDelegate(address indexed cometProxy, address indexed oldExt, address indexed newExt);
+#     - event SetSupplyKink(address indexed cometProxy,uint64 oldKink, uint64 newKink);
+#     - event SetSupplyPerYearInterestRateSlopeLow(address indexed cometProxy,uint64 oldIRSlopeLow, uint64 newIRSlopeLow);
+#     - event SetSupplyPerYearInterestRateSlopeHigh(address indexed cometProxy,uint64 oldIRSlopeHigh, uint64 newIRSlopeHigh);
+#     - event SetSupplyPerYearInterestRateBase(address indexed cometProxy,uint64 oldIRBase, uint64 newIRBase);
+#     - event SetBorrowKink(address indexed cometProxy,uint64 oldKink, uint64 newKink);
+#     - event SetBorrowPerYearInterestRateSlopeLow(address indexed cometProxy,uint64 oldIRSlopeLow, uint64 newIRSlopeLow);
+#     - event SetBorrowPerYearInterestRateSlopeHigh(address indexed cometProxy,uint64 oldIRSlopeHigh, uint64 newIRSlopeHigh);
+#     - event SetBorrowPerYearInterestRateBase(address indexed cometProxy,uint64 oldIRBase, uint64 newIRBase);
+#     - event SetStoreFrontPriceFactor(address indexed cometProxy, uint64 oldStoreFrontPriceFactor, uint64 newStoreFrontPriceFactor);
+#     - event SetBaseTrackingSupplySpeed(address indexed cometProxy, uint64 oldBaseTrackingSupplySpeed, uint64 newBaseTrackingSupplySpeed);
+#     - event SetBaseTrackingBorrowSpeed(address indexed cometProxy, uint64 oldBaseTrackingBorrowSpeed, uint64 newBaseTrackingBorrowSpeed);
+#     - event SetBaseMinForRewards(address indexed cometProxy, uint104 oldBaseMinForRewards, uint104 newBaseMinForRewards);
+#     - event SetBaseBorrowMin(address indexed cometProxy, uint104 oldBaseBorrowMin, uint104 newBaseBorrowMin);
+#     - event SetTargetReserves(address indexed cometProxy, uint104 oldTargetReserves, uint104 newTargetReserves);
+#     - event UpdateAsset(address indexed cometProxy, AssetConfig oldAssetConfig, AssetConfig newAssetConfig);
+#     - event UpdateAssetPriceFeed(address indexed cometProxy, address indexed asset, address oldPriceFeed, address newPriceFeed);
+#     - event UpdateAssetBorrowCollateralFactor(address indexed cometProxy, address indexed asset, uint64 oldBorrowCF, uint64 newBorrowCF);
+#     - event UpdateAssetLiquidateCollateralFactor(address indexed cometProxy, address indexed asset, uint64 oldLiquidateCF, uint64 newLiquidateCF);
+#     - event UpdateAssetLiquidationFactor(address indexed cometProxy, address indexed asset, uint64 oldLiquidationFactor, uint64 newLiquidationFactor);
+#     - event UpdateAssetSupplyCap(address indexed cometProxy, address indexed asset, uint128 oldSupplyCap, uint128 newSupplyCap);
+compound-v3-tokens: # all simple ERC20
   contracts:
-    - 0x316f9708bB98af7dA9c68C1C3b5e79039cD336E3 # for both USDC & WETH
-  events:
-    - event AddAsset(address indexed cometProxy, AssetConfig assetConfig);
-    - event CometDeployed(address indexed cometProxy, address indexed newComet);
-    - event GovernorTransferred(address indexed oldGovernor, address indexed newGovernor);
-    - event SetFactory(address indexed cometProxy, address indexed oldFactory, address indexed newFactory);
-    - event SetGovernor(address indexed cometProxy, address indexed oldGovernor, address indexed newGovernor);
-    - event SetConfiguration(address indexed cometProxy, Configuration oldConfiguration, Configuration newConfiguration);
-    - event SetPauseGuardian(address indexed cometProxy, address indexed oldPauseGuardian, address indexed newPauseGuardian);
-    - event SetBaseTokenPriceFeed(address indexed cometProxy, address indexed oldBaseTokenPriceFeed, address indexed newBaseTokenPriceFeed);
-    - event SetExtensionDelegate(address indexed cometProxy, address indexed oldExt, address indexed newExt);
-    - event SetSupplyKink(address indexed cometProxy,uint64 oldKink, uint64 newKink);
-    - event SetSupplyPerYearInterestRateSlopeLow(address indexed cometProxy,uint64 oldIRSlopeLow, uint64 newIRSlopeLow);
-    - event SetSupplyPerYearInterestRateSlopeHigh(address indexed cometProxy,uint64 oldIRSlopeHigh, uint64 newIRSlopeHigh);
-    - event SetSupplyPerYearInterestRateBase(address indexed cometProxy,uint64 oldIRBase, uint64 newIRBase);
-    - event SetBorrowKink(address indexed cometProxy,uint64 oldKink, uint64 newKink);
-    - event SetBorrowPerYearInterestRateSlopeLow(address indexed cometProxy,uint64 oldIRSlopeLow, uint64 newIRSlopeLow);
-    - event SetBorrowPerYearInterestRateSlopeHigh(address indexed cometProxy,uint64 oldIRSlopeHigh, uint64 newIRSlopeHigh);
-    - event SetBorrowPerYearInterestRateBase(address indexed cometProxy,uint64 oldIRBase, uint64 newIRBase);
-    - event SetStoreFrontPriceFactor(address indexed cometProxy, uint64 oldStoreFrontPriceFactor, uint64 newStoreFrontPriceFactor);
-    - event SetBaseTrackingSupplySpeed(address indexed cometProxy, uint64 oldBaseTrackingSupplySpeed, uint64 newBaseTrackingSupplySpeed);
-    - event SetBaseTrackingBorrowSpeed(address indexed cometProxy, uint64 oldBaseTrackingBorrowSpeed, uint64 newBaseTrackingBorrowSpeed);
-    - event SetBaseMinForRewards(address indexed cometProxy, uint104 oldBaseMinForRewards, uint104 newBaseMinForRewards);
-    - event SetBaseBorrowMin(address indexed cometProxy, uint104 oldBaseBorrowMin, uint104 newBaseBorrowMin);
-    - event SetTargetReserves(address indexed cometProxy, uint104 oldTargetReserves, uint104 newTargetReserves);
-    - event UpdateAsset(address indexed cometProxy, AssetConfig oldAssetConfig, AssetConfig newAssetConfig);
-    - event UpdateAssetPriceFeed(address indexed cometProxy, address indexed asset, address oldPriceFeed, address newPriceFeed);
-    - event UpdateAssetBorrowCollateralFactor(address indexed cometProxy, address indexed asset, uint64 oldBorrowCF, uint64 newBorrowCF);
-    - event UpdateAssetLiquidateCollateralFactor(address indexed cometProxy, address indexed asset, uint64 oldLiquidateCF, uint64 newLiquidateCF);
-    - event UpdateAssetLiquidationFactor(address indexed cometProxy, address indexed asset, uint64 oldLiquidationFactor, uint64 newLiquidationFactor);
-    - event UpdateAssetSupplyCap(address indexed cometProxy, address indexed asset, uint128 oldSupplyCap, uint128 newSupplyCap);
-Compound-v3-TokenUSDC: # all simple ERC20
-  contracts:
+    # TokenUSDC
     - 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 # USDC
     - 0xc00e94Cb662C3520282E6f5717214004A7f26888 # COMP (same to v2)
     - 0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599 # WBTC
     - 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2 # WTEH
     - 0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984 # UNI
     - 0x514910771AF9Ca656af840dff83E8264EcF986CA # LINK
-  events:
-    - event Transfer(address indexed from, address indexed to, uint amount);
-Compound-v3-TokenWETH:
-  contracts:
+    # TokenWETH
     - 0xBe9895146f7AF43049ca1c1AE358B0541Ea49704 # cbETH
     - 0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0 # wstETH
     - 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2 # WETH

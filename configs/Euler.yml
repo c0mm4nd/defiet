@@ -1,4 +1,4 @@
-Euler: # https://docs.euler.finance/euler-protocol/addresses
+euler-pools: # https://docs.euler.finance/euler-protocol/addresses
   contracts:
     - 0x27182842E098f60e3D576794A5bFFb0777E025d3
   events: # https://github.com/euler-xyz/euler-contracts/blob/dfaa7788b17ac7c2a826a3ed242d7181998a778f/contracts/Events.sol
@@ -54,7 +54,7 @@ Euler: # https://docs.euler.finance/euler-protocol/addresses
     - event RequestSwap(address indexed accountIn, address indexed accountOut, address indexed underlyingIn, address underlyingOut, uint amount, uint swapType);
     - event RequestSwapHub(address indexed accountIn, address indexed accountOut, address indexed underlyingIn, address underlyingOut, uint amountIn, uint amountOut, uint mode, address swapHandler);
     - event RequestSwapHubRepay(address indexed accountIn, address indexed accountOut, address indexed underlyingIn, address underlyingOut, uint targetDebt, address swapHandler);
-Euler-Token:
+euler-tokens:
   contracts:
     - 0xd9fcd98c322942075a5c3860693e9f4f03aae07b
   events:

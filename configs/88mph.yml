@@ -25,7 +25,7 @@
     - event EPayFundingInterest(uint256 indexed fundingID,uint256 interestAmount,uint256 refundAmount);
     - ESetParamAddress(address indexed sender,string indexed paramName,address newValue)
     - ESetParamUint(address indexed sender,string indexed paramName,uint256 newValue)
-88mph-Token:
+88mph-tokens:
   contracts:
     - 0x8888801aF4d980682e47f1A9036e589479e835C5 # MPHToken
   events:

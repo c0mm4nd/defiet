@@ -1,4 +1,4 @@
-Yield_Protocol: # TODO
+yield-protocol-pools: # TODO
   contracts:
     - 0xE33B15629739770a27c4726a22BE61128aa1c781
   events:
@@ -6,7 +6,7 @@ Yield_Protocol: # TODO
     - Withdraw(address indexed user, uint256 indexed pid)
     - Claim(address indexed user, uint256 indexed pid)
     - Unstake(address indexed user, uint256 indexed pid)
-Yield_Protocol-Token:
+yield-protocol-tokens:
   contracts:
     - 0xa8B61CfF52564758A204F841E636265bEBC8db9B
   events:
