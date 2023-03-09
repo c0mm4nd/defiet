@@ -1,0 +1,10 @@
+88mph-pools:
+  deopsit: 
+    name: EDeopsit
+    user: sender  
+    token: depositID
+  withdraw: 
+    name: EWithdraw
+  borrow: null
+  repay: null
+  liquidate: null

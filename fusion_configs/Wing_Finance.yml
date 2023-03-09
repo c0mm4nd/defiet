@@ -1,0 +1,9 @@
+Wing_Finance:
+  deopsit: null
+  withdraw: null
+  borrow: 
+    name: Borrow
+  repay: 
+    name: RepayBorrow
+  liquidate: 
+    name: LiquidateBorrow

@@ -1,0 +1,11 @@
+dForce-controller:
+  deopsit: 
+    name: Mint
+  withdraw: 
+    name: Redeem
+  borrow: 
+    name: Borrow
+  repay: 
+    name: RepayBorrow
+  liquidate: 
+    name: LiquidateBorrow
