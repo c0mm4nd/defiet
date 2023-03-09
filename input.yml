@@ -1,6 +1,0 @@
-TEMP:
-  contracts:
-    - "0x000000000000AAeB6D7670E522A718067333cd4E"
-  events:
-    -  SubscriptionUpdated ( address indexed registrant, address indexed subscription, bool indexed subscribed)
-    - RegistrationUpdated (address indexed registrant, bool indexed registered)
