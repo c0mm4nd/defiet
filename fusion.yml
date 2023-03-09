@@ -1,9 +1,4 @@
-Sturdy:
-  deopsit: Deopsit
-  withdraw: Withdraw
-  borrow: Borrow
-  repay: RepayBorrow
-  liquidate: LiquidateCall
+
 Wing_Finance:
   deopsit: null
   withdraw: null

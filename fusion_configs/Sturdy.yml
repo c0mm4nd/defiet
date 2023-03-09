@@ -1,0 +1,6 @@
+Sturdy:
+  deopsit: Deopsit
+  withdraw: Withdraw
+  borrow: Borrow
+  repay: RepayBorrow
+  liquidate: LiquidateCall
