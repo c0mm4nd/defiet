@@ -286,12 +286,12 @@ async fn dump_event_logs_from_contract(
                     pos += 32;
                     format!("{:#x}", Address::from(H256::from_slice(raw)))
                 }
-                "uint256" | "uint128" | "uint64" | "uint32" | "uint16" | "uint8" => {
+                "uint256" | "uint128" | "uint96" | "uint64" | "uint32" | "uint16" | "uint8" | "uint" => {
                     let raw = &raw_data[pos..pos + 32];
                     pos += 32;
                     U256::from(raw).to_string()
                 }
-                "int256" | "int128" | "int64" | "int32" | "int16" | "int8" => {
+                "int256" | "int128" | "int96" | "int64" | "int32" | "int16" | "int8" | "int" => {
                     let raw = &raw_data[pos..pos + 32];
                     pos += 32;
                     I256::from_raw(raw.into()).to_string()
@@ -302,18 +302,48 @@ async fn dump_event_logs_from_contract(
                     (U256::from(raw).is_zero()).to_string()
                 }
                 "string" => {
+                    // read offset
+                    // https://ethereum.stackexchange.com/questions/114592/how-is-function-data-encoded-decoded-if-a-string-exceeds-the-32-byte-length
+                    let _ = &raw_data[pos..pos + 32]; // must be 0x20
+                    pos += 32;
                     // read_length
                     let raw = &raw_data[pos..pos + 32];
                     pos += 32;
-                    let len_u256 = U256::from(raw).as_usize();
-                    let raw = &raw_data[pos..pos + 32 * len_u256];
-                    String::from_utf8(raw.to_vec()).unwrap()
+                    let len_str = U256::from(raw).as_usize();
+                    let mut len_b32 = len_str / 32;
+                    if len_b32 * 32 < len_str {
+                        len_b32+=1
+                    }
+
+                    let raw = &raw_data[pos..pos + 32 * len_b32];
+                    pos += 32*len_b32;
+                    
+                    let raw_str = &raw[..len_str];
+                    String::from_utf8(raw_str.to_vec()).unwrap()
+                }
+                "bytes" => {
+                    // read offset
+                    // https://ethereum.stackexchange.com/questions/114592/how-is-function-data-encoded-decoded-if-a-string-exceeds-the-32-byte-length
+                    let _ = &raw_data[pos..pos + 32]; // must be 0x20
+                    pos += 32;
+                    // read_length
+                    let raw = &raw_data[pos..pos + 32];
+                    pos += 32;
+                    let len_bytes = U256::from(raw).as_usize();
+                    let mut len_b32 = len_bytes / 32;
+                    if len_b32 * 32 < len_bytes {
+                        len_b32+=1
+                    }
+
+                    let raw = &raw_data[pos..pos + 32 * len_b32];
+                    pos += 32*len_b32;
+                    
+                    let raw_bytes = &raw[..len_bytes];
+                    format!("{:#x}", H256::from_slice(raw_bytes))
                 }
                 "bytes32" => {
                     let raw = &raw_data[pos..pos + 32];
                     pos += 32;
-                    let len_u256 = U256::from(raw).as_usize();
-                    let raw = &raw_data[pos..pos + 32 * len_u256];
                     format!("{:#x}", H256::from_slice(raw))
                 }
                 _ => panic!("unknown type {} in data", param.evm_type),
