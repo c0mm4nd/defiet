@@ -309,6 +309,13 @@ async fn dump_event_logs_from_contract(
                     let raw = &raw_data[pos..pos + 32 * len_u256];
                     String::from_utf8(raw.to_vec()).unwrap()
                 }
+                "bytes32" => {
+                    let raw = &raw_data[pos..pos + 32];
+                    pos += 32;
+                    let len_u256 = U256::from(raw).as_usize();
+                    let raw = &raw_data[pos..pos + 32 * len_u256];
+                    format!("{:#x}", H256::from_slice(raw))
+                }
                 _ => panic!("unknown type {} in data", param.evm_type),
             };
 
