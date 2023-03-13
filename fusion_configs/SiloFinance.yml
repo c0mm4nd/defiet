@@ -1,12 +1,12 @@
 silo-finance-pools:
   deopsit: 
     name: Deopsit
-    user: user
+    user: depositor
     asset: asset
     amount: amount
   withdraw: 
     name: Withdraw
-    user: user
+    user: depositor
     withdrawer: receiver
     asset: asset
     amount: amount
