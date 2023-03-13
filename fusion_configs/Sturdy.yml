@@ -1,6 +1,12 @@
 sturdy-pools:
-  deopsit: Deopsit
-  withdraw: Withdraw
-  borrow: Borrow
-  repay: RepayBorrow
-  liquidate: LiquidateCall
+  deopsit: 
+    name: Deopsit
+  withdraw: 
+    name: Withdraw
+  borrow: 
+    name: Borrow
+  repay: 
+    name: RepayBorrow
+  liquidate: 
+    name: LiquidateCall
+    

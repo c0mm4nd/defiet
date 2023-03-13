@@ -19,19 +19,34 @@ compound-v2-pools:
     repayer: account
     asset: asset
     amount: amount
-  liquidate: #TODO: not sure
+  liquidate:
     name: BorrowLiquidated
     liquidator: liquidator
     asset: assetBorrow
-    amount: 
+    amount: amountSeized
 compound-v3-pools:
   deopsit: 
     name: Supply
+    depositor: from
+    asset: dst
+    amount: amount
   withdraw: 
     name: Withdraw
+    withdrawer: to
+    asset: src
+    amount: amount
   borrow: 
-    name: 
+    name: SupplyCollateral
+    borrower: from
+    asset: asset
+    amount: amount
   repay: 
-    name: 
+    name: WithdrawCollateral
+    repayer: to
+    asset: asset
+    amount: amount
   liquidate: 
-    name: 
+    name: AbsorbCollateral
+    liquidator: borrower
+    asset: absorber
+    amount: collateralAbsorbed
