@@ -9,10 +9,18 @@ logging.basicConfig(
     level=logging.INFO,
     datefmt='%Y-%m-%d %H:%M:%S')
 
-client = MongoClient('mongodb://%s:%s@172.24.1.2:2717' % ("lab0", "icaneatglass"))
+import argparse
+parser = argparse.ArgumentParser(
+                    prog = 'fusion',
+                    description = 'What the program does',
+                    epilog = 'Text at the bottom of help')
+parser.add_argument('-src', '--source', type=str, default="csv_output")
+parser.add_argument('-m', '--mongo', type=str, default="mongodb://127.0.0.1:27017")
+args = parser.parse_args()
+
+client = MongoClient(args.mongo)
 db = client["DeFiET"]
 
-folder = "csv_output"
 threads = []
 
 def load(f):
@@ -20,7 +28,7 @@ def load(f):
     coll_name = f.replace(".csv", "")
     coll = db[coll_name]
     writes = []
-    with open(join(folder, f)) as csvfile:
+    with open(join(args.source, f)) as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
             writes.append(InsertOne(row))
@@ -29,7 +37,7 @@ def load(f):
     logging.warning(f + " ends")
 
 for f in listdir("csv_output"):
-    if not isfile(join(folder, f)):
+    if not isfile(join(args.source, f)):
         continue
     t = Thread(target=load, args=(f,))
     t.start()
