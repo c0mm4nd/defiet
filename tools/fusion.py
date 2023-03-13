@@ -74,6 +74,8 @@ def handle_protocol(protocol_name, protocol_config):
             row ={}
             for col in cols:
                 src_col = src_config[col]
+                if src_col is None:
+                    continue
                 row[col] = log[src_col]
             for col in ["block_number", "transaction_hash", "transaction_from", "transaction_to", "contract"]:
                 row[col] = log[col]
