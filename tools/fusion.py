@@ -61,6 +61,10 @@ def handle_protocol(protocol_name, protocol_config):
 
         dst_coll = getattr(fusion, fusion_type_name)
         src_config = protocol_config[fusion_type_name]
+        if src_config is None:
+            logging.warning(f"{protocol_name}.{fusion_type_name} is null, skipping...")
+            continue
+            return
         src_coll_name = f"{protocol_name}_{src_config['name']}"
         cols = list(src_config.keys())
         cols.remove("name")
