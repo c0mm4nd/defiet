@@ -29,9 +29,7 @@ async fn main() {
     let args = Args::parse();
 
     // let db = DB::open_default("./db").unwrap();
-    let provider = Provider::<Ws>::connect(args.ethereum)
-        .await
-        .unwrap(); // // Provider::<Ws>::connect("wss://mainnet.infura.io/ws/v3/dc6980e1063b421bbcfef8d7f58ccd43")
+    let provider = Provider::<Ws>::connect(args.ethereum).await.unwrap(); // // Provider::<Ws>::connect("wss://mainnet.infura.io/ws/v3/dc6980e1063b421bbcfef8d7f58ccd43")
     let v = provider.client_version().await.unwrap();
     log::warn!("{v}");
 
@@ -107,12 +105,21 @@ async fn parse_config(provider: Provider<Ws>, path: String) -> Kanban {
     for (task_name, v) in input {
         log::debug!("{:?}", task_name);
         let task_detail = v.as_mapping().unwrap();
-        let mut contracts =  match task_detail.get("contracts") {
-            Some(contracts) => contracts.as_sequence().unwrap().iter().map(|addr| Address::from_str(addr.as_str().unwrap()).unwrap()).collect(),
+        let mut contracts = match task_detail.get("contracts") {
+            Some(contracts) => contracts
+                .as_sequence()
+                .unwrap()
+                .iter()
+                .map(|addr| Address::from_str(addr.as_str().unwrap()).unwrap())
+                .collect(),
             None => Vec::new(),
         };
         if task_detail.contains_key("factory") {
-            let contracts_from_factory = get_contracts_from_factory(provider.clone(), task_detail["factory"].as_mapping().unwrap()).await;
+            let contracts_from_factory = get_contracts_from_factory(
+                provider.clone(),
+                task_detail["factory"].as_mapping().unwrap(),
+            )
+            .await;
             contracts.extend(contracts_from_factory);
         }
 
@@ -138,26 +145,39 @@ async fn parse_config(provider: Provider<Ws>, path: String) -> Kanban {
     return Kanban { tasks };
 }
 
-async fn get_contracts_from_factory(    provider: Provider<Ws>, factory_config: &Mapping) -> Vec<H160> {
+async fn get_contracts_from_factory(provider: Provider<Ws>, factory_config: &Mapping) -> Vec<H160> {
     let mut contracts = Vec::new();
     if factory_config.contains_key("event") {
         // catch addresses by events
-        let factories: Vec<H160> = factory_config["contracts"].as_sequence().unwrap().iter().map(|addr| Address::from_str(addr.as_str().unwrap()).unwrap()).collect();
+        let factories: Vec<H160> = factory_config["contracts"]
+            .as_sequence()
+            .unwrap()
+            .iter()
+            .map(|addr| Address::from_str(addr.as_str().unwrap()).unwrap())
+            .collect();
         let event = event_parser::Event::new(factory_config["event"].as_str().unwrap().to_string());
         let filter = Filter::new()
-        // .from_block(16_000_000)
+            // .from_block(16_000_000)
             .from_block(0_000_000)
-            .to_block(16_200_000)
+            // .to_block(16_200_000)
             .event(&event.to_signature())
             .address(factories);
-        let arg_index: usize = factory_config["arg"].as_i64().unwrap_or(0).try_into().unwrap();
+        let arg_index: usize = factory_config["arg"]
+            .as_i64()
+            .unwrap_or(0)
+            .try_into()
+            .unwrap();
         let mut stream = provider.get_logs_paginated(&filter, 100);
         while let Some(log) = stream.next().await {
             let log = log.unwrap();
             if arg_index < log.topics.len() {
-                let new_contract_addr = Address::from(log.topics[1+arg_index]);
+                let new_contract_addr = Address::from(log.topics[1 + arg_index]);
                 contracts.push(new_contract_addr);
-                log::debug!("got contract {:#x} from factory {:#x}", new_contract_addr, log.address);
+                log::debug!(
+                    "got contract {:#x} from factory {:#x}",
+                    new_contract_addr,
+                    log.address
+                );
             }
             // TODO: support data
         }
@@ -189,9 +209,10 @@ async fn dump_event_logs_from_contract(
         "block_number",
         "transaction_hash",
         "transaction_from", // tx from
-        "transaction_to", // tx to
+        "transaction_to",   // tx to
+        "transaction_value",   // tx value
         "contract",
-                  // "transaction_log_index",
+        // "transaction_log_index",
     ];
     for (i, e) in events.iter().enumerate() {
         let mut fields = Vec::from(fixed_fields);
@@ -208,7 +229,7 @@ async fn dump_event_logs_from_contract(
     let filter = Filter::new()
         // .from_block(16_000_000)
         .from_block(0_000_000)
-        .to_block(16_200_000)
+        // .to_block(16_200_000)
         .events(event_signatures)
         .address(addrs);
     let mut stream = provider.get_logs_paginated(&filter, 100);
@@ -226,6 +247,7 @@ async fn dump_event_logs_from_contract(
         record.push(log.block_number.unwrap().to_string());
         record.push(format!("{:#x}", log.transaction_hash.unwrap()));
         record.push(format!("{:#x}", tx.from));
+        record.push(tx.value.to_string());
         record.push(match tx.to {
             None => "".to_owned(),
             Some(to) => format!("{:#x}", to),
@@ -286,7 +308,8 @@ async fn dump_event_logs_from_contract(
                     pos += 32;
                     format!("{:#x}", Address::from(H256::from_slice(raw)))
                 }
-                "uint256" | "uint128" | "uint96" | "uint64" | "uint32" | "uint16" | "uint8" | "uint" => {
+                "uint256" | "uint128" | "uint96" | "uint64" | "uint32" | "uint16" | "uint8"
+                | "uint" => {
                     let raw = &raw_data[pos..pos + 32];
                     pos += 32;
                     U256::from(raw).to_string()
@@ -312,12 +335,12 @@ async fn dump_event_logs_from_contract(
                     let len_str = U256::from(raw).as_usize();
                     let mut len_b32 = len_str / 32;
                     if len_b32 * 32 < len_str {
-                        len_b32+=1
+                        len_b32 += 1
                     }
 
                     let raw = &raw_data[pos..pos + 32 * len_b32];
-                    pos += 32*len_b32;
-                    
+                    pos += 32 * len_b32;
+
                     let raw_str = &raw[..len_str];
                     String::from_utf8(raw_str.to_vec()).unwrap()
                 }
@@ -332,12 +355,12 @@ async fn dump_event_logs_from_contract(
                     let len_bytes = U256::from(raw).as_usize();
                     let mut len_b32 = len_bytes / 32;
                     if len_b32 * 32 < len_bytes {
-                        len_b32+=1
+                        len_b32 += 1
                     }
 
                     let raw = &raw_data[pos..pos + 32 * len_b32];
-                    pos += 32*len_b32;
-                    
+                    pos += 32 * len_b32;
+
                     let raw_bytes = &raw[..len_bytes];
                     format!("{:#x}", H256::from_slice(raw_bytes))
                 }
