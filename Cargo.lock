@@ -781,6 +781,7 @@ dependencies = [
  "clap 4.1.6",
  "csv",
  "ethers",
+ "hex",
  "log",
  "pretty_env_logger",
  "rocksdb",

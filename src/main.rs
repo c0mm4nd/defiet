@@ -29,7 +29,7 @@ async fn main() {
     let args = Args::parse();
 
     // let db = DB::open_default("./db").unwrap();
-    let provider = Provider::<Ws>::connect(args.ethereum).await.unwrap(); // // Provider::<Ws>::connect("wss://mainnet.infura.io/ws/v3/dc6980e1063b421bbcfef8d7f58ccd43")
+    let provider = Provider::<Ws>::connect(args.ethereum).await.unwrap();
     let v = provider.client_version().await.unwrap();
     log::warn!("{v}");
 
@@ -227,7 +227,6 @@ async fn dump_event_logs_from_contract(
 
     log::warn!("{}: {:?}", task, event_signatures);
     let filter = Filter::new()
-        // .from_block(16_000_000)
         .from_block(0_000_000)
         // .to_block(16_200_000)
         .events(event_signatures)
@@ -264,7 +263,7 @@ async fn dump_event_logs_from_contract(
             }
         };
         let event = &events[event_index];
-        log::debug!("{}: found event {:?}", task, event);
+        log::debug!("{}: found event {} on tx: {:#x}", task, event.name, log.transaction_hash.unwrap());
 
         assert!(
             event.topics.len() == log.topics.len() - 1,
@@ -283,12 +282,12 @@ async fn dump_event_logs_from_contract(
                 }
                 "bool" => (!raw.is_zero()).to_string(),
                 "string" => {
-                    log::error!("{}.{}: {:#x} is a hash of string", task, event.name, raw);
+                    // log::error!("{}.{}: {:#x} is a hash of string", task, event.name, raw);
                     // panic!("string in index?")
                     format!("{:#x}", raw) // = keccak(the_string)
                 }
                 "bytes32" => {
-                    log::error!("{}.{}: {:#x} is a byte32", task, event.name, raw);
+                    // log::error!("{}.{}: {:#x} is a byte32", task, event.name, raw);
                     // panic!("string in index?")
                     format!("{:#x}", raw)
                 }
@@ -299,8 +298,9 @@ async fn dump_event_logs_from_contract(
         }
 
         // read from data
-        let raw_data = log.data;
+        let mut raw_data = log.data;
         let mut pos: usize = 0;
+        let mut suffix: usize = 0;
         for (index, param) in event.data.iter().enumerate() {
             let value = match param.evm_type.as_str() {
                 "address" => {
@@ -327,42 +327,45 @@ async fn dump_event_logs_from_contract(
                 "string" => {
                     // read offset
                     // https://ethereum.stackexchange.com/questions/114592/how-is-function-data-encoded-decoded-if-a-string-exceeds-the-32-byte-length
-                    let _ = &raw_data[pos..pos + 32]; // must be 0x20
+                    // https://ethereum.stackexchange.com/questions/143471/how-does-etherscan-get-such-data
+                    let raw = &raw_data[pos..pos + 32]; // must be 0x20
                     pos += 32;
+                    let offset = U256::from(raw).as_usize();
                     // read_length
-                    let raw = &raw_data[pos..pos + 32];
-                    pos += 32;
+                    let raw = &raw_data[offset..offset+32];
+
                     let len_str = U256::from(raw).as_usize();
                     let mut len_b32 = len_str / 32;
                     if len_b32 * 32 < len_str {
                         len_b32 += 1
                     }
 
-                    let raw = &raw_data[pos..pos + 32 * len_b32];
-                    pos += 32 * len_b32;
-
+                    let raw = &raw_data[offset+32..offset+32 + 32 * len_b32];
                     let raw_str = &raw[..len_str];
+
+                    suffix += 32 + 32 * len_b32;
                     String::from_utf8(raw_str.to_vec()).unwrap()
                 }
                 "bytes" => {
                     // read offset
                     // https://ethereum.stackexchange.com/questions/114592/how-is-function-data-encoded-decoded-if-a-string-exceeds-the-32-byte-length
-                    let _ = &raw_data[pos..pos + 32]; // must be 0x20
+                    let raw = &raw_data[pos..pos + 32]; // must be 0x20
                     pos += 32;
+                    let offset = U256::from(raw).as_usize();
                     // read_length
-                    let raw = &raw_data[pos..pos + 32];
-                    pos += 32;
+                    let raw = &raw_data[offset..offset+32];
+
                     let len_bytes = U256::from(raw).as_usize();
                     let mut len_b32 = len_bytes / 32;
                     if len_b32 * 32 < len_bytes {
                         len_b32 += 1
                     }
 
-                    let raw = &raw_data[pos..pos + 32 * len_b32];
-                    pos += 32 * len_b32;
-
+                    let raw = &raw_data[offset+32..offset+32 + 32 * len_b32];
                     let raw_bytes = &raw[..len_bytes];
-                    format!("{:#x}", H256::from_slice(raw_bytes))
+
+                    suffix += 32 + 32 * len_b32;
+                    format!("{}", hex::encode(raw_bytes))
                 }
                 "bytes32" => {
                     let raw = &raw_data[pos..pos + 32];
@@ -375,7 +378,7 @@ async fn dump_event_logs_from_contract(
             record.push(value);
         }
         assert!(
-            pos == raw_data.len(),
+            pos + suffix == raw_data.len(),
             "{}.{}: data parsed {} != {} in actual",
             task,
             event.name,
