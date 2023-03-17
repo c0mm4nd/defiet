@@ -18,6 +18,10 @@ struct Args {
     #[arg(short, long, default_value = "./input.yml")]
     config: String,
 
+    /// config path, can be file or folder
+    #[arg(short, long, default_value = "./output")]
+    output: String,
+
     /// run for each protocol in parallel
     #[arg(short, long, default_value_t = false)]
     parallel: bool,
@@ -39,12 +43,14 @@ async fn main() {
     let mut handles: Vec<_> = vec![];
     for task in tasks {
         let provider = provider.clone();
+        let output = args.output.clone();
         if args.parallel {
             handles.push(tokio::spawn(async move {
                 log::warn!("Start task {}", task.name);
                 dump_event_logs_from_contract(
                     provider,
                     task.name,
+                    output,
                     task.contracts,
                     task.events.to_vec(),
                 )
@@ -54,6 +60,7 @@ async fn main() {
             dump_event_logs_from_contract(
                 provider,
                 task.name,
+                output,
                 task.contracts,
                 task.events.to_vec(),
             )
@@ -189,12 +196,13 @@ async fn get_contracts_from_factory(provider: Provider<Ws>, factory_config: &Map
 async fn dump_event_logs_from_contract(
     provider: Provider<Ws>,
     task: String,
+    output: String,
     addrs: Vec<Address>,
     events: Vec<event_parser::Event>,
 ) {
     let event_signatures: Vec<String> = events.iter().map(|e| e.to_signature()).collect();
     let event_hashes: Vec<H256> = events.iter().map(|e| e.hash()).collect();
-    let path = Path::new(".").join("csv_output");
+    let path = Path::new(&output);
     if !path.exists() {
         fs::create_dir_all(&path).unwrap();
     }
