@@ -2,14 +2,14 @@ mod config_parser;
 
 use clap::Parser;
 use csv::Writer;
-use ethers::abi::{Hash, RawLog};
-use ethers::{prelude::*, providers::Provider};
-use serde_yaml::Mapping;
+use ethers::abi::{Hash, RawLog, Address, ethereum_types, Abi, Token};
+use ethers::providers::{Ws, Middleware, StreamExt};
+use ethers::types::{U256, I256, H256, Filter};
+use ethers::{providers::Provider};
 use std::collections::{BTreeMap, HashMap};
 use std::fmt::Debug;
 use std::{fs, fs::File, path::Path, str::FromStr};
 
-use crate::abi::Contract;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -81,7 +81,7 @@ async fn dump_logs_from_events(
     events: Vec<config_parser::Event>,
 ) {
     let event_signatures: Vec<String> = events.iter().map(|e| e.to_signature()).collect();
-    let event_hashes: Vec<H256> = events.iter().map(|e| e.hash()).collect();
+    let event_hashes: Vec<Hash> = events.iter().map(|e| e.hash()).collect();
     let path = Path::new(&output);
     if !path.exists() {
         fs::create_dir_all(&path).unwrap();
@@ -200,7 +200,7 @@ async fn dump_logs_from_events(
                 "address" => {
                     let raw = &raw_data[pos..pos + 32];
                     pos += 32;
-                    format!("{:#x}", Address::from(H256::from_slice(raw)))
+                    format!("{:#x}", Address::from(Hash::from_slice(raw)))
                 }
                 "uint256" | "uint128" | "uint96" | "uint64" | "uint32" | "uint16" | "uint8"
                 | "uint" => {
@@ -264,7 +264,7 @@ async fn dump_logs_from_events(
                 "bytes32" => {
                     let raw = &raw_data[pos..pos + 32];
                     pos += 32;
-                    format!("{:#x}", H256::from_slice(raw))
+                    format!("{:#x}", Hash::from_slice(raw))
                 }
                 _ => panic!(
                     "unknown type {} in data, suggest to use abi instead",
@@ -296,7 +296,7 @@ async fn dump_logs_from_abi(
     task: String,
     output: String,
     addrs: Vec<Address>,
-    abi: Contract,
+    abi: Abi,
 ) {
     let event_signature_map: BTreeMap<_, _> = abi.events().map(|e| (e.signature(), e)).collect();
 
@@ -304,8 +304,7 @@ async fn dump_logs_from_abi(
     if !path.exists() {
         fs::create_dir_all(&path).unwrap();
     }
-    let mut event_writers: BTreeMap<H256, Writer<File>> = abi
-        .events()
+    let mut event_writers: BTreeMap<_, Writer<File>> = abi.events()
         .map(|e| {
             let path = path.join(format!("{}_{}.csv", task, e.name));
             (
@@ -368,14 +367,22 @@ async fn dump_logs_from_abi(
 
         let sig = &log.topics[0];
         let event = event_signature_map.get(sig).unwrap();
-        let raw_log = RawLog {
-            topics: log.clone().topics,
-            data: log.data.to_vec(),
-        };
 
-        let abi_log = event.parse_log(raw_log).unwrap();
-        for param in abi_log.params {
-            record.push(param.value.to_string())
+        let raw_log = event.parse_log_whole(RawLog { topics: log.topics.to_vec(), data: log.data.to_vec() }).unwrap();
+        for param in raw_log.params {
+            match &param.value {
+                Token::Address(addr) => record.push(addr.to_string()),
+                Token::Uint(u) => record.push(u.to_string()),
+                Token::Int(i) => record.push(i.to_string()),
+                Token::Bool(ok) => record.push(ok.to_string()),
+                Token::FixedBytes(bytes) => record.push(hex::encode(bytes)),
+                Token::FixedArray(_) => todo!(),
+                Token::String(s) => record.push(s.clone()),
+                Token::Bytes(bytes) => record.push(hex::encode(bytes)),
+                Token::Array(_) => todo!(),
+                Token::Tuple(_) => todo!(),
+            }
+            
         }
 
         event_writers

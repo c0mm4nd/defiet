@@ -5,19 +5,19 @@ use std::{
 };
 
 use ethers::{
-    prelude::*,
     types::{Address, Filter, H160, H256},
-    utils::keccak256,
+    utils::{keccak256, to_checksum}, providers::{Provider, Ws, Middleware, StreamExt}, abi::Abi,
 };
 use serde_yaml::Mapping;
-use crate::abi::Contract;
 
-#[derive(Debug, Clone)]
+
+
+#[derive(Debug)]
 pub struct Task {
     pub name: String,
     pub contracts: Vec<Address>,
     pub simple_events: Vec<Event>,
-    pub abi: Option<Contract>,
+    pub abi: Option<Abi>,
 }
 
 pub async fn parse_config(provider: Provider<Ws>, path: String) -> Vec<Task> {
@@ -70,8 +70,8 @@ pub async fn parse_config(provider: Provider<Ws>, path: String) -> Vec<Task> {
         }
 
         // optional
-        let simple_events = match task_detail["events"].as_sequence() {
-            Some(input_events) => input_events
+        let simple_events = match task_detail.get("events") {
+            Some(input_events) => input_events.as_sequence().unwrap()
                 .to_owned()
                 .iter()
                 .map(|c| Event::new(c.as_str().unwrap().to_string()))
@@ -79,8 +79,11 @@ pub async fn parse_config(provider: Provider<Ws>, path: String) -> Vec<Task> {
             None => Vec::new(),
         };
 
-        let abi = match task_detail["abi"].as_str() {
-            Some(readable_abi) => Some(ethers::abi::parse_abi_str(readable_abi).unwrap()),
+        let abi = match task_detail.get("abi") {
+            Some(abi_json_v) => {
+                // println!("{}", abi_json_v.as_str().unwrap());
+                Some(serde_json::from_str::<Abi>(abi_json_v.as_str().unwrap()).unwrap())
+            },
             None => None,
         };
 
