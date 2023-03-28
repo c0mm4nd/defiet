@@ -20,6 +20,7 @@
         ],
         "module": "aave/index.js",
         "twitter": "AaveAave",
+        "treasury": "aave.js",
         "audit_links": [
             "https://aave.com/security"
         ],
@@ -28,27 +29,27 @@
         ],
         "parentProtocol": "AAVE",
         "slug": "aave-v2",
-        "tvl": 4130338749.096749,
+        "tvl": 4188084206.1419425,
         "chainTvls": {
-            "pool2": 120372059.60062543,
-            "Polygon-borrowed": 62462529.086236574,
-            "Ethereum-pool2": 120372059.60062543,
-            "Ethereum": 3844828919.5824146,
-            "Avalanche": 52640026.14065416,
-            "Ethereum-staking": 286678484.69203895,
-            "Polygon": 232869803.37368014,
-            "Ethereum-borrowed": 1761111895.6279702,
-            "borrowed": 1840238708.2304564,
-            "staking": 286678484.69203895,
-            "Avalanche-borrowed": 16664283.516249659
+            "pool2": 112190746.59081244,
+            "Polygon-borrowed": 52774883.55070725,
+            "Ethereum-pool2": 112190746.59081244,
+            "Ethereum": 3974726428.440503,
+            "Avalanche": 46069137.887739986,
+            "Ethereum-staking": 227843772.4405655,
+            "Polygon": 167288639.81369942,
+            "Ethereum-borrowed": 1693759632.114985,
+            "borrowed": 1765150658.7300253,
+            "staking": 227843772.4405655,
+            "Avalanche-borrowed": 18616143.06433307
         },
-        "change_1h": 0.7842239255660104,
-        "change_1d": 0.7148688736336339,
-        "change_7d": 4.331173361062412,
-        "staking": 286678484.69203895,
-        "pool2": 120372059.60062543,
-        "fdv": 939330982,
-        "mcap": 832460813
+        "change_1h": -0.38250897865432876,
+        "change_1d": -4.612129424045364,
+        "change_7d": -5.443277635560662,
+        "tokenBreakdowns": {},
+        "staking": 227843772.4405655,
+        "pool2": 112190746.59081244,
+        "mcap": 991895610.1789272
     },
     {
         "id": "114",
@@ -76,16 +77,74 @@
             "Chainlink"
         ],
         "parentProtocol": "Compound Finance",
+        "treasury": "compound.js",
         "slug": "compound",
-        "tvl": 1576275462.127617,
+        "tvl": 1370698216.0133832,
         "chainTvls": {
-            "Ethereum": 1576275462.127617,
-            "Ethereum-borrowed": 599522058.82977,
-            "borrowed": 599522058.82977
+            "Ethereum": 1370698216.0133832,
+            "Ethereum-borrowed": 666675148.860867,
+            "borrowed": 666675148.860867
         },
-        "change_1h": 0.12050427723728774,
-        "change_1d": -0.3278062936538788,
-        "change_7d": 2.381357218688862
+        "change_1h": -0.32067631465515944,
+        "change_1d": -2.149372524456979,
+        "change_7d": -1.7181633977400708,
+        "tokenBreakdowns": {}
+    },
+    {
+        "id": "1599",
+        "name": "AAVE V3",
+        "address": "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9",
+        "symbol": "AAVE",
+        "url": "https://aave.com",
+        "description": "Earn interest, borrow assets, and build applications",
+        "chain": "Multi-Chain",
+        "logo": "https://icons.llama.fi/aave-v3.png",
+        "audits": "2",
+        "audit_note": null,
+        "gecko_id": null,
+        "cmcId": null,
+        "category": "Lending",
+        "chains": [
+            "Ethereum",
+            "Avalanche",
+            "Polygon",
+            "Arbitrum",
+            "Optimism",
+            "Fantom",
+            "Harmony"
+        ],
+        "oracles": [],
+        "forkedFrom": [],
+        "module": "aave/v3.js",
+        "twitter": "AaveAave",
+        "audit_links": [
+            "https://aave.com/security"
+        ],
+        "listedAt": 1648776877,
+        "parentProtocol": "AAVE",
+        "slug": "aave-v3",
+        "tvl": 1151453956.5632043,
+        "chainTvls": {
+            "Optimism": 87859616.44928102,
+            "Arbitrum-borrowed": 64573223.19983041,
+            "Polygon-borrowed": 63548302.81033938,
+            "Harmony": 0,
+            "Harmony-borrowed": 1170699.0629749978,
+            "Fantom-borrowed": 111040.43520602954,
+            "Ethereum": 577187635.6575742,
+            "Optimism-borrowed": 29320350.286427002,
+            "Avalanche": 250750434.73938876,
+            "Polygon": 132437557.99983805,
+            "Ethereum-borrowed": 316479253.68934083,
+            "Arbitrum": 102428324.51774472,
+            "borrowed": 575226179.4958161,
+            "Fantom": 790387.1993776442,
+            "Avalanche-borrowed": 100023310.01169734
+        },
+        "change_1h": -0.1284377400414769,
+        "change_1d": -2.3355465815963186,
+        "change_7d": 1.1588325066553438,
+        "tokenBreakdowns": {}
     },
     {
         "id": "2088",
@@ -94,7 +153,7 @@
         "symbol": "COMP",
         "url": "https://v3-app.compound.finance/",
         "description": "Compound is an algorithmic, autonomous interest rate protocol built for developers, to unlock a universe of open financial applications.",
-        "chain": "Ethereum",
+        "chain": "Multi-Chain",
         "logo": "https://icons.llama.fi/compound-v3.png",
         "audits": "2",
         "audit_note": null,
@@ -102,7 +161,8 @@
         "cmcId": null,
         "category": "Lending",
         "chains": [
-            "Ethereum"
+            "Ethereum",
+            "Polygon"
         ],
         "oracles": [
             "Chainlink"
@@ -116,54 +176,18 @@
         "parentProtocol": "Compound Finance",
         "listedAt": 1663169029,
         "slug": "compound-v3",
-        "tvl": 310521890.1974563,
+        "tvl": 458941551.35259086,
         "chainTvls": {
-            "Ethereum": 310521890.1974563,
-            "Ethereum-borrowed": 92021663.55855672,
-            "borrowed": 92021663.55855672
+            "Ethereum": 447681923.54319364,
+            "Polygon": 11259627.809397224,
+            "Ethereum-borrowed": 181149477.51271546,
+            "Polygon-borrowed": 5381808.320432543,
+            "borrowed": 186531285.833148
         },
-        "change_1h": 0.19207052618787657,
-        "change_1d": -1.3442797213947415,
-        "change_7d": 1.5257781020615369
-    },
-    {
-        "id": "1183",
-        "name": "Euler",
-        "address": "0xd9fcd98c322942075a5c3860693e9f4f03aae07b",
-        "symbol": "EUL",
-        "url": "https://www.euler.finance",
-        "description": "Permissionless crypto lending markets are almost here. Euler is a non-custodial protocol on Ethereum that allows users to lend and borrow almost any crypto asset",
-        "chain": "Ethereum",
-        "logo": "https://icons.llama.fi/euler.svg",
-        "audits": "2",
-        "audit_note": null,
-        "gecko_id": "euler",
-        "cmcId": "14280",
-        "category": "Lending",
-        "chains": [
-            "Ethereum"
-        ],
-        "module": "euler/index.js",
-        "twitter": "eulerfinance",
-        "oracles": [
-            "Chainlink"
-        ],
-        "audit_links": [
-            "https://docs.euler.finance/security/smart-contract-audits"
-        ],
-        "listedAt": 1641231917,
-        "slug": "euler",
-        "tvl": 234596031.92128927,
-        "chainTvls": {
-            "Ethereum": 234596031.92128927,
-            "Ethereum-borrowed": 188654934.34476393,
-            "borrowed": 188654934.34476393
-        },
-        "change_1h": 0.3396596460289345,
-        "change_1d": -0.2481184120605775,
-        "change_7d": 13.955650744201378,
-        "fdv": 119347184,
-        "mcap": 54859748
+        "change_1h": -1.0603130945822414,
+        "change_1d": -1.136127830892491,
+        "change_7d": 5.146131479443966,
+        "tokenBreakdowns": {}
     },
     {
         "id": "2168",
@@ -193,15 +217,16 @@
         "listedAt": 1665186810,
         "parentProtocol": "Morpho",
         "slug": "morpho-aave",
-        "tvl": 211251616.62463257,
+        "tvl": 219228514.90899348,
         "chainTvls": {
-            "Ethereum": 211251616.62463257,
-            "Ethereum-borrowed": 206883269.717303,
-            "borrowed": 206883269.717303
+            "Ethereum": 219228514.90899348,
+            "Ethereum-borrowed": 238900980.0285444,
+            "borrowed": 238900980.0285444
         },
-        "change_1h": 1.7583545340200288,
-        "change_1d": 0.8082453386766701,
-        "change_7d": 9.07130698389902
+        "change_1h": -1.8348691657827345,
+        "change_1d": -3.526547471561983,
+        "change_7d": -5.0914460044134415,
+        "tokenBreakdowns": {}
     },
     {
         "id": "2076",
@@ -229,55 +254,14 @@
         "parentProtocol": "Frax Finance",
         "listedAt": 1662603346,
         "slug": "fraxlend",
-        "tvl": 163757727.535909,
+        "tvl": 91597996.19279702,
         "chainTvls": {
-            "Ethereum": 163757727.535909
+            "Ethereum": 91597996.19279702
         },
-        "change_1h": 0.9576507010546464,
-        "change_1d": 3.301741642229274,
-        "change_7d": 15.247845865173446
-    },
-    {
-        "id": "149",
-        "name": "B.Protocol",
-        "address": "0xbbBBBBB5AA847A2003fbC6b5C16DF0Bd1E725f61",
-        "symbol": "BPRO",
-        "url": "https://www.bprotocol.org/",
-        "description": "B.Protocol makes lending platforms more secure by eliminating the gas wars and shifting the miner\u2019s profit to the users.",
-        "chain": "Multi-Chain",
-        "logo": "https://icons.llama.fi/b.protocol.jpg",
-        "audits": "2",
-        "audit_note": null,
-        "gecko_id": "b-protocol",
-        "cmcId": "10556",
-        "category": "Lending",
-        "chains": [
-            "Ethereum",
-            "Arbitrum",
-            "Fantom",
-            "Polygon"
-        ],
-        "module": "bprotocol/index.js",
-        "twitter": "bprotocoleth",
-        "audit_links": [
-            "https://app.bprotocol.org/risk"
-        ],
-        "oracles": [
-            "Chainlink"
-        ],
-        "slug": "b.protocol",
-        "tvl": 71508077.13825615,
-        "chainTvls": {
-            "Ethereum": 71189546.36855693,
-            "Polygon": 55001.03061133831,
-            "Arbitrum": 191740.796041795,
-            "Fantom": 71788.94304608353
-        },
-        "change_1h": -0.10309189536464203,
-        "change_1d": -0.6362412489688722,
-        "change_7d": -2.285470803375219,
-        "fdv": 10121073,
-        "mcap": 4779917
+        "change_1h": -0.23389723657099637,
+        "change_1d": -2.4609750313146463,
+        "change_7d": 2.9773733613641156,
+        "tokenBreakdowns": {}
     },
     {
         "id": "123",
@@ -312,33 +296,36 @@
             "Chainlink",
             "Band"
         ],
+        "governanceID": [
+            "snapshot:dforcenet.eth"
+        ],
         "slug": "dforce",
-        "tvl": 55566596.49898213,
+        "tvl": 41920969.37097329,
         "chainTvls": {
-            "Optimism": 13138508.003671048,
+            "Optimism": 7529934.027391775,
             "Kava": 0,
-            "Arbitrum-borrowed": 6188848.206577035,
-            "Polygon-borrowed": 4277110.87071268,
-            "Binance-borrowed": 4878827.997065022,
-            "Binance": 16000437.54711602,
-            "Ethereum": 4604214.841809142,
-            "Optimism-borrowed": 2006647.289645999,
+            "Arbitrum-borrowed": 7692954.697857428,
+            "Polygon-borrowed": 1969954.7706758918,
+            "Binance-borrowed": 4465515.402773424,
+            "Binance": 13032895.638616852,
+            "Ethereum": 4767438.927259607,
+            "Optimism-borrowed": 2769898.154587564,
             "Avalanche": 0,
-            "Ethereum-staking": 5660445.578887657,
-            "Polygon": 2436825.04012948,
-            "Ethereum-borrowed": 3187248.9092043596,
-            "Arbitrum": 19386611.066256434,
-            "borrowed": 20538683.273205098,
+            "Ethereum-staking": 9310016.9700262,
+            "Polygon": 2613258.999800449,
+            "Ethereum-borrowed": 5110132.682323668,
+            "Arbitrum": 13977441.777904604,
+            "borrowed": 22008455.708217975,
             "Kava-borrowed": 0,
-            "staking": 5660445.578887657,
+            "staking": 9310016.9700262,
             "Avalanche-borrowed": 0
         },
-        "change_1h": 0.15532684032559985,
-        "change_1d": 1.3670137665294106,
-        "change_7d": 3.9621624323117146,
-        "staking": 5660445.578887657,
-        "fdv": 42967827,
-        "mcap": 18521889
+        "change_1h": -0.09746207107636451,
+        "change_1d": -1.8497605530841525,
+        "change_7d": 0.9480134663392761,
+        "tokenBreakdowns": {},
+        "staking": 9310016.9700262,
+        "mcap": 31671237.487502545
     },
     {
         "id": "234",
@@ -362,16 +349,19 @@
         "audit_links": [
             "https://blog.openzeppelin.com/notional-audit/"
         ],
+        "governanceID": [
+            "snapshot:notional.eth"
+        ],
         "slug": "notional",
-        "tvl": 54846021.6545197,
+        "tvl": 32020128.803637315,
         "chainTvls": {
-            "Ethereum": 54846021.6545197
+            "Ethereum": 32020128.803637315
         },
-        "change_1h": 0.00010960047711705556,
-        "change_1d": 2.257094852600389,
-        "change_7d": 1.9736441490333334,
-        "fdv": 22117816,
-        "mcap": 4992662
+        "change_1h": -3.4011990919889854,
+        "change_1d": -8.240544487075653,
+        "change_7d": -18.15368330439736,
+        "tokenBreakdowns": {},
+        "mcap": 6879371.476472624
     },
     {
         "id": "183",
@@ -403,71 +393,74 @@
             "Chainlink"
         ],
         "slug": "wing-finance",
-        "tvl": 31413663.281,
+        "tvl": 29384322.342,
         "chainTvls": {
-            "OntologyEVM": 2291579.2899999996,
-            "OKExChain-staking": 6278.271999999999,
-            "OntologyEVM-staking": 79419.34,
-            "OKExChain": 257495.23799999998,
-            "Ontology": 17590486.913999997,
-            "Ontology-staking": 553870.3169999999,
-            "Ontology-borrowed": 20961873.933,
-            "OntologyEVM-borrowed": 7439099.668,
-            "Binance-borrowed": 18626268.661,
-            "Binance": 9456666.218999999,
-            "Ethereum": 1817435.6199999999,
-            "Binance-staking": 298498.19999999995,
-            "Ethereum-staking": 36721.685,
-            "Ethereum-borrowed": 1071110.0399999998,
-            "borrowed": 48260816.603999995,
-            "OKExChain-borrowed": 162464.302,
-            "staking": 974787.8139999998
+            "OntologyEVM": 2385799.074,
+            "OKExChain-staking": 5524.026,
+            "OntologyEVM-staking": 70324.368,
+            "OKExChain": 270802.524,
+            "Ontology": 18237875.946,
+            "Ontology-staking": 538329.51,
+            "Ontology-borrowed": 24660428.412,
+            "OntologyEVM-borrowed": 7605056.754,
+            "Binance-borrowed": 16646322.192,
+            "Binance": 7337687.082,
+            "Ethereum": 1152157.716,
+            "Binance-staking": 252649.29,
+            "Ethereum-staking": 32670.21,
+            "Ethereum-borrowed": 927496.29,
+            "borrowed": 50035931.11799999,
+            "OKExChain-borrowed": 196627.47,
+            "staking": 899497.404
         },
-        "change_1h": 0.12604149089585803,
-        "change_1d": 0.8876120092037496,
-        "change_7d": 3.1290761450011786,
-        "staking": 974787.8139999998,
-        "fdv": 30222167,
-        "mcap": 17983101
+        "change_1h": 0.4028066390814047,
+        "change_1d": -1.3398764329150907,
+        "change_7d": -3.0027990452246343,
+        "tokenBreakdowns": {},
+        "staking": 899497.404,
+        "mcap": 19497953.218136236
     },
     {
-        "id": "1838",
-        "name": "AAVE V1",
-        "address": "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9",
-        "symbol": "AAVE",
-        "url": "https://aave.com",
-        "description": "Earn interest, borrow assets, and build applications",
-        "chain": "Ethereum",
-        "logo": "https://icons.llama.fi/aave-v1.jpg",
+        "id": "149",
+        "name": "B.Protocol",
+        "address": "0xbbBBBBB5AA847A2003fbC6b5C16DF0Bd1E725f61",
+        "symbol": "BPRO",
+        "url": "https://www.bprotocol.org/",
+        "description": "B.Protocol makes lending platforms more secure by eliminating the gas wars and shifting the miner\u2019s profit to the users.",
+        "chain": "Multi-Chain",
+        "logo": "https://icons.llama.fi/b.protocol.jpg",
         "audits": "2",
         "audit_note": null,
-        "gecko_id": null,
-        "cmcId": null,
+        "gecko_id": "b-protocol",
+        "cmcId": "10556",
         "category": "Lending",
         "chains": [
-            "Ethereum"
+            "Ethereum",
+            "Arbitrum",
+            "Fantom",
+            "Polygon"
+        ],
+        "module": "bprotocol/index.js",
+        "twitter": "bprotocoleth",
+        "audit_links": [
+            "https://app.bprotocol.org/risk"
         ],
         "oracles": [
             "Chainlink"
         ],
-        "forkedFrom": [],
-        "module": "aave-v1/index.js",
-        "twitter": "AaveAave",
-        "audit_links": [
-            "https://aave.com/security"
-        ],
-        "listedAt": 1655586107,
-        "parentProtocol": "AAVE",
-        "slug": "aave-v1",
-        "tvl": 28489943.414117362,
+        "slug": "b.protocol",
+        "tvl": 29119611.997082938,
         "chainTvls": {
-            "Ethereum": 28489943.414117362,
-            "Ethereum-borrowed": 2481476.33088278,
-            "borrowed": 2481476.33088278
+            "Ethereum": 28858874.801800426,
+            "Polygon": 1112.6044548534828,
+            "Arbitrum": 187835.64778157597,
+            "Fantom": 71788.94304608353
         },
-        "change_1h": 0.04906917101092745,
-        "change_1d": 0.36616292418403873,
-        "change_7d": 2.3483988023994726
+        "change_1h": -0.14841327389510184,
+        "change_1d": 0.24544799125443717,
+        "change_7d": -1.7379295407671975,
+        "tokenBreakdowns": {},
+        "mcap": 5237279.198566183
     },
     {
         "id": "1997",
@@ -497,15 +490,62 @@
         "listedAt": 1660946171,
         "parentProtocol": "Morpho",
         "slug": "morpho-compound",
-        "tvl": 27340398.5925578,
+        "tvl": 28852876.444446474,
         "chainTvls": {
-            "Ethereum": 27340398.5925578,
-            "Ethereum-borrowed": 49540550.29657632,
-            "borrowed": 49540550.29657632
+            "Ethereum": 28852876.444446474,
+            "Ethereum-borrowed": 30368983.45222162,
+            "borrowed": 30368983.45222162
         },
-        "change_1h": 0.040967356303951874,
-        "change_1d": -0.10776251342853982,
-        "change_7d": -23.098667423731243
+        "change_1h": -0.2725134186567999,
+        "change_1d": 0.6340270661077767,
+        "change_7d": 34.520692124117346,
+        "tokenBreakdowns": {}
+    },
+    {
+        "id": "2020",
+        "name": "Silo Finance",
+        "address": "0x6f80310ca7f2c654691d1383149fa1a57d8ab1f8",
+        "symbol": "SILO",
+        "url": "https://app.silo.finance",
+        "description": "Silo Finance creates permissionless and risk-isolated lending markets.",
+        "chain": "Multi-Chain",
+        "logo": "https://icons.llama.fi/silo-finance.png",
+        "audits": "2",
+        "audit_note": null,
+        "gecko_id": "silo-finance",
+        "cmcId": "16010",
+        "category": "Lending",
+        "chains": [
+            "Ethereum",
+            "Arbitrum"
+        ],
+        "oracles": [],
+        "forkedFrom": [],
+        "module": "silo/index.js",
+        "twitter": "SiloFinance",
+        "governanceID": [
+            "snapshot:silofinance.eth"
+        ],
+        "audit_links": [
+            "https://drive.google.com/file/d/1D2EIOb0XaRov5Ph2AE0DTfIsMISd7UXG/view",
+            "https://drive.google.com/file/d/1WXaB3ICLv4rSEX86POK3-NaOIxXwyq9l/view",
+            "https://drive.google.com/file/d/10GyfA-nBJ5jqLWW9LEYJQeFem8qSgNH6/view"
+        ],
+        "listedAt": 1661433529,
+        "slug": "silo-finance",
+        "tvl": 28306237.140634067,
+        "chainTvls": {
+            "Ethereum": 24488346.357428953,
+            "Arbitrum-borrowed": 1941734.1981818227,
+            "Ethereum-borrowed": 6020616.67232143,
+            "Arbitrum": 3817890.7832051152,
+            "borrowed": 7962350.870503253
+        },
+        "change_1h": -0.019151068060523357,
+        "change_1d": -1.390712287210036,
+        "change_7d": 8.8674657323987,
+        "tokenBreakdowns": {},
+        "mcap": 10673737.471380876
     },
     {
         "id": "1577",
@@ -536,52 +576,58 @@
         ],
         "listedAt": 1648061916,
         "slug": "sturdy",
-        "tvl": 22867318.263464674,
+        "tvl": 22373580.127836194,
         "chainTvls": {
-            "Ethereum": 22812526.776714675,
-            "Fantom-borrowed": 32689.336679999997,
-            "Ethereum-borrowed": 7054467.151801068,
-            "borrowed": 7087156.488481068,
-            "Fantom": 54791.48675
+            "Ethereum": 22315731.72803934,
+            "Fantom-borrowed": 27336.79131019616,
+            "Ethereum-borrowed": 8344653.179543063,
+            "borrowed": 8371989.970853259,
+            "Fantom": 57848.39979685517
         },
-        "change_1h": 0.22337626240809527,
-        "change_1d": 0.2740349492600558,
-        "change_7d": 4.285424824313935
+        "change_1h": -2.80323077300541,
+        "change_1d": -6.261527613030339,
+        "change_7d": 10.531620856811784,
+        "tokenBreakdowns": {}
     },
     {
-        "id": "2020",
-        "name": "Silo Finance",
-        "address": "0x6f80310ca7f2c654691d1383149fa1a57d8ab1f8",
-        "symbol": "SILO",
-        "url": "https://app.silo.finance",
-        "description": "Silo Finance creates permissionless and risk-isolated lending markets.",
+        "id": "1838",
+        "name": "AAVE V1",
+        "address": "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9",
+        "symbol": "AAVE",
+        "url": "https://aave.com",
+        "description": "Earn interest, borrow assets, and build applications",
         "chain": "Ethereum",
-        "logo": "https://icons.llama.fi/silo-finance.png",
-        "audits": "0",
+        "logo": "https://icons.llama.fi/aave-v1.jpg",
+        "audits": "2",
         "audit_note": null,
-        "gecko_id": "silo-finance",
-        "cmcId": "16010",
+        "gecko_id": null,
+        "cmcId": null,
         "category": "Lending",
         "chains": [
             "Ethereum"
         ],
-        "oracles": [],
+        "oracles": [
+            "Chainlink"
+        ],
         "forkedFrom": [],
-        "module": "silo/index.js",
-        "twitter": "SiloFinance",
-        "listedAt": 1661433529,
-        "slug": "silo-finance",
-        "tvl": 18724352.228926867,
+        "module": "aave-v1/index.js",
+        "twitter": "AaveAave",
+        "audit_links": [
+            "https://aave.com/security"
+        ],
+        "listedAt": 1655586107,
+        "parentProtocol": "AAVE",
+        "slug": "aave-v1",
+        "tvl": 19284283.287884664,
         "chainTvls": {
-            "Ethereum": 18724352.228926867,
-            "Ethereum-borrowed": 4196238.183049296,
-            "borrowed": 4196238.183049296
+            "Ethereum": 19284283.287884664,
+            "Ethereum-borrowed": 2344887.8759654923,
+            "borrowed": 2344887.8759654923
         },
-        "change_1h": -0.0009356965513234172,
-        "change_1d": 0.47239566923356335,
-        "change_7d": 1.0039783020248052,
-        "fdv": 47681960,
-        "mcap": 8771408
+        "change_1h": -0.3574826147435317,
+        "change_1d": -1.8456297628534202,
+        "change_7d": -4.643461102648089,
+        "tokenBreakdowns": {}
     },
     {
         "id": "253",
@@ -618,32 +664,108 @@
             "TWAP"
         ],
         "slug": "bifi",
-        "tvl": 16714345.363673583,
+        "tvl": 17968158.549814593,
         "chainTvls": {
-            "Klaytn": 1781805.7958387448,
-            "Binance": 3496097.613841915,
-            "Ethereum": 2331756.408451234,
-            "Avalanche": 604738.400595688,
-            "Ethereum-staking": 50019841.53324564,
-            "staking": 50019841.53324564,
-            "Bitcoin": 8499947.144946
+            "Klaytn": 1444932.814114721,
+            "Binance": 3911238.2694663643,
+            "Ethereum": 2319550.8346735523,
+            "Avalanche": 182956.83902655548,
+            "Ethereum-staking": 63346.538531295555,
+            "staking": 63346.538531295555,
+            "Bitcoin": 10109479.7925334
         },
-        "change_1h": -2.2955068174343722,
-        "change_1d": -2.7878053074156526,
-        "change_7d": 1.1226591994570043,
-        "staking": 50019841.53324564,
-        "fdv": 6563624,
-        "mcap": 2759934
+        "change_1h": -0.07368480065994731,
+        "change_1d": -2.1057401336145176,
+        "change_7d": -2.659777045120279,
+        "tokenBreakdowns": {},
+        "staking": 63346.538531295555,
+        "mcap": 2394997.020054686
     },
     {
-        "id": "876",
-        "name": "Yield Protocol",
+        "id": "1183",
+        "name": "Euler",
+        "address": "0xd9fcd98c322942075a5c3860693e9f4f03aae07b",
+        "symbol": "EUL",
+        "url": "https://www.euler.finance",
+        "description": "Permissionless crypto lending markets are almost here. Euler is a non-custodial protocol on Ethereum that allows users to lend and borrow almost any crypto asset",
+        "chain": "Ethereum",
+        "logo": "https://icons.llama.fi/euler.svg",
+        "audits": "2",
+        "audit_note": null,
+        "gecko_id": "euler",
+        "cmcId": "14280",
+        "category": "Lending",
+        "chains": [
+            "Ethereum"
+        ],
+        "module": "euler/index.js",
+        "treasury": "euler.js",
+        "twitter": "eulerfinance",
+        "oracles": [
+            "Chainlink"
+        ],
+        "audit_links": [
+            "https://docs.euler.finance/security/smart-contract-audits"
+        ],
+        "governanceID": [
+            "snapshot:eulerdao.eth"
+        ],
+        "listedAt": 1641231917,
+        "slug": "euler",
+        "tvl": 9421155.259991765,
+        "chainTvls": {
+            "Ethereum": 9421155.259991765,
+            "Ethereum-borrowed": 0,
+            "borrowed": 0
+        },
+        "change_1h": -0.23854310588443184,
+        "change_1d": -2.240116811944688,
+        "change_7d": -5.398259413500156,
+        "tokenBreakdowns": {},
+        "mcap": 60922349.65852245
+    },
+    {
+        "id": "2627",
+        "name": "Cat in a Box",
         "address": null,
         "symbol": "-",
-        "url": "https://yieldprotocol.com/",
-        "description": "Yield Protocol brings collateralized fixed-rate,fixed-term borrowing and lending and interest rate markets to decentralized finance.",
+        "url": "https://catinabox.finance",
+        "description": "A dynamic lending protocol for yield-bearing assets.",
+        "chain": "Ethereum",
+        "logo": "https://icons.llama.fi/cat-in-a-box.jpg",
+        "audits": "0",
+        "audit_note": null,
+        "gecko_id": null,
+        "cmcId": null,
+        "category": "Lending",
+        "chains": [
+            "Ethereum"
+        ],
+        "module": "cat-in-a-box/index.js",
+        "treasury": "cat-in-a-box.js",
+        "twitter": "catinaboxfi",
+        "oracles": [],
+        "forkedFrom": [],
+        "listedAt": 1677778463,
+        "slug": "cat-in-a-box",
+        "tvl": 5655567.170574042,
+        "chainTvls": {
+            "Ethereum": 5655567.170574042
+        },
+        "change_1h": -0.469211303247576,
+        "change_1d": -2.952943196880753,
+        "change_7d": -4.389588759534135,
+        "tokenBreakdowns": {}
+    },
+    {
+        "id": "2385",
+        "name": "Exactly",
+        "address": null,
+        "symbol": "-",
+        "url": "https://exact.ly",
+        "description": "Exactly is a decentralized, non-custodial, open-source protocol that provides an autonomous fixed and variable interest rate market, enabling users to frictionlessly exchange their assets' time value and complete the DeFi credit market.",
         "chain": "Multi-Chain",
-        "logo": "https://icons.llama.fi/yield-protocol.jpg",
+        "logo": "https://icons.llama.fi/exactly.jpg",
         "audits": "2",
         "audit_note": null,
         "gecko_id": null,
@@ -651,59 +773,66 @@
         "category": "Lending",
         "chains": [
             "Ethereum",
-            "Arbitrum"
+            "Optimism"
         ],
-        "module": "yieldis/index.js",
-        "twitter": "yield",
+        "module": "exactly/index.js",
+        "twitter": "ExactlyProtocol",
+        "forkedFrom": [],
+        "oracles": [
+            "Chainlink"
+        ],
         "audit_links": [
-            "https://github.com/trailofbits/publications/blob/master/reviews/YieldV2.pdf"
+            "https://github.com/exactly/audits"
         ],
-        "listedAt": 1637377782,
-        "slug": "yield-protocol",
-        "tvl": 8204283.868439269,
+        "listedAt": 1671893480,
+        "slug": "exactly",
+        "tvl": 1796315.4431381356,
         "chainTvls": {
-            "Ethereum": 6364182.468446545,
-            "Arbitrum": 1840101.399992724
+            "Optimism": 664911.8198404483,
+            "Ethereum": 1131403.6232976872,
+            "Optimism-borrowed": 1165556.7291695126,
+            "Ethereum-borrowed": 624977.7902287261,
+            "borrowed": 1790534.5193982387
         },
-        "change_1h": 0.127975231716988,
-        "change_1d": 0.28399364726764986,
-        "change_7d": 1.0434205976388427
+        "change_1h": -0.23821737831735845,
+        "change_1d": -1.2114585926079116,
+        "change_7d": 0.008750730509902382,
+        "tokenBreakdowns": {}
     },
     {
-        "id": "1627",
-        "name": "LendFlare",
-        "address": "0xB620Be8a1949AA9532e6a3510132864EF9Bc3F82",
-        "symbol": "LFT",
-        "url": "https://lendflare.finance",
-        "description": "Lendflare is a decentralized borrowing platform on Ethereum blockchain that allows Curve LP holders (the borrowers) to draw fixed-rate, fixed term and high LTV loans against Curve LP used as collateral, with no concerns for assets being liquidated due to price fluctuation. Loans are paid out through Lendflare from Compound platform. Liquidity providers (the lenders) who deposit loan liquidity through Lendflare on Compound platform will receive one of the highest interest rate compared to other current lending platforms.",
-        "chain": "Ethereum",
-        "logo": "https://icons.llama.fi/lendflare.jpg",
+        "id": "464",
+        "name": "Beta Finance",
+        "address": "0xbe1a001fe942f96eea22ba08783140b9dcc09d28",
+        "symbol": "BETA",
+        "url": "https://betafinance.org",
+        "description": "Beta Finance is the permissionless money market for borrowing, lending, and shorting crypto assets.",
+        "chain": "Multi-Chain",
+        "logo": "https://icons.llama.fi/beta-finance.jpg",
         "audits": "2",
         "audit_note": null,
-        "gecko_id": "lend-flare-dao-token",
-        "cmcId": "19189",
+        "gecko_id": "beta-finance",
+        "cmcId": "11307",
         "category": "Lending",
         "chains": [
-            "Ethereum"
+            "Ethereum",
+            "Avalanche"
         ],
-        "oracles": [],
-        "forkedFrom": [],
-        "module": "lendflare/index.js",
-        "twitter": "LendFlareOffic",
+        "module": "betafinance/index.js",
+        "twitter": "beta_finance",
         "audit_links": [
-            "https://www.certik.com/projects/lend-flare"
+            "https://betafinance.gitbook.io/betafinance/security-and-audits"
         ],
-        "listedAt": 1649423978,
-        "slug": "lendflare",
-        "tvl": 4388669.809474892,
+        "slug": "beta-finance",
+        "tvl": 1701224.8915004092,
         "chainTvls": {
-            "Ethereum": 4388669.809474892
+            "Ethereum": 1678379.7244622898,
+            "Avalanche": 22845.167038119427
         },
-        "change_1h": 0.0667298282245099,
-        "change_1d": -0.9647747526172736,
-        "change_7d": -14.508816187705392,
-        "fdv": 2206532,
-        "mcap": 0
+        "change_1h": -0.23500323368293152,
+        "change_1d": -1.3456701578067367,
+        "change_7d": -2.558932732134082,
+        "tokenBreakdowns": {},
+        "mcap": 56507781.58084943
     },
     {
         "id": "157",
@@ -734,56 +863,21 @@
             "Chainlink"
         ],
         "slug": "88mph",
-        "tvl": 2749177.5312860347,
+        "tvl": 1360811.944976726,
         "chainTvls": {
-            "Ethereum": 2426596.742180369,
-            "Avalanche": 82.44151701216047,
-            "Polygon": 148.8179475393832,
-            "Ethereum-staking": 100024.66961713476,
-            "staking": 100024.66961713476,
-            "Fantom": 322349.5296411141
+            "Ethereum": 1009607.7882999323,
+            "Avalanche": 81.68831590430773,
+            "Polygon": 149.22200067172582,
+            "Ethereum-staking": 122447.9019933663,
+            "staking": 122447.9019933663,
+            "Fantom": 350973.2463602177
         },
-        "change_1h": 1.6969655049167187,
-        "change_1d": 2.1226083103669424,
-        "change_7d": 6.041627577993381,
-        "staking": 100024.66961713476,
-        "fdv": 2057240,
-        "mcap": 1395258
-    },
-    {
-        "id": "2261",
-        "name": "Arbor Finance",
-        "address": null,
-        "symbol": "-",
-        "url": "https://arbor.finance",
-        "description": "Arbor enables creditworthy DAOs to obtain fixed-rate financing using their project tokens as collateral.",
-        "chain": "Ethereum",
-        "logo": "https://icons.llama.fi/arbor-finance.png",
-        "audits": "2",
-        "audit_note": null,
-        "gecko_id": null,
-        "cmcId": null,
-        "category": "Lending",
-        "chains": [
-            "Ethereum"
-        ],
-        "module": "arbor-finance/index.js",
-        "twitter": "arborfinance",
-        "forkedFrom": [],
-        "oracles": [],
-        "audit_links": [
-            "https://github.com/alwaysbegrowing/arbor-contracts/blob/main/audits/previously-porter-finance-spearbit-audit.pdf",
-            "https://github.com/alwaysbegrowing/arbor-contracts/blob/main/audits/previously-porter-finance-zellic-audit.pdf"
-        ],
-        "listedAt": 1668080722,
-        "slug": "arbor-finance",
-        "tvl": 1954496.2422852907,
-        "chainTvls": {
-            "Ethereum": 1954496.2422852907
-        },
-        "change_1h": -0.23312445394969927,
-        "change_1d": 3.848120269789888,
-        "change_7d": 4.317910143152858
+        "change_1h": -0.25460064100541047,
+        "change_1d": -1.965540796188776,
+        "change_7d": -4.583005070716197,
+        "tokenBreakdowns": {},
+        "staking": 122447.9019933663,
+        "mcap": 2847204.42369041
     },
     {
         "id": "624",
@@ -803,55 +897,60 @@
             "Ethereum"
         ],
         "module": "paladinfinance/index.js",
+        "treasury": "paladin-finance.js",
         "twitter": "Paladin_vote",
         "audit_links": [
             "https://github.com/pessimistic-io/audits/blob/914e35fdfc879451a61d2a3969f3be839b8c808f/Paladin%20Security%20Analysis%20by%20Pessimistic.pdf"
         ],
+        "governanceID": [
+            "snapshot:palvote.eth"
+        ],
         "slug": "paladin-finance",
-        "tvl": 1927077.452930867,
+        "tvl": 1309950.572058912,
         "chainTvls": {
-            "Ethereum": 1927077.452930867
+            "Ethereum": 1309950.572058912
         },
-        "change_1h": 0.173244436933075,
-        "change_1d": 1.80131386315135,
-        "change_7d": 7.052841985535878,
-        "fdv": 12125746,
-        "mcap": 1886111
+        "change_1h": -0.03471035280620072,
+        "change_1d": -3.911854013243996,
+        "change_7d": -8.782540738468612,
+        "tokenBreakdowns": {},
+        "mcap": 1605918.3650482313
     },
     {
-        "id": "464",
-        "name": "Beta Finance",
-        "address": "0xbe1a001fe942f96eea22ba08783140b9dcc09d28",
-        "symbol": "BETA",
-        "url": "https://betafinance.org",
-        "description": "Beta Finance is the permissionless money market for borrowing, lending, and shorting crypto assets.",
-        "chain": "Multi-Chain",
-        "logo": "https://icons.llama.fi/beta-finance.jpg",
+        "id": "1627",
+        "name": "LendFlare",
+        "address": "0xB620Be8a1949AA9532e6a3510132864EF9Bc3F82",
+        "symbol": "LFT",
+        "url": "https://lendflare.finance",
+        "description": "Lendflare is a decentralized borrowing platform on Ethereum blockchain that allows Curve LP holders (the borrowers) to draw fixed-rate, fixed term and high LTV loans against Curve LP used as collateral, with no concerns for assets being liquidated due to price fluctuation. Loans are paid out through Lendflare from Compound platform. Liquidity providers (the lenders) who deposit loan liquidity through Lendflare on Compound platform will receive one of the highest interest rate compared to other current lending platforms.",
+        "chain": "Ethereum",
+        "logo": "https://icons.llama.fi/lendflare.jpg",
         "audits": "2",
         "audit_note": null,
-        "gecko_id": "beta-finance",
-        "cmcId": "11307",
+        "gecko_id": "lend-flare-dao-token",
+        "cmcId": "19189",
         "category": "Lending",
         "chains": [
-            "Ethereum",
-            "Avalanche"
+            "Ethereum"
         ],
-        "module": "betafinance/index.js",
-        "twitter": "beta_finance",
+        "oracles": [],
+        "forkedFrom": [],
+        "module": "lendflare/index.js",
+        "twitter": "LendFlareOffic",
         "audit_links": [
-            "https://betafinance.gitbook.io/betafinance/security-and-audits"
+            "https://www.certik.com/projects/lend-flare"
         ],
-        "slug": "beta-finance",
-        "tvl": 1926592.8177268407,
+        "listedAt": 1649423978,
+        "slug": "lendflare",
+        "tvl": 1255207.3863275466,
         "chainTvls": {
-            "Ethereum": 1901428.8586296225,
-            "Avalanche": 25163.959097218278
+            "Ethereum": 1255207.3863275466
         },
-        "change_1h": -0.021006164482429313,
-        "change_1d": 0.47968973167789386,
-        "change_7d": 3.754092190581389,
-        "fdv": 90759448,
-        "mcap": 55968326
+        "change_1h": 0.0931917162218383,
+        "change_1d": -0.7759213541100962,
+        "change_7d": -0.9233185426280954,
+        "tokenBreakdowns": {},
+        "mcap": 0
     },
     {
         "id": "181",
@@ -861,7 +960,7 @@
         "url": "https://mantradao.com",
         "description": "MANTRA DAO leverages the wisdom of the crowd to give financial control back to the people to grow wealth together.",
         "chain": "Multi-Chain",
-        "logo": "https://icons.llama.fi/mantra-dao.jpg",
+        "logo": "https://icons.llama.fi/mantra-dao.png",
         "audits": "2",
         "audit_note": null,
         "gecko_id": "mantra-dao",
@@ -880,67 +979,32 @@
         "oracles": [
             "Band"
         ],
+        "governanceID": [
+            "snapshot:mantra-dao.eth"
+        ],
         "slug": "mantra-dao",
-        "tvl": 1505225.3069320412,
+        "tvl": 1175481.7578651244,
         "chainTvls": {
-            "pool2": 260893.08255386676,
-            "Polygon-pool2": 66416.48140215155,
+            "pool2": 280745.61690419243,
+            "Polygon-pool2": 87715.45771551988,
             "Binance-pool2": 0,
-            "Ethereum-pool2": 194476.6011517152,
+            "Ethereum-pool2": 193030.15918867255,
             "Binance": 0,
-            "Ethereum": 1505225.3069320412,
-            "Binance-staking": 4157790.3098367117,
-            "Ethereum-staking": 3213859.567071019,
+            "Ethereum": 1175481.7578651244,
+            "Binance-staking": 4420243.945643462,
+            "Ethereum-staking": 3053397.0180797055,
             "Polygon": 0,
-            "Ethereum-borrowed": 17044132.597510967,
-            "Polygon-staking": 601451.6716722964,
-            "borrowed": 17044132.597510967,
-            "staking": 7973101.548580028
+            "Ethereum-borrowed": 17012542.665137384,
+            "Polygon-staking": 759198.4735621648,
+            "borrowed": 17012542.665137384,
+            "staking": 8232839.437285333
         },
-        "change_1h": 0.17564241541450087,
-        "change_1d": 0.9023298080039268,
-        "change_7d": 3.1489909955530777,
-        "staking": 7973101.548580028,
-        "pool2": 260893.08255386676,
-        "fdv": 28460894,
-        "mcap": 18068202
-    },
-    {
-        "id": "2385",
-        "name": "Exactly",
-        "address": null,
-        "symbol": "-",
-        "url": "https://exact.ly",
-        "description": "Exactly is a decentralized, non-custodial, open-source protocol that provides an autonomous fixed and variable interest rate market, enabling users to frictionlessly exchange their assets' time value and complete the DeFi credit market.",
-        "chain": "Ethereum",
-        "logo": "https://icons.llama.fi/exactly.jpg",
-        "audits": "2",
-        "audit_note": null,
-        "gecko_id": null,
-        "cmcId": null,
-        "category": "Lending",
-        "chains": [
-            "Ethereum"
-        ],
-        "module": "exactly/index.js",
-        "twitter": "ExactlyProtocol",
-        "forkedFrom": [],
-        "oracles": [
-            "Chainlink"
-        ],
-        "audit_links": [
-            "https://github.com/exactly/audits"
-        ],
-        "listedAt": 1671893480,
-        "slug": "exactly",
-        "tvl": 1148306.2467226114,
-        "chainTvls": {
-            "Ethereum": 1148306.2467226114,
-            "Ethereum-borrowed": 477650.98399933573,
-            "borrowed": 477650.98399933573
-        },
-        "change_1h": 0.0670442375439535,
-        "change_1d": 0.2044841650857876,
-        "change_7d": 19.827213214685997
+        "change_1h": 0.46982390129730334,
+        "change_1d": -1.4986344479290068,
+        "change_7d": -1.3824602396689443,
+        "tokenBreakdowns": {},
+        "staking": 8232839.437285333,
+        "pool2": 280745.61690419243,
+        "mcap": 21536287.72458478
     }
 ]
