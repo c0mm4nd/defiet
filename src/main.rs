@@ -1,11 +1,15 @@
-mod event_parser;
+mod config_parser;
 
 use clap::Parser;
 use csv::Writer;
+use ethers::abi::{Hash, RawLog};
 use ethers::{prelude::*, providers::Provider};
 use serde_yaml::Mapping;
+use std::collections::{BTreeMap, HashMap};
 use std::fmt::Debug;
 use std::{fs, fs::File, path::Path, str::FromStr};
+
+use crate::abi::Contract;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -37,35 +41,31 @@ async fn main() {
     let v = provider.client_version().await.unwrap();
     log::warn!("{v}");
 
-    let kanban = parse_config(provider.clone(), args.config).await;
-    let tasks = kanban.tasks;
+    let tasks = config_parser::parse_config(provider.clone(), args.config).await;
 
     let mut handles: Vec<_> = vec![];
     for task in tasks {
         let provider = provider.clone();
         let output = args.output.clone();
-        if args.parallel {
-            handles.push(tokio::spawn(async move {
-                log::warn!("Start task {}", task.name);
-                dump_event_logs_from_contract(
-                    provider,
-                    task.name,
-                    output,
-                    task.contracts,
-                    task.events.to_vec(),
-                )
-                .await;
-            }));
-        } else {
-            dump_event_logs_from_contract(
-                provider,
-                task.name,
-                output,
-                task.contracts,
-                task.events.to_vec(),
-            )
-            .await;
-        }
+        handles.push(tokio::spawn(async move {
+            log::warn!("Start task {}", task.name);
+            match task.abi {
+                None => {
+                    dump_logs_from_events(
+                        provider,
+                        task.name,
+                        output,
+                        task.contracts,
+                        task.simple_events.to_vec(),
+                    )
+                    .await;
+                },
+                Some(abi) => {
+                    dump_logs_from_abi(provider, task.name, output, task.contracts, abi).await;
+                }
+            }
+
+        }));
     }
 
     for handle in handles {
@@ -73,132 +73,12 @@ async fn main() {
     }
 }
 
-#[derive(Debug, Clone)]
-struct Kanban {
-    tasks: Vec<Task>,
-}
-
-#[derive(Debug, Clone)]
-struct Task {
-    pub name: String,
-    contracts: Vec<Address>,
-    events: Vec<event_parser::Event>,
-}
-
-async fn parse_config(provider: Provider<Ws>, path: String) -> Kanban {
-    let meta = fs::metadata(&path).unwrap();
-    let input: serde_yaml::Mapping = if meta.is_dir() {
-        let mut map = serde_yaml::Mapping::new();
-        for file in fs::read_dir(path).unwrap() {
-            let file = file.unwrap();
-
-            if file.file_name().to_str().unwrap().ends_with(".yml") {
-                let file = File::open(file.path()).unwrap();
-                let unit: serde_yaml::Mapping = serde_yaml::from_reader(file).unwrap();
-                for (k, v) in unit {
-                    map.insert(k, v);
-                }
-            }
-        }
-        map
-    } else {
-        let file = File::open(path).unwrap();
-        serde_yaml::from_reader(file).unwrap()
-    };
-
-    log::debug!("{:?}", input);
-
-    let mut tasks: Vec<Task> = Vec::new();
-    for (task_name, v) in input {
-        log::debug!("{:?}", task_name);
-        let task_detail = v.as_mapping().unwrap();
-        let mut contracts = match task_detail.get("contracts") {
-            Some(contracts) => contracts
-                .as_sequence()
-                .unwrap()
-                .iter()
-                .map(|addr| Address::from_str(addr.as_str().unwrap()).unwrap())
-                .collect(),
-            None => Vec::new(),
-        };
-        if task_detail.contains_key("factory") {
-            let contracts_from_factory = get_contracts_from_factory(
-                provider.clone(),
-                task_detail["factory"].as_mapping().unwrap(),
-            )
-            .await;
-            contracts.extend(contracts_from_factory);
-        }
-
-        if contracts.len() == 0 {
-            continue;
-        }
-
-        let input_events = task_detail["events"].as_sequence().unwrap();
-        let events: Vec<event_parser::Event> = input_events
-            .to_owned()
-            .iter()
-            .map(|c| event_parser::Event::new(String::from(c.as_str().unwrap())))
-            .collect();
-        let task = Task {
-            name: task_name.as_str().unwrap().to_owned(),
-            contracts: contracts,
-            events,
-        };
-
-        tasks.push(task);
-    }
-
-    return Kanban { tasks };
-}
-
-async fn get_contracts_from_factory(provider: Provider<Ws>, factory_config: &Mapping) -> Vec<H160> {
-    let mut contracts = Vec::new();
-    if factory_config.contains_key("event") {
-        // catch addresses by events
-        let factories: Vec<H160> = factory_config["contracts"]
-            .as_sequence()
-            .unwrap()
-            .iter()
-            .map(|addr| Address::from_str(addr.as_str().unwrap()).unwrap())
-            .collect();
-        let event = event_parser::Event::new(factory_config["event"].as_str().unwrap().to_string());
-        let filter = Filter::new()
-            // .from_block(16_000_000)
-            .from_block(0_000_000)
-            // .to_block(16_200_000)
-            .event(&event.to_signature())
-            .address(factories);
-        let arg_index: usize = factory_config["arg"]
-            .as_i64()
-            .unwrap_or(0)
-            .try_into()
-            .unwrap();
-        let mut stream = provider.get_logs_paginated(&filter, 100);
-        while let Some(log) = stream.next().await {
-            let log = log.unwrap();
-            if arg_index < log.topics.len() {
-                let new_contract_addr = Address::from(log.topics[1 + arg_index]);
-                contracts.push(new_contract_addr);
-                log::debug!(
-                    "got contract {:#x} from factory {:#x}",
-                    new_contract_addr,
-                    log.address
-                );
-            }
-            // TODO: support data
-        }
-    }
-
-    return contracts;
-}
-
-async fn dump_event_logs_from_contract(
+async fn dump_logs_from_events(
     provider: Provider<Ws>,
     task: String,
     output: String,
     addrs: Vec<Address>,
-    events: Vec<event_parser::Event>,
+    events: Vec<config_parser::Event>,
 ) {
     let event_signatures: Vec<String> = events.iter().map(|e| e.to_signature()).collect();
     let event_hashes: Vec<H256> = events.iter().map(|e| e.hash()).collect();
@@ -216,9 +96,9 @@ async fn dump_event_logs_from_contract(
     let fixed_fields = [
         "block_number",
         "transaction_hash",
-        "transaction_from", // tx from
-        "transaction_to",   // tx to
-        "transaction_value",   // tx value
+        "transaction_from",  // tx from
+        "transaction_to",    // tx to
+        "transaction_value", // tx value
         "contract",
         // "transaction_log_index",
     ];
@@ -271,7 +151,12 @@ async fn dump_event_logs_from_contract(
             }
         };
         let event = &events[event_index];
-        log::debug!("{}: found event {} on tx: {:#x}", task, event.name, log.transaction_hash.unwrap());
+        log::debug!(
+            "{}: found event {} on tx: {:#x}",
+            task,
+            event.name,
+            log.transaction_hash.unwrap()
+        );
 
         assert!(
             event.topics.len() == log.topics.len() - 1,
@@ -310,7 +195,8 @@ async fn dump_event_logs_from_contract(
         let mut pos: usize = 0;
         let mut suffix: usize = 0;
         for (index, param) in event.data.iter().enumerate() {
-            let value = match param.evm_type.as_str() {
+            let evm_type = param.evm_type.as_str();
+            let value = match evm_type {
                 "address" => {
                     let raw = &raw_data[pos..pos + 32];
                     pos += 32;
@@ -340,7 +226,7 @@ async fn dump_event_logs_from_contract(
                     pos += 32;
                     let offset = U256::from(raw).as_usize();
                     // read_length
-                    let raw = &raw_data[offset..offset+32];
+                    let raw = &raw_data[offset..offset + 32];
 
                     let len_str = U256::from(raw).as_usize();
                     let mut len_b32 = len_str / 32;
@@ -348,7 +234,7 @@ async fn dump_event_logs_from_contract(
                         len_b32 += 1
                     }
 
-                    let raw = &raw_data[offset+32..offset+32 + 32 * len_b32];
+                    let raw = &raw_data[offset + 32..offset + 32 + 32 * len_b32];
                     let raw_str = &raw[..len_str];
 
                     suffix += 32 + 32 * len_b32;
@@ -361,7 +247,7 @@ async fn dump_event_logs_from_contract(
                     pos += 32;
                     let offset = U256::from(raw).as_usize();
                     // read_length
-                    let raw = &raw_data[offset..offset+32];
+                    let raw = &raw_data[offset..offset + 32];
 
                     let len_bytes = U256::from(raw).as_usize();
                     let mut len_b32 = len_bytes / 32;
@@ -369,7 +255,7 @@ async fn dump_event_logs_from_contract(
                         len_b32 += 1
                     }
 
-                    let raw = &raw_data[offset+32..offset+32 + 32 * len_b32];
+                    let raw = &raw_data[offset + 32..offset + 32 + 32 * len_b32];
                     let raw_bytes = &raw[..len_bytes];
 
                     suffix += 32 + 32 * len_b32;
@@ -380,7 +266,10 @@ async fn dump_event_logs_from_contract(
                     pos += 32;
                     format!("{:#x}", H256::from_slice(raw))
                 }
-                _ => panic!("unknown type {} in data", param.evm_type),
+                _ => panic!(
+                    "unknown type {} in data, suggest to use abi instead",
+                    param.evm_type
+                ),
             };
 
             record.push(value);
@@ -400,4 +289,101 @@ async fn dump_event_logs_from_contract(
     }
 
     return;
+}
+
+async fn dump_logs_from_abi(
+    provider: Provider<Ws>,
+    task: String,
+    output: String,
+    addrs: Vec<Address>,
+    abi: Contract,
+) {
+    let event_signature_map: BTreeMap<_, _> = abi.events().map(|e| (e.signature(), e)).collect();
+
+    let path = Path::new(&output);
+    if !path.exists() {
+        fs::create_dir_all(&path).unwrap();
+    }
+    let mut event_writers: BTreeMap<H256, Writer<File>> = abi
+        .events()
+        .map(|e| {
+            let path = path.join(format!("{}_{}.csv", task, e.name));
+            (
+                e.signature(),
+                csv::Writer::from_writer(File::create(path).unwrap()),
+            )
+        })
+        .collect();
+    let fixed_fields = [
+        "block_number",
+        "transaction_hash",
+        "transaction_from",  // tx from
+        "transaction_to",    // tx to
+        "transaction_value", // tx value
+        "contract",
+        // "transaction_log_index",
+    ];
+
+    for e in abi.events() {
+        let mut fields = Vec::from(fixed_fields);
+        for param in &e.inputs {
+            let name = &param.name;
+            fields.push(name);
+        }
+        event_writers
+            .get_mut(&e.signature())
+            .unwrap()
+            .write_record(fields)
+            .unwrap();
+    }
+
+    let event_signatures: Vec<_> = abi.events().map(|e| e.signature()).collect();
+    log::warn!("{}: {:?}", task, event_signatures);
+    let filter = Filter::new()
+        .from_block(0_000_000)
+        // .to_block(16_200_000)
+        .events(event_signatures)
+        .address(addrs);
+    let mut stream = provider.get_logs_paginated(&filter, 100);
+    while let Some(log) = stream.next().await {
+        let log = log.unwrap();
+        // log::debug!("{:?}", log);
+
+        let tx = provider
+            .get_transaction(log.transaction_hash.unwrap())
+            .await
+            .unwrap()
+            .unwrap();
+
+        let mut record: Vec<String> = Vec::new();
+        record.push(log.block_number.unwrap().to_string());
+        record.push(format!("{:#x}", log.transaction_hash.unwrap()));
+        record.push(format!("{:#x}", tx.from));
+        record.push(tx.value.to_string());
+        record.push(match tx.to {
+            None => "".to_owned(),
+            Some(to) => format!("{:#x}", to),
+        });
+        record.push(format!("{:#x}", log.address));
+
+        let sig = &log.topics[0];
+        let event = event_signature_map.get(sig).unwrap();
+        let raw_log = RawLog {
+            topics: log.clone().topics,
+            data: log.data.to_vec(),
+        };
+
+        let abi_log = event.parse_log(raw_log).unwrap();
+        for param in abi_log.params {
+            record.push(param.value.to_string())
+        }
+
+        event_writers
+            .get_mut(sig)
+            .unwrap()
+            .write_record(record)
+            .unwrap();
+
+        event_writers.get_mut(sig).unwrap().flush().unwrap();
+    }
 }

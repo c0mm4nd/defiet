@@ -14,8 +14,9 @@ protocols
 
 # %%
 def is_eth_lending(p):
-    return "Ethereum" in p["chains"] and p["category"] == "Lending" # in ["Lending", ]
+    return "Ethereum" in p["chains"] and p["category"] == "Lending"  and p["chainTvls"]["Ethereum"] > 10_000_000  # in ["Lending", ]
 all_targets = list(filter(is_eth_lending, protocols))
+sorted(all_targets, key=lambda p: p["chainTvls"]["Ethereum"])
 all_targets
 
 #%%
