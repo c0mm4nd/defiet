@@ -1,20 +1,20 @@
 compound-v2-pools:
-  deopsit: 
+  deopsit:
     name: SupplyReceived
     depositor: account
     asset: asset
     amount: amount
-  withdraw: 
+  withdraw:
     name: SupplyWithdrawn
     withdrawer: account
     asset: asset
     amount: amount
-  borrow: 
+  borrow:
     name: BorrorTaken
     borrower: account
     asset: asset
     amount: amount
-  repay: 
+  repay:
     name: BorrowRepaid
     repayer: account
     asset: asset
@@ -25,27 +25,27 @@ compound-v2-pools:
     asset: assetBorrow
     amount: amountSeized
 compound-v3-pools:
-  deopsit: 
+  deopsit:
     name: Supply
     depositor: from
-    asset: dst
+    asset: "" # USDC or WETH
     amount: amount
-  withdraw: 
+  withdraw:
     name: Withdraw
     withdrawer: to
-    asset: src
+    asset: ""
     amount: amount
-  borrow: 
+  borrow:
     name: SupplyCollateral
     borrower: from
     asset: asset
     amount: amount
-  repay: 
+  repay:
     name: WithdrawCollateral
     repayer: to
     asset: asset
     amount: amount
-  liquidate: 
+  liquidate:
     name: AbsorbCollateral
     liquidator: borrower
     asset: absorber

@@ -45,11 +45,11 @@ else:
 class FusionSet():
     fusion_coll_prefix = "fusion"
     def __init__(self, db):
-        self.deopsit = db[f"{self.fusion_coll_prefix}_deposit"]
-        self.withdraw = db[f"{self.fusion_coll_prefix}_withdraw"] 
-        self.borrow = db[f"{self.fusion_coll_prefix}_borrow"]
-        self.repay = db[f"{self.fusion_coll_prefix}_repay"]
-        self.liquidate = db[f"{self.fusion_coll_prefix}_liquidate"]
+        self.deopsit = db["deposit"]
+        self.withdraw = db["withdraw"] 
+        self.borrow = db["borrow"]
+        self.repay = db["repay"]
+        self.liquidate = db["liquidate"]
 
 fusion = FusionSet(dst_db)
 

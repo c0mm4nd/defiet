@@ -1,0 +1,6 @@
+token-sushi:
+  contracts:
+    - 0x6b3595068778dd592e39a122f4f5a5cf09c90fe2
+  events:
+    - Transfer (address indexed from, address indexed to, uint256 value)
+    - Approval (address indexed owner, address indexed spender, uint256 value)

@@ -80,7 +80,7 @@ compound-v3-pools: # https://github.com/compound-finance/comet
 #     - event AddAsset(address indexed cometProxy, AssetConfig assetConfig);
 #     - event CometDeployed(address indexed cometProxy, address indexed newComet);
 #     - event GovernorTransferred(address indexed oldGovernor, address indexed newGovernor);
-#     - event SetFactory(address indexed cometProxy, address indexed oldFactory, address indexed newFactory);
+#     - event x`(address indexed cometProxy, address indexed oldFactory, address indexed newFactory);
 #     - event SetGovernor(address indexed cometProxy, address indexed oldGovernor, address indexed newGovernor);
 #     - event SetConfiguration(address indexed cometProxy, Configuration oldConfiguration, Configuration newConfiguration);
 #     - event SetPauseGuardian(address indexed cometProxy, address indexed oldPauseGuardian, address indexed newPauseGuardian);

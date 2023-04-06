@@ -1,0 +1,7 @@
+token-dai:
+  contracts:
+    - 0x6B175474E89094C44Da98b954EedeAC495271d0F
+  events:
+    - Transfer (address indexed from, address indexed to, uint256 value)
+    - Approval (address indexed owner, address indexed spender, uint256 value)
+
