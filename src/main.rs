@@ -1,4 +1,6 @@
 mod config_parser;
+mod csv_output;
+mod log_parser;
 
 use clap::Parser;
 use csv::Writer;
@@ -382,7 +384,6 @@ async fn dump_logs_from_abi(
                 Token::Array(_) => todo!(),
                 Token::Tuple(_) => todo!(),
             }
-            
         }
 
         event_writers
