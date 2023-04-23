@@ -57,9 +57,23 @@ compound-v2-pools: # https://docs.compound.finance/v2/
 #     - event NewAdmin(address oldAdmin, address newAdmin); # Emitted when pendingAdmin is accepted, which means admin is updated
 #     - event WhitelistAccountExpirationSet(address account, uint expiration); # Emitted when whitelist account expiration is set
 #     - event WhitelistGuardianSet(address oldGuardian, address newGuardian); # Emitted when the whitelistGuardian is set
-compound-v3-pools: # https://github.com/compound-finance/comet
+compound-v3-USDC-pools: # https://github.com/compound-finance/comet
   contracts:
     - 0xc3d688B66703497DAA19211EEdff47f25384cdc3 # cUSDCv3
+  events: # https://github.com/compound-finance/comet/blob/main/contracts/CometMainInterface.sol
+    - event Supply(address indexed from, address indexed dst, uint amount);
+    - event Transfer(address indexed from, address indexed to, uint amount);
+    - event Withdraw(address indexed src, address indexed to, uint amount);
+    - event SupplyCollateral(address indexed from, address indexed dst, address indexed asset, uint amount);
+    - event TransferCollateral(address indexed from, address indexed to, address indexed asset, uint amount);
+    - event WithdrawCollateral(address indexed src, address indexed to, address indexed asset, uint amount);
+    - event AbsorbDebt(address indexed absorber, address indexed borrower, uint basePaidOut, uint usdValue); # Event emitted when a borrow position is absorbed by the protocol
+    - event AbsorbCollateral(address indexed absorber, address indexed borrower, address indexed asset, uint collateralAbsorbed, uint usdValue); # Event emitted when a user's collateral is absorbed by the protocol
+    - event BuyCollateral(address indexed buyer, address indexed asset, uint baseAmount, uint collateralAmount); # Event emitted when a collateral asset is purchased from the protocol
+    - event PauseAction(bool supplyPaused, bool transferPaused, bool withdrawPaused, bool absorbPaused, bool buyPaused); # Event emitted when an action is paused/unpaused
+    - event WithdrawReserves(address indexed to, uint amount); # Event emitted when reserves are withdrawn by the governor
+compound-v3-WETH-pools: # https://github.com/compound-finance/comet
+  contracts:        
     - 0xA17581A9E3356d9A858b789D68B4d866e593aE94 # cWETHv3
   events: # https://github.com/compound-finance/comet/blob/main/contracts/CometMainInterface.sol
     - event Supply(address indexed from, address indexed dst, uint amount);

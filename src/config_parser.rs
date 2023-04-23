@@ -128,8 +128,9 @@ async fn get_contracts_from_factory(provider: Provider<Ws>, factory_config: &Map
             .try_into()
             .unwrap();
 
-        let save_path = factory_config["save"].as_str().unwrap();
-        let mut csv_output = if save_path.len() > 0 {
+        let save_path = factory_config.get("save");
+        let mut csv_output = if let Some(save_path) = save_path {
+            let save_path = save_path.as_str().unwrap();
             let mut csv_output = CsvOutput::new(save_path);
             let mut fields = Vec::new();
             for p in event.topics.iter() {

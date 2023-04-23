@@ -20,6 +20,7 @@ parser = argparse.ArgumentParser(
                     description = 'What the program does',
                     epilog = 'Text at the bottom of help')
 parser.add_argument('-c', '--config', type=str, default="fusion.yml")
+parser.add_argument('--assets', type=str, default="assets.yml")
 parser.add_argument('-m', '--mongo', type=str, default="mongodb://127.0.0.1:27017")
 args = parser.parse_args()
 
@@ -32,6 +33,19 @@ def load_config(path):
     with open(path) as f:
         return yaml.load(f, Loader)
 
+def load_assets(path):
+    with open(path) as f:
+        asset_list = yaml.load(f, Loader)
+        assets = {}
+        for main_asset_name, asset_info in asset_list.items():
+            assets[asset_info["main"].lower()] = main_asset_name
+            for derivative_name, derivative_addr in asset_info["derivatives"].items():
+                assets[derivative_addr.lower()] = main_asset_name + "_" + derivative_name
+        return assets
+
+
+# %%
+
 configs = []
 if isfile(args.config):
     configs.append(load_config(args.config))
@@ -40,6 +54,8 @@ else:
         path = join(args.config, f)
         if isfile(path):
             configs.append(load_config(path))
+
+assets = load_assets(args.assets)
 # %%
 
 class FusionSet():
@@ -80,7 +96,14 @@ def handle_protocol(protocol_name, protocol_config):
                 src_col = src_config[col]
                 if src_col is None:
                     continue
-                row[col] = log[src_col]
+                if col == "asset": # not a fixed asset
+                    if src_col.startswith("0x"):
+                        row[col] = assets[src_col.lower()]
+                    else:
+                        row[col] = assets[log[src_col].lower()]
+                else:
+                    row[col] = log[src_col]
+
             for col in ["block_number", "transaction_hash", "transaction_from", "transaction_to", "contract"]:
                 row[col] = log[col]
 

@@ -24,16 +24,42 @@ compound-v2-pools:
     liquidator: liquidator
     asset: assetBorrow
     amount: amountSeized
-compound-v3-pools:
-  deopsit:
-    name: Supply
+compound-v3-USDC-pools:
+  deopsit: # deposit USDC & get cUSDCv3
+    name: Supply 
     depositor: from
-    asset: "" # USDC or WETH
+    asset: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" # USDC
     amount: amount
   withdraw:
     name: Withdraw
     withdrawer: to
-    asset: ""
+    asset: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+    amount: amount
+  borrow:
+    name: SupplyCollateral
+    borrower: from
+    asset: asset
+    amount: amount
+  repay:
+    name: WithdrawCollateral
+    repayer: to
+    asset: asset
+    amount: amount
+  liquidate:
+    name: AbsorbCollateral
+    liquidator: borrower
+    asset: absorber
+    amount: collateralAbsorbed
+compound-v3-WETH-pools:
+  deopsit:
+    name: Supply
+    depositor: from
+    asset: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2" # WETH
+    amount: amount
+  withdraw:
+    name: Withdraw
+    withdrawer: to
+    asset: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
     amount: amount
   borrow:
     name: SupplyCollateral
