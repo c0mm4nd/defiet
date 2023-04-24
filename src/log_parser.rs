@@ -28,7 +28,7 @@ impl LogParser {
         let event_hashes: Vec<H256> = events.iter().map(|e| e.hash()).collect();
         let path = Path::new(&self.output);
         if !path.exists() {
-            fs::create_dir_all(&path).unwrap();
+            fs::create_dir_all(path).unwrap();
         }
         let mut event_writers: Vec<Writer<File>> = events
             .iter()
@@ -86,8 +86,6 @@ impl LogParser {
 
             event_writers[event_index].flush().unwrap();
         }
-
-        return;
     }
 
     pub async fn parse_log_from_events(
@@ -222,7 +220,7 @@ impl LogParser {
                     let raw_bytes = &raw[..len_bytes];
 
                     suffix += 32 + 32 * len_b32;
-                    format!("{}", hex::encode(raw_bytes))
+                    hex::encode(raw_bytes).to_string()
                 }
                 "bytes32" => {
                     let raw = &raw_data[pos..pos + 32];
@@ -255,7 +253,7 @@ impl LogParser {
 
         let path = Path::new(&self.output);
         if !path.exists() {
-            fs::create_dir_all(&path).unwrap();
+            fs::create_dir_all(path).unwrap();
         }
         let mut event_writers: BTreeMap<_, Writer<File>> = abi
             .events()
@@ -321,7 +319,7 @@ impl LogParser {
         let event_signature_map = Arc::new(event_signature_map);
         let path = Path::new(&self.output);
         if !path.exists() {
-            fs::create_dir_all(&path).unwrap();
+            fs::create_dir_all(path).unwrap();
         }
         let event_writers: BTreeMap<_, Writer<File>> = abi
             .events()

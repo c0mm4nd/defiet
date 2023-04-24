@@ -65,7 +65,7 @@ pub async fn parse_config(provider: Provider<Ws>, path: String) -> Vec<Task> {
             contracts.extend(contracts_from_factory);
         }
 
-        if contracts.len() == 0 {
+        if contracts.is_empty() {
             continue;
         }
 
@@ -81,13 +81,7 @@ pub async fn parse_config(provider: Provider<Ws>, path: String) -> Vec<Task> {
             None => Vec::new(),
         };
 
-        let abi = match task_detail.get("abi") {
-            Some(abi_json_v) => {
-                // println!("{}", abi_json_v.as_str().unwrap());
-                Some(serde_json::from_str::<Abi>(abi_json_v.as_str().unwrap()).unwrap())
-            }
-            None => None,
-        };
+        let abi = task_detail.get("abi").map(|abi_json_v| serde_json::from_str::<Abi>(abi_json_v.as_str().unwrap()).unwrap());
 
         let task = Task {
             name: task_name.as_str().unwrap().to_owned(),
@@ -99,7 +93,7 @@ pub async fn parse_config(provider: Provider<Ws>, path: String) -> Vec<Task> {
         tasks.push(task);
     }
 
-    return tasks;
+    tasks
 }
 
 async fn get_contracts_from_factory(provider: Provider<Ws>, factory_config: &Mapping) -> Vec<H160> {
@@ -257,7 +251,7 @@ async fn get_contracts_from_factory(provider: Provider<Ws>, factory_config: &Map
                         let raw_bytes = &raw[..len_bytes];
 
                         // suffix += 32 + 32 * len_b32;
-                        format!("{}", hex::encode(raw_bytes))
+                        hex::encode(raw_bytes).to_string()
                     }
                     "bytes32" => {
                         let raw = &raw_data[pos..pos + 32];
@@ -282,14 +276,14 @@ async fn get_contracts_from_factory(provider: Provider<Ws>, factory_config: &Map
             );
 
             if let Some(csv_output) = &mut csv_output {
-                let mut record = Vec::from(fixed_columns);
+                let mut record = fixed_columns;
                 record.extend(arg_columns);
                 csv_output.write(record);
             }
         }
     }
 
-    return contracts;
+    contracts
 }
 
 #[derive(Debug, Clone)]
@@ -304,17 +298,17 @@ impl Event {
     pub fn new(event: String) -> Self {
         // event = "Deposit(address indexed reverse, address indexed address , uint256 amount, uint16 indexed referral, uint256 timestamp);"
         let event = event.trim().replace("event", "");
-        let name_with_body: Vec<&str> = event.split("(").collect();
+        let name_with_body: Vec<&str> = event.split('(').collect();
         let name = name_with_body[0].trim().to_string();
-        let body = name_with_body[1].replace(")", "").replace(";", "");
+        let body = name_with_body[1].replace([')', ';'], "");
         let mut params = Vec::new();
         let mut topics = Vec::new();
         let mut data = Vec::new();
 
-        let params_str_list: Vec<&str> = body.split(",").collect();
+        let params_str_list: Vec<&str> = body.split(',').collect();
         // let params_count: i32 = params_str_list.len().try_into().unwrap();
         for params_str in params_str_list {
-            let triple: Vec<&str> = params_str.trim().split(" ").collect();
+            let triple: Vec<&str> = params_str.trim().split(' ').collect();
             assert!(triple.len() >= 2, "triple len incorrect");
             let name = triple[triple.len() - 1].trim().to_string();
             let mut evm_type = triple[0].trim().to_string();
@@ -336,19 +330,19 @@ impl Event {
             }
         }
 
-        let event = Event {
+        
+        Event {
             name,
             params,
             topics,
             data,
-        };
-        return event;
+        }
     }
 
     pub fn to_signature(&self) -> String {
         let body: Vec<_> = self.params.iter().map(|x| x.to_signature()).collect();
 
-        return self.name.to_string() + "(" + &body.join(",") + ")";
+        self.name.to_string() + "(" + &body.join(",") + ")"
     }
 
     pub fn hash(&self) -> H256 {
@@ -378,6 +372,6 @@ impl EventParam {
     // }
 
     pub fn to_signature(&self) -> String {
-        return self.evm_type.to_owned();
+        self.evm_type.to_owned()
     }
 }

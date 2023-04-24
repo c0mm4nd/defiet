@@ -2,7 +2,7 @@ use std::fs::File;
 
 use csv::Writer;
 
-const FIXED_FIELDS: &'static [&'static str] = &[
+const FIXED_FIELDS: &[&str] = &[
     "block_number",
     "transaction_hash",
     "transaction_from",  // tx from
