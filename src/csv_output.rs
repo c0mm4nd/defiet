@@ -1,7 +1,6 @@
-use std::{fs::File, io::Write};
+use std::fs::File;
 
-use csv::{Writer, StringRecord};
-
+use csv::Writer;
 
 const FIXED_FIELDS: &'static [&'static str] = &[
     "block_number",
@@ -27,15 +26,15 @@ impl CsvOutput {
             filename: filename.to_owned(),
             // file,
             writer,
-            headers: Vec::from(FIXED_FIELDS).iter().map(|&s|s.into()).collect(),
+            headers: Vec::from(FIXED_FIELDS).iter().map(|&s| s.into()).collect(),
         }
     }
 
-    pub fn add_headers(&mut self, headers: Vec<String>) -> &Self{
+    pub fn add_headers(&mut self, headers: Vec<String>) -> &Self {
         self.headers.extend(headers);
         self
     }
-    
+
     pub fn write_headers(&mut self) -> &Self {
         self.writer.write_record(self.headers.clone()).unwrap();
         self.writer.flush().unwrap();

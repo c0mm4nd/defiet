@@ -1,19 +1,16 @@
+use ethers::{
+    abi::{Abi, Hash},
+    providers::{Middleware, Provider, StreamExt, Ws},
+    types::{Address, Filter, H160, H256, I256, U256},
+    utils::keccak256,
+};
+use serde_yaml::Mapping;
 use std::{
-    collections::HashMap,
     fs::{self, File},
     str::FromStr,
 };
 
-use csv::StringRecord;
-use ethers::{
-    abi::{Abi, Hash},
-    providers::{Middleware, Provider, StreamExt, Ws},
-    types::{Address, Filter, H160, H256, U256, I256},
-    utils::{keccak256, to_checksum},
-};
-use serde_yaml::Mapping;
-
-use crate::csv_output::{self, CsvOutput};
+use crate::csv_output::CsvOutput;
 
 #[derive(Debug)]
 pub struct Task {
@@ -151,10 +148,10 @@ async fn get_contracts_from_factory(provider: Provider<Ws>, factory_config: &Map
             let log = log.unwrap();
 
             let tx = provider
-            .get_transaction(log.transaction_hash.unwrap())
-            .await
-            .unwrap()
-            .unwrap();
+                .get_transaction(log.transaction_hash.unwrap())
+                .await
+                .unwrap()
+                .unwrap();
 
             let mut fixed_columns: Vec<String> = Vec::new();
             fixed_columns.push(log.block_number.unwrap().to_string());
@@ -188,104 +185,101 @@ async fn get_contracts_from_factory(provider: Provider<Ws>, factory_config: &Map
                     }
                     _ => todo!(), // _ => format!("{:#x}", Address::from(raw)), // as address
                 };
-    
+
                 arg_columns.push(value);
             }
-    
-        let mut raw_data = log.data;
-        let mut pos: usize = 0;
-        let mut suffix: usize = 0;
-        for (index, param) in event.data.iter().enumerate() {
-            let evm_type = param.evm_type.as_str();
-            let value = match evm_type {
-                "address" => {
-                    let raw = &raw_data[pos..pos + 32];
-                    pos += 32;
-                    format!("{:#x}", Address::from(Hash::from_slice(raw)))
-                }
-                "uint256" | "uint128" | "uint96" | "uint64" | "uint32" | "uint16" | "uint8"
-                | "uint" => {
-                    let raw = &raw_data[pos..pos + 32];
-                    pos += 32;
-                    U256::from(raw).to_string()
-                }
-                "int256" | "int128" | "int96" | "int64" | "int32" | "int16" | "int8" | "int" => {
-                    let raw = &raw_data[pos..pos + 32];
-                    pos += 32;
-                    I256::from_raw(raw.into()).to_string()
-                }
-                "bool" => {
-                    let raw = &raw_data[pos..pos + 32];
-                    pos += 32;
-                    (U256::from(raw).is_zero()).to_string()
-                }
-                "string" => {
-                    // read offset
-                    // https://ethereum.stackexchange.com/questions/114592/how-is-function-data-encoded-decoded-if-a-string-exceeds-the-32-byte-length
-                    // https://ethereum.stackexchange.com/questions/143471/how-does-etherscan-get-such-data
-                    let raw = &raw_data[pos..pos + 32]; // must be 0x20
-                    pos += 32;
-                    let offset = U256::from(raw).as_usize();
-                    // read_length
-                    let raw = &raw_data[offset..offset + 32];
 
-                    let len_str = U256::from(raw).as_usize();
-                    let mut len_b32 = len_str / 32;
-                    if len_b32 * 32 < len_str {
-                        len_b32 += 1
+            let raw_data = log.data;
+            let mut pos: usize = 0;
+            for param in &event.data {
+                let evm_type = param.evm_type.as_str();
+                let value = match evm_type {
+                    "address" => {
+                        let raw = &raw_data[pos..pos + 32];
+                        pos += 32;
+                        format!("{:#x}", Address::from(Hash::from_slice(raw)))
                     }
-
-                    let raw = &raw_data[offset + 32..offset + 32 + 32 * len_b32];
-                    let raw_str = &raw[..len_str];
-
-                    suffix += 32 + 32 * len_b32;
-                    String::from_utf8(raw_str.to_vec()).unwrap()
-                }
-                "bytes" => {
-                    // read offset
-                    // https://ethereum.stackexchange.com/questions/114592/how-is-function-data-encoded-decoded-if-a-string-exceeds-the-32-byte-length
-                    let raw = &raw_data[pos..pos + 32]; // must be 0x20
-                    pos += 32;
-                    let offset = U256::from(raw).as_usize();
-                    // read_length
-                    let raw = &raw_data[offset..offset + 32];
-
-                    let len_bytes = U256::from(raw).as_usize();
-                    let mut len_b32 = len_bytes / 32;
-                    if len_b32 * 32 < len_bytes {
-                        len_b32 += 1
+                    "uint256" | "uint128" | "uint96" | "uint64" | "uint32" | "uint16" | "uint8"
+                    | "uint" => {
+                        let raw = &raw_data[pos..pos + 32];
+                        pos += 32;
+                        U256::from(raw).to_string()
                     }
+                    "int256" | "int128" | "int96" | "int64" | "int32" | "int16" | "int8"
+                    | "int" => {
+                        let raw = &raw_data[pos..pos + 32];
+                        pos += 32;
+                        I256::from_raw(raw.into()).to_string()
+                    }
+                    "bool" => {
+                        let raw = &raw_data[pos..pos + 32];
+                        pos += 32;
+                        (U256::from(raw).is_zero()).to_string()
+                    }
+                    "string" => {
+                        // read offset
+                        // https://ethereum.stackexchange.com/questions/114592/how-is-function-data-encoded-decoded-if-a-string-exceeds-the-32-byte-length
+                        // https://ethereum.stackexchange.com/questions/143471/how-does-etherscan-get-such-data
+                        let raw = &raw_data[pos..pos + 32]; // must be 0x20
+                        pos += 32;
+                        let offset = U256::from(raw).as_usize();
+                        // read_length
+                        let raw = &raw_data[offset..offset + 32];
 
-                    let raw = &raw_data[offset + 32..offset + 32 + 32 * len_b32];
-                    let raw_bytes = &raw[..len_bytes];
+                        let len_str = U256::from(raw).as_usize();
+                        let mut len_b32 = len_str / 32;
+                        if len_b32 * 32 < len_str {
+                            len_b32 += 1
+                        }
 
-                    suffix += 32 + 32 * len_b32;
-                    format!("{}", hex::encode(raw_bytes))
-                }
-                "bytes32" => {
-                    let raw = &raw_data[pos..pos + 32];
-                    pos += 32;
-                    format!("{:#x}", Hash::from_slice(raw))
-                }
-                _ => panic!(
-                    "unknown type {} in data, suggest to use abi instead",
-                    param.evm_type
-                ),
-            };
+                        let raw = &raw_data[offset + 32..offset + 32 + 32 * len_b32];
+                        let raw_str = &raw[..len_str];
 
-            arg_columns.push(value);
-        }
- 
-        
-        let new_contract_addr = Address::from_str(&arg_columns[arg_index]).unwrap();
-        contracts.push(new_contract_addr);
-                log::debug!(
-                    "got contract {:#x} from factory {:#x}",
-                    new_contract_addr,
-                    log.address
-                );
+                        // suffix += 32 + 32 * len_b32;
+                        String::from_utf8(raw_str.to_vec()).unwrap()
+                    }
+                    "bytes" => {
+                        // read offset
+                        // https://ethereum.stackexchange.com/questions/114592/how-is-function-data-encoded-decoded-if-a-string-exceeds-the-32-byte-length
+                        let raw = &raw_data[pos..pos + 32]; // must be 0x20
+                        pos += 32;
+                        let offset = U256::from(raw).as_usize();
+                        // read_length
+                        let raw = &raw_data[offset..offset + 32];
 
+                        let len_bytes = U256::from(raw).as_usize();
+                        let mut len_b32 = len_bytes / 32;
+                        if len_b32 * 32 < len_bytes {
+                            len_b32 += 1
+                        }
 
+                        let raw = &raw_data[offset + 32..offset + 32 + 32 * len_b32];
+                        let raw_bytes = &raw[..len_bytes];
+
+                        // suffix += 32 + 32 * len_b32;
+                        format!("{}", hex::encode(raw_bytes))
+                    }
+                    "bytes32" => {
+                        let raw = &raw_data[pos..pos + 32];
+                        pos += 32;
+                        format!("{:#x}", Hash::from_slice(raw))
+                    }
+                    _ => panic!(
+                        "unknown type {} in data, suggest to use abi instead",
+                        param.evm_type
+                    ),
+                };
+
+                arg_columns.push(value);
+            }
+
+            let new_contract_addr = Address::from_str(&arg_columns[arg_index]).unwrap();
+            contracts.push(new_contract_addr);
+            log::debug!(
+                "got contract {:#x} from factory {:#x}",
+                new_contract_addr,
+                log.address
+            );
 
             if let Some(csv_output) = &mut csv_output {
                 let mut record = Vec::from(fixed_columns);
@@ -318,7 +312,7 @@ impl Event {
         let mut data = Vec::new();
 
         let params_str_list: Vec<&str> = body.split(",").collect();
-        let params_count: i32 = params_str_list.len().try_into().unwrap();
+        // let params_count: i32 = params_str_list.len().try_into().unwrap();
         for params_str in params_str_list {
             let triple: Vec<&str> = params_str.trim().split(" ").collect();
             assert!(triple.len() >= 2, "triple len incorrect");
@@ -370,18 +364,18 @@ pub struct EventParam {
 }
 
 impl EventParam {
-    pub fn to_string(&self) -> String {
-        if self.indexed {
-            return vec![
-                self.evm_type.to_owned(),
-                "indexed".to_string(),
-                self.name.to_owned(),
-            ]
-            .join(" ");
-        }
+    // pub fn to_string(&self) -> String {
+    //     if self.indexed {
+    //         return vec![
+    //             self.evm_type.to_owned(),
+    //             "indexed".to_string(),
+    //             self.name.to_owned(),
+    //         ]
+    //         .join(" ");
+    //     }
 
-        return vec![self.evm_type.to_owned(), self.name.to_owned()].join(" ");
-    }
+    //     return vec![self.evm_type.to_owned(), self.name.to_owned()].join(" ");
+    // }
 
     pub fn to_signature(&self) -> String {
         return self.evm_type.to_owned();
