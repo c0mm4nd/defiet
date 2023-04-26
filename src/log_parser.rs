@@ -2,17 +2,28 @@ use std::{
     collections::BTreeMap,
     fs::{self, File},
     path::Path,
-    sync::{Mutex, Arc},
+    sync::{Arc, Mutex},
 };
 
 use csv::Writer;
 use ethers::{
     abi::{Abi, Event, RawLog, Token},
     providers::{Middleware, Provider, StreamExt, Ws},
-    types::{Address, Filter, Log, H256, I256, U256},
+    types::{Address, Filter, Log, H256, I256, U256, U64},
 };
+use tokio::join;
 
 use crate::config_parser;
+
+const FIXED_FIELDS: &[&str] = &[
+    "block_number",
+    "transaction_hash",
+    "transaction_from",  // tx from
+    "transaction_to",    // tx to
+    "transaction_value", // tx value
+    "status",
+    "contract",
+];
 
 #[derive(Debug, Clone)]
 pub struct LogParser {
@@ -20,6 +31,11 @@ pub struct LogParser {
     pub addrs: Vec<Address>,
     pub task_name: String,
     pub output: String,
+
+    pub start: u64,
+    pub end: u64,
+
+    pub with_gas: bool,
 }
 
 impl LogParser {
@@ -38,17 +54,17 @@ impl LogParser {
             })
             .collect();
 
-        let fixed_fields = [
-            "block_number",
-            "transaction_hash",
-            "transaction_from",  // tx from
-            "transaction_to",    // tx to
-            "transaction_value", // tx value
-            "contract",
-            // "transaction_log_index",
-        ];
         for (i, e) in events.iter().enumerate() {
-            let mut fields = Vec::from(fixed_fields);
+            let mut fields = Vec::from(FIXED_FIELDS);
+            if self.with_gas {
+                // total = gas used * (base fee + priority fee)
+                // base: for concensus, burnt
+                // priority: fee to validator
+                fields.push("gas_used");
+                fields.push("priority_fee_per_gas");
+                fields.push("effective_gas_price");
+            }
+
             for p in e.topics.iter() {
                 fields.push(&p.name)
             }
@@ -59,11 +75,15 @@ impl LogParser {
         }
 
         log::warn!("{}: {:?}", self.task_name, event_signatures);
-        let filter = Filter::new()
-            .from_block(0_000_000)
-            // .to_block(16_200_000)
+        let mut filter = Filter::new()
             .events(event_signatures)
-            .address(self.addrs.to_vec());
+            .address(self.addrs.to_vec())
+            .from_block(self.start);
+
+        if self.end != 0 {
+            filter = filter.to_block(self.end);
+        }
+
         let mut stream = self.provider.get_logs_paginated(&filter, 100);
         while let Some(log) = stream.next().await {
             let log = log.unwrap();
@@ -93,24 +113,35 @@ impl LogParser {
         log: &Log,
         event: &config_parser::Event,
     ) -> Vec<String> {
-        let tx = self
+        let tx_result = self.provider.get_transaction(log.transaction_hash.unwrap());
+        let receipt_result = self
             .provider
-            .get_transaction(log.transaction_hash.unwrap())
-            .await
-            .unwrap()
-            .unwrap();
+            .get_transaction_receipt(log.transaction_hash.unwrap());
+        let (tx, receipt) = join!(tx_result, receipt_result);
+        let tx = tx.unwrap().unwrap();
+        let receipt = receipt.unwrap().unwrap();
 
         let mut record: Vec<String> = Vec::new();
         record.push(log.block_number.unwrap().to_string());
         record.push(format!("{:#x}", log.transaction_hash.unwrap()));
         record.push(format!("{:#x}", tx.from));
-        record.push(tx.value.to_string());
         record.push(match tx.to {
             None => "".to_owned(),
             Some(to) => format!("{:#x}", to),
         });
+        record.push(tx.value.to_string());
+        record.push(receipt.status.unwrap_or(U64::from(1)).as_u64().to_string());
         record.push(format!("{:#x}", log.address));
-        // record.push(log.transaction_log_index.unwrap().to_string());
+
+        if self.with_gas {
+            record.push(receipt.gas_used.unwrap().to_string());
+            record.push(
+                tx.max_priority_fee_per_gas
+                    .unwrap_or(tx.gas_price.unwrap())
+                    .to_string(),
+            );
+            record.push(receipt.effective_gas_price.unwrap().to_string());
+        }
 
         log::debug!(
             "{}: found event {} on tx: {:#x}",
@@ -265,18 +296,9 @@ impl LogParser {
                 )
             })
             .collect();
-        let fixed_fields = [
-            "block_number",
-            "transaction_hash",
-            "transaction_from",  // tx from
-            "transaction_to",    // tx to
-            "transaction_value", // tx value
-            "contract",
-            // "transaction_log_index",
-        ];
 
         for e in abi.events() {
-            let mut fields = Vec::from(fixed_fields);
+            let mut fields = Vec::from(FIXED_FIELDS);
             for param in &e.inputs {
                 let name = &param.name;
                 fields.push(name);
@@ -290,11 +312,15 @@ impl LogParser {
 
         let event_signatures: Vec<_> = abi.events().map(|e| e.signature()).collect();
         log::warn!("{}: {:?}", self.task_name, event_signatures);
-        let filter = Filter::new()
-            .from_block(0_000_000)
-            // .to_block(16_200_000)
-            .events(event_signatures)
-            .address(self.addrs.to_vec());
+        let mut filter = Filter::new()
+            .topic0(event_signatures)
+            .address(self.addrs.to_vec())
+            .from_block(self.start);
+
+        if self.end != 0 {
+            filter = filter.to_block(self.end);
+        }
+
         let mut stream = self.provider.get_logs_paginated(&filter, 100);
         while let Some(log) = stream.next().await {
             let log = log.unwrap();
@@ -315,7 +341,8 @@ impl LogParser {
     }
 
     pub async fn dump_logs_from_abi_mt(&self, abi: Abi) {
-        let event_signature_map: BTreeMap<_, _> = abi.events().map(|e| (e.signature(), e.clone())).collect();
+        let event_signature_map: BTreeMap<_, _> =
+            abi.events().map(|e| (e.signature(), e.clone())).collect();
         let event_signature_map = Arc::new(event_signature_map);
         let path = Path::new(&self.output);
         if !path.exists() {
@@ -333,18 +360,8 @@ impl LogParser {
             .collect();
         let event_writers = Arc::new(Mutex::new(event_writers));
 
-        let fixed_fields = [
-            "block_number",
-            "transaction_hash",
-            "transaction_from",  // tx from
-            "transaction_to",    // tx to
-            "transaction_value", // tx value
-            "contract",
-            // "transaction_log_index",
-        ];
-
         for e in abi.events() {
-            let mut fields = Vec::from(fixed_fields);
+            let mut fields = Vec::from(FIXED_FIELDS);
             for param in &e.inputs {
                 let name = &param.name;
                 fields.push(name);
@@ -368,12 +385,19 @@ impl LogParser {
             let event_writers = event_writers.clone();
             let event_signature_map = event_signature_map.clone();
 
+            let start = self.start;
+            let end = self.end;
+
             handles.push(tokio::spawn(async move {
-                let filter = Filter::new()
-                    .from_block(0_000_000)
-                    // .to_block(16_200_000)
-                    .events(event_signatures)
-                    .address(addr);
+                let mut filter = Filter::new()
+                    .topic0(event_signatures)
+                    .address(addr)
+                    .from_block(start);
+
+                if end != 0 {
+                    filter = filter.to_block(end);
+                }
+
                 let mut stream = parser.provider.get_logs_paginated(&filter, 100);
                 while let Some(log) = stream.next().await {
                     let log = log.unwrap();
@@ -408,23 +432,35 @@ impl LogParser {
     }
 
     pub async fn parse_log_from_abi(&self, log: &Log, event: &Event) -> Vec<String> {
-        let tx = self
+        let tx_result = self.provider.get_transaction(log.transaction_hash.unwrap());
+        let receipt_result = self
             .provider
-            .get_transaction(log.transaction_hash.unwrap())
-            .await
-            .unwrap()
-            .unwrap();
+            .get_transaction_receipt(log.transaction_hash.unwrap());
+        let (tx, receipt) = join!(tx_result, receipt_result);
+        let tx = tx.unwrap().unwrap();
+        let receipt = receipt.unwrap().unwrap();
 
         let mut record: Vec<String> = Vec::new();
         record.push(log.block_number.unwrap().to_string());
         record.push(format!("{:#x}", log.transaction_hash.unwrap()));
         record.push(format!("{:#x}", tx.from));
-        record.push(tx.value.to_string());
         record.push(match tx.to {
             None => "".to_owned(),
             Some(to) => format!("{:#x}", to),
         });
+        record.push(tx.value.to_string());
+        record.push(receipt.status.unwrap_or(U64::from(1)).as_u64().to_string());
         record.push(format!("{:#x}", log.address));
+
+        if self.with_gas {
+            record.push(receipt.gas_used.unwrap().to_string());
+            record.push(
+                tx.max_priority_fee_per_gas
+                    .unwrap_or(tx.gas_price.unwrap())
+                    .to_string(),
+            );
+            record.push(receipt.effective_gas_price.unwrap().to_string());
+        }
 
         let raw_log = event
             .parse_log_whole(RawLog {

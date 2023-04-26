@@ -24,9 +24,21 @@ struct Args {
     #[arg(short, long, default_value = "./output")]
     output: String,
 
-    /// run for each protocol in parallel
+    /// run for each contract address in parallel
     #[arg(short, long, default_value_t = false)]
     parallel: bool,
+
+    /// start block number
+    #[arg(long, default_value_t = 0)]
+    start: u64,
+
+    /// end block number
+    #[arg(long, default_value_t = 0)]
+    end: u64,
+
+    /// with gas details from transaction
+    #[arg(long, default_value_t = false)]
+    gas: bool,
 }
 
 #[tokio::main]
@@ -54,6 +66,11 @@ async fn main() {
             addrs,
             output,
             task_name,
+
+            start: args.start,
+            end: args.end,
+
+            with_gas: args.gas,
         };
 
         handles.push(tokio::spawn(async move {
