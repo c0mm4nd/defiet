@@ -24,7 +24,7 @@ morpho-pools:
     amount: _amount
   liquidate: 
     name: Liquidated
-    user: _poolTokenBorrowedAddress
+    user: _liquidator
     collateral: _poolTokenCollateralAddress
-    asset: _liquidated
+    asset: _poolTokenBorrowedAddress
     amount: _amountSeized

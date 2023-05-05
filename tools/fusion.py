@@ -39,6 +39,8 @@ def load_assets(path):
         assets = {}
         for main_asset_name, asset_info in asset_list.items():
             assets[asset_info["main"].lower()] = main_asset_name
+            if len(asset_info["derivatives"]) == 0:
+                continue
             for derivative_name, derivative_addr in asset_info["derivatives"].items():
                 assets[derivative_addr.lower()] = main_asset_name + "_" + derivative_name
         return assets

@@ -104,6 +104,7 @@ WBTC:
     aave-v1: "0xFC4B8ED459e00e5400be803A9BB3954234FD50e3"
     aave-v2: "0x9ff58f4fFB29fA2266Ab25e75e2A8b3503311656"
     compound-v2: "0xC11b1268C1A384e55C48c2391d8d480264A3A7F4"
+    compound-v3: "0xccF4429DB6322D5C611ee964527D42E5d685DD6a"
 YFI:
   main: "0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e"
   derivatives:
@@ -189,3 +190,15 @@ SAI:
   main: "0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359"
   derivatives:
     compound-v2: "0xF5DCe57282A584D2746FaF1593d3121Fcac444dC"
+DPI: # set protocol https://governance.aave.com/t/arc-add-support-for-defi-pulse-index-dpi/3576
+  main: "0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b"
+  derivatives: []
+CVX:
+  main: "0x4e3fbd56cd56c3e72c1403e103b45db9da5b9d2b"
+  derivatives: []
+1INCH:
+  main: "0x111111111117dc0aa78b770fa6a738034120c302"
+  derivatives: []
+LUSD:
+  main: "0x5f98805A4E8be255a32880FDeC7F6728C6568bA0"
+  derivatives: []
