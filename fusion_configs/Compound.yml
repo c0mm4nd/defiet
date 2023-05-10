@@ -10,7 +10,7 @@ compound-v2-pools:
     asset: asset
     amount: amount
   borrow:
-    name: BorrorTaken
+    name: BorrowTaken
     borrower: account
     asset: asset
     amount: amount

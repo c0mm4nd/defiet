@@ -1,6 +1,6 @@
 aave-v1-pools:
   deopsit: 
-    name: Deopsit
+    name: Deposit
     user: _user
     asset: _reserve
     amount: _amount
@@ -31,9 +31,9 @@ aave-v1-pools:
     interest: _accruedBorrowInterest
 aave-v2-pools:
   deopsit: 
-    name: Deopsit
+    name: Deposit
     user: user
-    deopsitor: onBehalfOf
+    depositor: onBehalfOf
     asset: reserve
     amount: amount
   withdraw: 
