@@ -194,13 +194,14 @@ impl LogParser {
                     pos += 32;
                     format!("{:#x}", Address::from(H256::from_slice(raw)))
                 }
-                "uint256" | "uint128" | "uint96" | "uint64" | "uint32" | "uint16" | "uint8"
-                | "uint" => {
+                "uint256" | "uint128" | "uint112" | "uint96" | "uint64" | "uint32" | "uint16"
+                | "uint8" | "uint" => {
                     let raw = &raw_data[pos..pos + 32];
                     pos += 32;
                     U256::from(raw).to_string()
                 }
-                "int256" | "int128" | "int96" | "int64" | "int32" | "int16" | "int8" | "int" => {
+                "int256" | "int128" | "int112" | "int96" | "int64" | "int32" | "int16" | "int8"
+                | "int" => {
                     let raw = &raw_data[pos..pos + 32];
                     pos += 32;
                     I256::from_raw(raw.into()).to_string()

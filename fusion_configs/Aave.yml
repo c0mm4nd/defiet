@@ -2,6 +2,7 @@ aave-v1-pools:
   deopsit: 
     name: Deposit
     user: _user
+    depositor: _user
     asset: _reserve
     amount: _amount
   withdraw: 
@@ -12,6 +13,7 @@ aave-v1-pools:
   borrow: 
     name: Borrow
     user: _user
+    borrower: _user
     asset: _reserve
     amount: _amount
     borrow_rate: _borrowRate
@@ -20,14 +22,16 @@ aave-v1-pools:
     user: _user
     repayer: _repayer
     asset: _reserve
-    amount: _amountMinusFees
+    amount: _amountMinusFees + _fees
     fee: _fees
   liquidate: 
     name: LiquidationCall
     user: _user
+    liquidator: _liquidator
     collateral: _collateral
     asset: _reserve
-    amount: _liquidatedCollateralAmount
+    amount: _purchaseAmount
+    collateralAmount: _liquidatedCollateralAmount
     interest: _accruedBorrowInterest
 aave-v2-pools:
   deopsit: 
@@ -47,7 +51,7 @@ aave-v2-pools:
     user: user
     borrower: onBehalfOf
     amount: amount
-    borrot_rate: borrowRate
+    borrow_rate: borrowRate
   repay: 
     name: Repay
     user: user
@@ -56,8 +60,9 @@ aave-v2-pools:
     amount: amount
   liquidate: 
     name: LiquidationCall
-    user: user
     liquidator: liquidator
+    user: user
     collateral: collateralAsset
-    asset: collateralAsset
-    amount: liquidatedCollateralAmount
+    asset: debtAsset
+    amount: debtToCover
+    collateralAmount: liquidatedCollateralAmount

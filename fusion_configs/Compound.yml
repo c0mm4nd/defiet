@@ -22,8 +22,11 @@ compound-v2-pools:
   liquidate:
     name: BorrowLiquidated
     liquidator: liquidator
+    user: targetAccount
+    collateral: assetCollateral
     asset: assetBorrow
     amount: amountSeized
+
 compound-v3-USDC-pools:
   deopsit: # deposit USDC & get cUSDCv3
     name: Supply 
