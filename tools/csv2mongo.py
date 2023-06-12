@@ -36,7 +36,7 @@ def load(f):
         coll.bulk_write(writes)
     logging.warning(f + " ends")
 
-for f in listdir("csv_output"):
+for f in listdir(args.source):
     if not isfile(join(args.source, f)):
         continue
     t = Thread(target=load, args=(f,))
