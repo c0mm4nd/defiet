@@ -22,7 +22,7 @@ aave-v1-pools:
     user: _user
     repayer: _repayer
     asset: _reserve
-    amount: _amountMinusFees + _fees
+    amount: eval(this["_amountMinusFees"] + this["_fees"])
     fee: _fees
   liquidate: 
     name: LiquidationCall
@@ -35,11 +35,19 @@ aave-v1-pools:
     interest: _accruedBorrowInterest
 aave-v2-pools:
   deopsit: 
+    $lookup: 
+      from: aave-v2-pools_ReserveDataUpdated
+      localField: transaction_hash
+      foreignField: transaction_hash
+      as: ReserveDataUpdated
     name: Deposit
     user: user
     depositor: onBehalfOf
     asset: reserve
     amount: amount
+    liquidityRate: ReserveDataUpdated.0.liquidityRate
+    stableBorrowRate: ReserveDataUpdated.0.stableBorrowRate
+    variableBorrowRate: ReserveDataUpdated.0.variableBorrowRate
   withdraw: 
     name: Withdraw
     user: user
