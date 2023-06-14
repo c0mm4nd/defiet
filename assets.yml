@@ -163,6 +163,10 @@ stETH:
   main: "0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84"
   derivatives:
     aave-v2: "0x1982b2F5814301d4e9a8b0201555376e62F82428"
+    compound-v3: "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0" # Lido WSTETH
+cbETH:
+  main: "0xBe9895146f7AF43049ca1c1AE358B0541Ea49704"
+  derivatives: []
 USDP:
   main: "0x8e870d67f660d95d5be530380d0ec0bd388289e1"
   derivatives:

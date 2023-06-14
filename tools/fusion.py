@@ -41,7 +41,10 @@ class FusionSet:
             assets = {}
             for main_asset_name, asset_info in asset_list.items():
                 assets[asset_info["main"].lower()] = main_asset_name
-                if len(asset_info["derivatives"]) == 0:
+                if (
+                    asset_info.get("derivatives") is None
+                    or len(asset_info["derivatives"]) == 0
+                ):
                     continue
                 for derivative_name, derivative_addr in asset_info[
                     "derivatives"
@@ -75,7 +78,6 @@ class FusionSet:
                     pass
                 rtn = rtn[attr]
         return rtn
-
 
     def handle_protocol_event_type(self, src_config):
         src_coll_name = f"{protocol_name}_{src_config['name']}"
