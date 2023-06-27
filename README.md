@@ -35,3 +35,15 @@ aave-v1: # https://app-v1.aave.com
 You can `cp input.example.yml input.yml` and `code input.yml` to start easy edit.
 
 `-p` flag will enable fetching **each protocol** data in **parallel**.
+
+## Tools
+
+### CSV to Mongo
+
+### Fusion
+
+We now support the aggregate mode and an eval mode. For example, take a look at [Aave](./fusion_configs/Aave.yml).
+
+All items starting with a $ will be aggregated into the aggregate mode. For more information about the lookup operator in Aave, please refer to: https://www.mongodb.com/docs/manual/reference/operator/aggregation/lookup/
+
+In the eval mode, the entire content will be wrapped in the "this" variable, and you can perform calculations using Python expressions.
